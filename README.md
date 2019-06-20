@@ -89,7 +89,7 @@ The next dropdown box selects the command to send to the device including its pa
 > ##### Scan Forward
 > Scans backward in the currently playing content on a specific zone of the device.
 
-If the filter output ports are enabled, filters for post processing the response from the device can be configured in the last section. See [Filters](#filters-1) chapter for more information on how to setup the filters.
+If the filter output ports are enabled, filters for post processing the response from the device can be configured in the last section. See [Filters](#filters-2) chapter for more information on how to setup the filters.
 
 #### Input
 The input message is used to trigger and programmatically configure the controller node. Depending on the provided attributes, either the node's configuration can be overridden or a low-level request can be sent to the Audio Control API.
@@ -214,7 +214,7 @@ On the configuration page, you can configure various settings of the node. Optio
 
 The next dropdown box selects the service to bind to. Depending on the selected service, different checkboxes for the available events appear. Each checkbox allows to subscribe to the corresponding notification.
 
-If the filter output ports are enabled, filters for post processing the notification from the device can be configured in the last section. See [Filters](#filters-1) chapter for more information on how to setup the filters.
+If the filter output ports are enabled, filters for post processing the notification from the device can be configured in the last section. See [Filters](#filters-2) chapter for more information on how to setup the filters.
 
 #### Input
 The node has no input ports.
@@ -223,7 +223,7 @@ The node has no input ports.
 The node provides a variable number of output ports depending on the configuration. There is one output ports for the raw event data as well as a variable number of outputs depending on the filter configuration.
 
 ##### Filters
-If enabled, the filter output ports provide filtered result data according to the configured filters. The number of filter output ports is determined by the number of filters whereat each filter gets a dedicated output assigned. When there is an event from the device arriving and a filter matches (i.e. it can handle the method of the notification), it will process the event and send a message with filtered data on its dedicated output. If multiple filters match the event, there will be multiple output messages sent. The filtered data is contained in the `msg.payload` of the output messages, see [Filters](#filters-1) chapter for a description of the message format.
+If enabled, the filter output ports provide filtered result data according to the configured filters. The number of filter output ports is determined by the number of filters whereat each filter gets a dedicated output assigned. When there is an event from the device arriving and a filter matches (i.e. it can handle the method of the notification), it will process the event and send a message with filtered data on its dedicated output. If multiple filters match the event, there will be multiple output messages sent. The filtered data is contained in the `msg.payload` of the output messages, see [Filters](#filters-2) chapter for a description of the message format.
 
 ##### Event
 If enabled, the event output port provides the raw / low-level event data as sent by the Audio Control API upon notification. The message has the following format:
