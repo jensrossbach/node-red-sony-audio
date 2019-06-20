@@ -1,0 +1,1048 @@
+<!--
+Copyright (c) 2019 Jens-Uwe Rossbach
+
+This code is licensed under the MIT License.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+
+<script type="text/javascript">
+    RED.nodes.registerType("sony-audio-controller",
+    {
+        category:     "sony audio",
+        color:        "#2DABCE",
+        icon:         "sony.png",
+        inputs:       1,
+        outputs:      1,
+        inputLabels:  "trigger/overrides",
+        paletteLabel: "controller",
+        label: function()
+        {
+            return (this.name || "controller: " + this.command);
+        },
+        labelStyle: function()
+        {
+            return (this.name ? "node_label_italic" : "");
+        },
+        outputLabels: function(index)
+        {
+            return this.outputPorts[index].label;
+        },
+        defaults:
+        {
+            name:
+            {
+                value: ""
+            },
+            device:
+            {
+                value: "",
+                type:  "sony-audio-device"
+            },
+            outputs:
+            {
+                value: 1
+            },
+            outputPorts:
+            {
+                value: [{label: "filter: powered", filter: {name: "powered"}}]
+            },
+            outFilters:
+            {
+                value: true
+            },
+            outResponse:
+            {
+                value: false
+            },
+            outError:
+            {
+                value: false
+            },
+            command:
+            {
+                value: "powerOn"
+            },
+            volume:
+            {
+                value: 1
+            },
+            relativeVolume:
+            {
+                value: false
+            },
+            source:
+            {
+                value: "extInput:tv"
+            },
+            port:
+            {
+                value: 1
+            },
+            zone:
+            {
+                value: 0
+            },
+            soundSettings:
+            {
+                value: [{target: "soundField", value: "clearAudio"}]
+            },
+            soundTarget:
+            {
+                value: "soundField"
+            },
+            modeSettings:
+            {
+                value: [{target: "playType", value: "normal"}]
+            },
+            modeTarget:
+            {
+                value: "playType"
+            }
+        },
+        oneditprepare: function()
+        {
+            var node = this;
+            var commandSelect = $("#node-input-command");
+            var sourceSelect = $("#node-input-source");
+            var relativeVol = $("#node-input-relativeVolume");
+            var allZones = $("#node-input-allzones");
+            var outFiltersSelect = $("#node-input-outFilters");
+
+            var volSpinner = $("#node-input-volume").spinner(
+            {
+                min: 0,
+                max: 99,
+                step: 1,
+                numberFormat: "n",
+                change: function(event, ui)
+                {
+                    var value = parseInt(this.value, 10);
+                    var min = $(this).spinner("option", "min");
+                    var max = $(this).spinner("option", "max");
+
+                    if (isNaN(value) ||
+                        (value < min))
+                    {
+                        $(this).spinner("value", min);
+                    }
+                    else if (value > max)
+                    {
+                        $(this).spinner("value", max);
+                    }
+
+                    if ((min < 0) && (value == 0))
+                    {
+                        $(this).spinner("value", 1);
+                    }
+                }
+            });
+
+            var portSpinner = $("#node-input-port").spinner(
+            {
+                min: 1,
+                max: 9,
+                step: 1,
+                change: function(event, ui)
+                {
+                    var value = parseInt(this.value, 10);
+                    var min = $(this).spinner("option", "min");
+                    var max = $(this).spinner("option", "max");
+
+                    if (isNaN(value) ||
+                        (value < min))
+                    {
+                        $(this).spinner("value", min);
+                    }
+                    else if (value > max)
+                    {
+                        $(this).spinner("value", max);
+                    }
+                }
+            });
+
+            var zoneSpinner = $("#node-input-zone").spinner(
+            {
+                min: 1,
+                max: 9,
+                step: 1,
+                change: function(event, ui)
+                {
+                    var value = parseInt(this.value, 10);
+                    var min = $(this).spinner("option", "min");
+                    var max = $(this).spinner("option", "max");
+
+                    if (isNaN(value) ||
+                        (value < min))
+                    {
+                        $(this).spinner("value", min);
+                    }
+                    else if (value > max)
+                    {
+                        $(this).spinner("value", max);
+                    }
+                }
+            });
+
+            var soundSettingsList = $("#node-input-soundSettingsList").css("min-height", "200px").editableList(
+            {
+                removable: true,
+                addItem: function(item, index, soundSetting)
+                {
+                    if (!("target" in soundSetting))
+                    {
+                        soundSetting.target = "soundField";
+                        soundSetting.value = "off";
+                    }
+
+                    var soundTarget = $("<select/>", {class: "node-input-soundTarget"}).appendTo(item);
+                    soundTarget.append($("<option></option>").val("soundField").text("Sound Field"));
+                    soundTarget.append($("<option></option>").val("clearAudio").text("Clear Audio +"));
+                    soundTarget.append($("<option></option>").val("nightMode").text("Night Mode"));
+                    soundTarget.append($("<option></option>").val("footballMode").text("Football Mode"));
+                    soundTarget.append($("<option></option>").val("voice").text("Voice"));
+
+                    var soundFieldContainer = $("<span/>", {id: "item-elem-soundField-" + index,
+                                                            style: "padding-left: 10px;"}).appendTo(item);
+                    var soundField = $("<select/>", {class: "node-input-soundField",
+                                                     style: "width: 120px;"}).appendTo(soundFieldContainer);
+                    soundField.append($("<option></option>").val("off").text("Off"));
+                    soundField.append($("<option></option>").val("standard").text("Standard"));
+                    soundField.append($("<option></option>").val("clearAudio").text("Clear Audio +"));
+                    soundField.append($("<option></option>").val("music").text("Music"));
+                    soundField.append($("<option></option>").val("movie").text("Movie"));
+                    soundField.append($("<option></option>").val("sports").text("Sports"));
+                    soundField.append($("<option></option>").val("game").text("Game"));
+
+                    var voiceTypeContainer = $("<span/>", {id: "item-elem-voiceType-" + index,
+                                                           style: "padding-left: 10px;"}).appendTo(item);
+                    var voiceType = $("<select/>", {class: "node-input-voiceType",
+                                                    style: "width: 120px;"}).appendTo(voiceTypeContainer);
+                    voiceType.append($("<option></option>").val("type1").text("Type 1"));
+                    voiceType.append($("<option></option>").val("type2").text("Type 2"));
+                    voiceType.append($("<option></option>").val("type3").text("Type 3"));
+
+                    var switchedOnContainer = $("<span/>", {id: "item-elem-switchedOn-" + index,
+                                                            style: "padding-left: 10px;"}).appendTo(item);
+                    var switchedOn = $("<input/>", {id: "node-input-switchedOn-" + index,
+                                                    class: "node-input-switchedOn",
+                                                    type: "checkbox",
+                                                    style: "vertical-align: text-bottom; width: auto;"}).appendTo(switchedOnContainer);
+                    $("<label/>", {for: "node-input-switchedOn-" + index,
+                                   style: "padding-left: 4px;"}).text("Switched On").appendTo(switchedOnContainer);
+
+                    soundTarget.change(function()
+                    {
+                        value = soundTarget.val();
+
+                        soundFieldContainer.hide();
+                        voiceTypeContainer.hide();
+                        switchedOnContainer.hide();
+
+                        if (value == "soundField")
+                        {
+                            soundFieldContainer.show();
+                        }
+                        else if (value == "voice")
+                        {
+                            voiceTypeContainer.show();
+                        }
+                        else
+                        {
+                            switchedOnContainer.show();
+                        }
+                    });
+
+                    if (soundSetting.target == "soundField")
+                    {
+                        soundField.val(soundSetting.value);
+                    }
+                    else if (soundSetting.target == "voice")
+                    {
+                        voiceType.val(soundSetting.value);
+                    }
+                    else
+                    {
+                        switchedOn.prop("checked", (soundSetting.value == "on"));
+                    }
+
+                    soundTarget.val(soundSetting.target);
+                    soundTarget.change();
+                }
+            });
+
+            var modeSettingsList = $("#node-input-modeSettingsList").css("min-height", "200px").editableList(
+            {
+                removable: true,
+                addItem: function(item, index, modeSetting)
+                {
+                    if (!("target" in modeSetting))
+                    {
+                        modeSetting.target = "playType";
+                        modeSetting.value = "normal";
+                    }
+
+                    var modeType = $("<select/>", {class: "node-input-modeTarget"}).appendTo(item);
+                    modeType.append($("<option></option>").val("playType").text("Playback Mode"));
+                    modeType.append($("<option></option>").val("repeatType").text("Repeat Mode"));
+                    modeType.append($("<option></option>").val("shuffleType").text("Shuffle Mode"));
+
+                    var playTypeContainer = $("<span/>", {id: "item-elem-playType-" + index,
+                                                            style: "padding-left: 10px;"}).appendTo(item);
+                    var playType = $("<select/>", {class: "node-input-playType",
+                                                   style: "width: 120px;"}).appendTo(playTypeContainer);
+                    playType.append($("<option></option>").val("normal").text("Normal"));
+                    playType.append($("<option></option>").val("repeatAll").text("Folder"));
+                    playType.append($("<option></option>").val("repeatFolder").text("Repeat All"));
+                    playType.append($("<option></option>").val("repeatTrack").text("Repeat Track"));
+                    playType.append($("<option></option>").val("shuffleAll").text("Shuffle All"));
+
+                    var repeatTypeContainer = $("<span/>", {id: "item-elem-repeatType-" + index,
+                                                            style: "padding-left: 10px;"}).appendTo(item);
+                    var repeatType = $("<select/>", {class: "node-input-repeatType",
+                                                    style: "width: 120px;"}).appendTo(repeatTypeContainer);
+                    repeatType.append($("<option></option>").val("off").text("Off"));
+                    repeatType.append($("<option></option>").val("all").text("All"));
+                    repeatType.append($("<option></option>").val("folder").text("Folder"));
+                    repeatType.append($("<option></option>").val("track").text("Track"));
+                    repeatType.append($("<option></option>").val("chapter").text("Chapter"));
+
+                    var shuffleTypeContainer = $("<span/>", {id: "item-elem-shuffleType-" + index,
+                                                             style: "padding-left: 10px;"}).appendTo(item);
+                    var shuffleType = $("<select/>", {class: "node-input-shuffleType",
+                                                      style: "width: 120px;"}).appendTo(shuffleTypeContainer);
+                    shuffleType.append($("<option></option>").val("off").text("Off"));
+                    shuffleType.append($("<option></option>").val("folder").text("Folder"));
+
+                    modeType.change(function()
+                    {
+                        value = modeType.val();
+
+                        playTypeContainer.hide();
+                        repeatTypeContainer.hide();
+                        shuffleTypeContainer.hide();
+
+                        if (value == "playType")
+                        {
+                            playTypeContainer.show();
+                        }
+                        else if (value == "repeatType")
+                        {
+                            repeatTypeContainer.show();
+                        }
+                        else if (value == "shuffleType")
+                        {
+                            shuffleTypeContainer.show();
+                        }
+                    });
+
+                    if (modeSetting.target == "playType")
+                    {
+                        playType.val(modeSetting.value);
+                    }
+                    else if (modeSetting.target == "repeatType")
+                    {
+                        repeatType.val(modeSetting.value);
+                    }
+                    else if (modeSetting.target == "shuffleType")
+                    {
+                        shuffleType.val(modeSetting.value);
+                    }
+
+                    modeType.val(modeSetting.target);
+                    modeType.change();
+                }
+            });
+
+            node.soundSettings.forEach(setting =>
+            {
+                soundSettingsList.editableList("addItem", setting);
+            });
+
+            node.modeSettings.forEach(setting =>
+            {
+                modeSettingsList.editableList("addItem", setting);
+            });
+
+            relativeVol.change(function()
+            {
+                if ($(this).prop("checked"))
+                {
+                    volSpinner.spinner("option", "min", "-10");
+                    volSpinner.spinner("option", "max", "10");
+                }
+                else
+                {
+                    volSpinner.spinner("option", "min", "0");
+                    volSpinner.spinner("option", "max", "99");
+                }
+            });
+
+            allZones.change(function()
+            {
+                if ($(this).prop("checked"))
+                {
+                    zoneSpinner.spinner("disable");
+                    zoneSpinner.spinner("option", "min", "0");
+                    zoneSpinner.spinner("value", 0);
+                }
+                else
+                {
+                    zoneSpinner.spinner("enable");
+                    zoneSpinner.spinner("value", 1);
+                    zoneSpinner.spinner("option", "min", "1");
+                }
+            });
+
+            commandSelect.change(function()
+            {
+                $("#form-row-psfilter").hide();
+                $("#form-row-volume").hide();
+                $("#form-row-vifilter").hide();
+                $("#form-row-source").hide();
+                $("#form-row-zone").hide();
+                $("#form-row-port").hide();
+                $("#form-row-soundSettings").hide();
+                $("#form-row-soundTarget").hide();
+                $("#form-row-modeSettings").hide();
+                $("#form-row-modeTarget").hide();
+
+                var value = $(this).val();
+                switch (value)
+                {
+                    case "getPowerStatus":
+                    {
+                        $("#form-row-psfilter").show();
+                        break;
+                    }
+                    case "setSource":
+                    {
+                        $("#form-row-source").show();
+                        $("#form-row-zone").show();
+
+                        if (sourceSelect.val() == "extInput:hdmi")
+                        {
+                            $("#form-row-port").show();
+                        }
+
+                        break;
+                    }
+                    case "getVolumeInfo":
+                    {
+                        $("#form-row-vifilter").show();
+                        $("#form-row-zone").show();
+
+                        break;
+                    }
+                    case "setVolume":
+                    {
+                        $("#form-row-volume").show();
+                        $("#form-row-zone").show();
+
+                        break;
+                    }
+                    case "mute":
+                    case "unmute":
+                    case "toggleMute":
+                    case "getSource":
+                    case "stop":
+                    case "togglePause":
+                    case "skipPrev":
+                    case "skipNext":
+                    case "scanForward":
+                    case "scanBackward":
+                    {
+                        $("#form-row-zone").show();
+                        break;
+                    }
+                    case "setSoundSettings":
+                    {
+                        $("#form-row-soundSettings").show();
+                        break;
+                    }
+                    case "getSoundSettings":
+                    {
+                        $("#form-row-soundTarget").show();
+                        break;
+                    }
+                    case "setPlaybackModes":
+                    {
+                        $("#form-row-modeSettings").show();
+                        break;
+                    }
+                    case "getPlaybackModes":
+                    {
+                        $("#form-row-modeTarget").show();
+                        break;
+                    }
+                }
+            });
+
+            sourceSelect.change(function()
+            {
+                if ($(this).val() == "extInput:hdmi")
+                {
+                    $("#form-row-port").show();
+                }
+                else
+                {
+                    $("#form-row-port").hide();
+                }
+            });
+
+            commandSelect.change();
+            if (node.zone == 0)
+            {
+                allZones.prop("checked", true);
+                zoneSpinner.spinner("disable");
+                zoneSpinner.spinner("option", "min", "0");
+            }
+
+            var filterList = $("#node-input-filterList").css("min-height", "200px").editableList(
+            {
+                removable: true,
+                sortable: true,
+                addItem: function(item, index, filter)
+                {
+                    if (!("name" in filter))
+                    {
+                        filter.name = "powered";
+                    }
+
+                    var filterName = $("<select/>", {class: "node-input-filterName",
+                                                     style: "width: 200px;"}).appendTo(item);
+                    filterName.append($("<option></option>").val("powered").text("Powered"));
+                    filterName.append($("<option></option>").val("standby").text("Standby"));
+                    filterName.append($("<option></option>").val("swupdate").text("Software Update"));
+                    filterName.append($("<option></option>").val("source").text("Source"));
+                    filterName.append($("<option></option>").val("absoluteVolume").text("Absolute Volume"));
+                    filterName.append($("<option></option>").val("relativeVolume").text("Relative Volume"));
+                    filterName.append($("<option></option>").val("muted").text("Muted"));
+                    filterName.append($("<option></option>").val("soundSetting").text("Sound Setting"));
+                    filterName.append($("<option></option>").val("playbackMode").text("Playback Mode"));
+
+                    var explicitContainer = $("<span/>", {id: "item-elemExplicit-" + index,
+                                                          style: "padding-left: 10px;"}).appendTo(item);
+                    var explicit = $("<input/>", {id: "node-input-filterExplicit-" + index,
+                                                  class: "node-input-filterExplicit",
+                                                  type: "checkbox",
+                                                  style: "vertical-align: text-bottom; width: auto;"}).appendTo(explicitContainer);
+                    $("<label/>", {for: "node-input-filterExplicit-" + index,
+                                   style: "padding-left: 4px;"}).text("Explicit").appendTo(explicitContainer);
+
+                    var idx = $("<span/>", {style: "float: right; margin-top: 6px;"}).appendTo(item);
+                    idx.append(" &#8594; <span class=\"node-input-filterIndex\">" + (index + 1) + "</span> ");
+
+                    filterName.change(function()
+                    {
+                        explicitContainer.hide();
+
+                        var value = filterName.val();
+                        if ((value == "powered") || (value == "standby") || (value == "swupdate"))
+                        {
+                            explicitContainer.show();
+                        }
+                    });
+
+                    if ("explicit" in filter)
+                    {
+                        explicit.prop("checked", filter.explicit);
+                    }
+
+                    filterName.val(filter.name);
+                    filterName.change();
+                },
+                removeItem: function(filter)
+                {
+                    var filterList = $("#node-input-filterList").editableList("items");
+                    filterList.each(function(index)
+                    {
+                        $(this).find(".node-input-filterIndex").html(index + 1);
+                    });
+                },
+                sortItems: function(filter)
+                {
+                    var filterList = $("#node-input-filterList").editableList("items");
+                    filterList.each(function(index)
+                    {
+                        $(this).find(".node-input-filterIndex").html(index + 1);
+                    });
+                }
+            });
+
+            node.outputPorts.forEach(port =>
+            {
+                if ("filter" in port)
+                {
+                    filterList.editableList("addItem", port.filter);
+                }
+            });
+
+            outFiltersSelect.change(function()
+            {
+                if ($(this).prop("checked"))
+                {
+                    $("#form-row-filters").show();
+                }
+                else
+                {
+                    $("#form-row-filters").hide();
+                }
+            });
+
+            outFiltersSelect.change();
+        },
+        oneditsave: function()
+        {
+            var node = this;
+            var soundSettingsList = $("#node-input-soundSettingsList").editableList("items");
+            var modeSettingsList = $("#node-input-modeSettingsList").editableList("items");
+
+            node.soundSettings = [];
+            soundSettingsList.each(function(index)
+            {
+                var setting = {target: $(this).find(".node-input-soundTarget").val()};
+                if (setting.target == "soundField")
+                {
+                    setting.value = $(this).find(".node-input-soundField").val();
+                }
+                else if (setting.target == "voice")
+                {
+                    setting.value = $(this).find(".node-input-voiceType").val();
+                }
+                else
+                {
+                    setting.value = $(this).find(".node-input-switchedOn").prop("checked") ? "on" : "off";
+                }
+
+                node.soundSettings.push(setting);
+            });
+
+            node.modeSettings = [];
+            modeSettingsList.each(function(index)
+            {
+                var setting = {target: $(this).find(".node-input-modeTarget").val()};
+                if (setting.target == "playType")
+                {
+                    setting.value = $(this).find(".node-input-playType").val();
+                }
+                else if (setting.target == "repeatType")
+                {
+                    setting.value = $(this).find(".node-input-repeatType").val();
+                }
+                else if (setting.target == "shuffleType")
+                {
+                    setting.value = $(this).find(".node-input-shuffleType").val();
+                }
+
+                node.modeSettings.push(setting);
+            });
+
+            node.outputPorts = [];
+            node.outputs = 0;
+
+            if ($("#node-input-outFilters").prop("checked"))
+            {
+                let filterList = $("#node-input-filterList").editableList("items");
+
+                filterList.each(function(index)
+                {
+                    var filter = {name: $(this).find(".node-input-filterName").val()};
+
+                    if ((filter.name == "powered") || (filter.name == "standby") || (filter.name == "swupdate"))
+                    {
+                        filter.explicit = $(this).find(".node-input-filterExplicit").prop("checked");
+                    }
+
+                    node.outputPorts.push({label: "filter: " + filter.name, filter: filter});
+                    node.outputs++;
+                });
+            }
+
+            if ($("#node-input-outResponse").prop("checked"))
+            {
+                node.outputPorts.push({label: "response"});
+                node.outputs++;
+            }
+
+            if ($("#node-input-outError").prop("checked"))
+            {
+                node.outputPorts.push({label: "error"});
+                node.outputs++;
+            }
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="sony-audio-controller">
+    <style>
+        .form-checkbox-row
+        {
+            float:        left;
+            padding-left: 4px;
+        }
+
+        .form-checkbox-label
+        {
+            padding-left: 10px;
+        }
+
+        input[type=checkbox].form-checkbox
+        {
+            vertical-align: text-bottom;
+            float:          left;
+            width:          auto;
+        }
+    </style>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-device"><i class="fa fa-cog"></i> Device</label>
+        <input type="text" id="node-input-device" placeholder="Device">
+    </div>
+    <div class="form-row">
+        <label style="float: left;"><i class="fa fa-link"></i> Outputs</label>
+        <div class="form-checkbox-row">
+            <div>
+                <input type="checkbox" class="form-checkbox" id="node-input-outFilters">
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-outFilters">Filters</label>
+            </div>
+            <div>
+                <input type="checkbox" class="form-checkbox" id="node-input-outResponse">
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-outResponse">Response</label>
+            </div>
+            <div>
+                <input type="checkbox" class="form-checkbox" id="node-input-outError">
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-outError">Error</label>
+            </div>
+        </div>
+    </div>
+    <div class="form-row"></div>
+    <div class="form-row">
+        <label for="node-input-command"><i class="fa fa-exchange"></i> Command</label>
+        <select id="node-input-command">
+            <optgroup label="System">
+                <option value="getPowerStatus">Get Power Status</option>
+                <option value="powerOn">Power ON</option>
+                <option value="powerOff">Power OFF</option>
+                <option value="standby">Standby</option>
+            </optgroup>
+            <optgroup label="Audio">
+                <option value="getVolumeInfo">Get Volume Information</option>
+                <option value="setVolume">Set Volume</option>
+                <option value="mute">Mute</option>
+                <option value="unmute">Unmute</option>
+                <option value="toggleMute">Toggle Mute</option>
+                <option value="getSoundSettings">Get Sound Settings</option>
+                <option value="setSoundSettings">Set Sound Settings</option>
+            </optgroup>
+            <optgroup label="A/V Content">
+                <option value="getSource">Get Source</option>
+                <option value="setSource">Set Source</option>
+                <option value="getPlaybackModes">Get Playback Modes</option>
+                <option value="setPlaybackModes">Set Playback Modes</option>
+                <option value="stop">Stop</option>
+                <option value="togglePause">Toggle Pause</option>
+                <option value="skipPrev">Skip Previous</option>
+                <option value="skipNext">Skip Next</option>
+                <option value="scanBackward">Scan Backward</option>
+                <option value="scanForward">Scan Forward</option>
+            </optgroup>
+        </select>
+    </div>
+    <div id="form-row-volume" class="form-row">
+        <label for="node-input-volume"><i class="fa fa-volume-up"></i> Volume</label>
+        <input id="node-input-volume" style="width: 60px; float: left;" value="1">
+        <span style="padding-left: 10px;">
+            <input id="node-input-relativeVolume" type="checkbox" style="vertical-align: text-bottom; width: auto;">
+            <label for="node-input-relativeVolume">Relative Volume</label>
+        </span>
+    </div>
+    <div id="form-row-source" class="form-row">
+        <label for="node-input-source"><i class="fa fa-sign-in"></i> Source</label>
+        <select id="node-input-source">
+            <option value="extInput:tv">TV</option>
+            <option value="extInput:sat-catv">SAT/CATV</option>
+            <option value="extInput:hdmi">HDMI</option>
+            <option value="extInput:video">Video</option>
+            <option value="extInput:sacd-cd">SACD/CD</option>
+            <option value="extInput:bd-dvd">BD/DVD</option>
+            <option value="storage:usb1">USB Storage</option>
+            <option value="extInput:line">Audio Line</option>
+            <option value="extInput:btAudio">Bluetooth Audio</option>
+            <option value="dlna:music">DLNA</option>
+            <option value="radio:fm">FM Radio</option>
+            <option value="extInput:game">Game</option>
+            <option value="extInput:source">Source</option>
+        </select>
+    </div>
+    <div id="form-row-port" class="form-row">
+        <label for="node-input-port"><i class="fa fa-bookmark"></i> Port</label>
+        <input id="node-input-port" style="width: 60px;" value="1">
+    </div>
+    <div id="form-row-zone" class="form-row">
+        <label for="node-input-zone"><i class="fa fa-sign-out"></i> Zone</label>
+        <input id="node-input-zone" style="width: 60px;" value="1">
+        <span style="padding-left: 10px;">
+            <input id="node-input-allzones" type="checkbox" style="vertical-align: text-bottom; width: auto;">
+            <label for="node-input-allzones">All Zones</label>
+        </span>
+    </div>
+    <div id="form-row-soundSettings" class="form-row" style="padding-top: 10px">
+        <label for="node-input-filterList"><i class="fa fa-sliders"></i> Settings</label>
+        <div class="form-row">
+            <ol id="node-input-soundSettingsList"></ol>
+        </div>
+    </div>
+    <div id="form-row-soundTarget" class="form-row">
+        <label for="node-input-soundTarget"><i class="fa fa-sliders"></i> Setting</label>
+        <select id="node-input-soundTarget">
+            <option value="all">All</option>
+            <option value="soundField">Sound Field</option>
+            <option value="clearAudio">Clear Audio +</option>
+            <option value="nightMode">Night Mode</option>
+            <option value="footballMode">Football Mode</option>
+            <option value="voice">Voice</option>
+        </select>
+    </div>
+    <div id="form-row-modeSettings" class="form-row" style="padding-top: 10px">
+        <label for="node-input-filterList"><i class="fa fa-sliders"></i> Settings</label>
+        <div class="form-row">
+            <ol id="node-input-modeSettingsList"></ol>
+        </div>
+    </div>
+    <div id="form-row-modeTarget" class="form-row">
+        <label for="node-input-modeTarget"><i class="fa fa-sliders"></i> Mode</label>
+        <select id="node-input-modeTarget">
+            <option value="all">All</option>
+            <option value="playType">Playback</option>
+            <option value="repeatType">Repeat</option>
+            <option value="shuffleType">Shuffle</option>
+        </select>
+    </div>
+    <div class="form-row" style="padding-top: 10px">
+        <label for="node-input-filterList"><i class="fa fa-filter"></i> Filters</label>
+        <div class="form-row">
+            <ol id="node-input-filterList"></ol>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="sony-audio-controller">
+    <style>
+        .list-reset
+        {
+            border: none !important;
+            border-radius: 0 !important;
+            list-style-position: outside !important;
+            padding: 0 !important;
+            margin-bottom: 0 !important;
+        }
+    </style>
+    <p>
+        Node for controlling a Sony audio device via the Audio Control API.
+    </p>
+    <h3>Inputs</h3>
+    <p>
+        Overrides the command and/or the corresponding settings of
+        the node's command configuration.
+    </p>
+    <dl class="message-properties">
+        <dt class="optional">command<span class="property-type">string</span></dt>
+        <dd>the overridden command</dd>
+        <dt class="optional">payload<span class="property-type">object</span></dt>
+        <dd>the overridden command settings</dd>
+    </dl>
+    <p>
+        If all of the following attributes are present, sends a raw /
+        low-level request to the Audio Control API ignoring the node's
+        command configuration.
+    </p>
+    <dl class="message-properties">
+        <dt class="optional">service<span class="property-type">string</span></dt>
+        <dd>the API service of the request</dd>
+        <dt class="optional">method<span class="property-type">string</span></dt>
+        <dd>the API method of the request</dd>
+        <dt class="optional">version<span class="property-type">string</span></dt>
+        <dd>the API version of the request</dd>
+        <dt class="optional">payload<span class="property-type">object</span></dt>
+        <dd>the arguments of the request</dd>
+    </dl>
+    <h3>Outputs</h3>
+    <p>
+        The node provides a variable number of outputs which can be selected via
+        the configuration page. By default, only the <i>Filter</i> outputs are
+        active.
+    </p>
+    <ol class="node-ports">
+        <li>Filters
+            <p>
+                Each configured filter provides a dedicated output port to
+                which its filtered data is sent.
+            </p>
+            <dl class="message-properties">
+                <dt>payload<span class="property-type">boolean | number | string | object</span></dt>
+                <dd>
+                    Contains the filtered results of the node's operation.
+                    Messages are only sent on these ports if the result is
+                    applicable to any of the filters.
+                </dd>
+            </dl>
+        </li>
+        <li>Response
+            <p>
+                Contains the raw / low-level response as sent by the Audio
+                Control API in case the node's operation succeeded.
+            </p>
+            <dl class="message-properties">
+                <dt>service<span class="property-type">string</span></dt>
+                <dd>the API service of the request</dd>
+                <dt>method<span class="property-type">string</span></dt>
+                <dd>the API method of the request</dd>
+                <dt>version<span class="property-type">string</span></dt>
+                <dd>the API version of the request</dd>
+                <dt>payload<span class="property-type">object</span></dt>
+                <dd>the result data of the request</dd>
+            </dl>
+        </li>
+        <li>Error
+            <p>
+                Contains error information in case the node's operation
+                failed for whatever reason.
+            </p>
+            <dl class="message-properties">
+                <dt>service<span class="property-type">string</span></dt>
+                <dd>the API service of the request</dd>
+                <dt>method<span class="property-type">string</span></dt>
+                <dd>the API method of the request</dd>
+                <dt>version<span class="property-type">string</span></dt>
+                <dd>the API version of the request</dd>
+                <dt>payload<span class="property-type">object</span></dt>
+                <dd>the error information</dd>
+            </dl>
+        </li>
+    </ol>
+    <h3>Details</h3>
+    <p>
+        This node sends requests to a Sony audio device and provides the returned
+        result. The details of the request can be set via the node's configuration
+        page. All settings (except the filters) can also be programmatically
+        overridden, see input description above.
+    </p>
+    <p>
+        For more information on the commands and their arguments as well as the
+        format of the filtered result, refer to the
+        <a href="https://github.com/jensrossbach/node-red-contrib-sony-audio-control#controller-node">online documentation</a>.
+    </p>
+    <p>
+        The node also supports a low-level mode for cases where the built-in
+        commands are not sufficient. Via specific attributes (see input description
+        above), any request supported by the Sony Audio Control API can be sent
+        to the device.
+    </p>
+    <p>
+        See Sony <a href="https://developer.sony.com/develop/audio-control-api/api-references/api-overview-2">Audio Control API</a>
+        reference for more details about the API methods and their parameters.
+    </p>
+    <h3>Configuration</h3>
+    <dl>
+        <dt>Name</dt>
+        <dd>Optionally specify a name for the node.</dd>
+        <dt>Device</dt>
+        <dd>Select / configure the Sony audio device.</dd>
+        <dt>Outputs</dt>
+        <dd>Select the outputs to be provided by the node.</dd>
+        <dt>Command</dt>
+        <dd>
+            Select the command to be sent to the device. The selected command
+            can be overridden programmatically via the <code>msg.command</code>
+            attribute.
+        </dd>
+        <dt>Source</dt>
+        <dd>
+            Select the source to be activated on the device. The selected source
+            can be overridden programmatically via the <code>source</code>
+            attribute of the <code>msg.payload</code>.
+        </dd>
+        <dt>Port</dt>
+        <dd>
+            Specify the port for HDMI sources. The value can be overridden
+            programmatically via the <code>source</code> attribute of the
+            <code>msg.payload</code>.
+        </dd>
+        <dt>Volume</dt>
+        <dd>
+            Specify the volume to set. The value can be overridden programmatically
+            via the <code>volume</code> attribute of the <code>msg.payload</code>.
+        </dd>
+        <dt>Relative Volume</dt>
+        <dd>
+            If checked, the configured volume is a relative volume step. The flag
+            can be overridden programmatically via the <code>volume</code>
+            attribute of the <code>msg.payload</code>.
+        </dd>
+        <dt>Sound Settings List</dt>
+        <dd>
+            Select the sound settings and their values. You can select multiple
+            sound settings by adding additional rows to the list. The selection
+            can be overridden programmatically via the <code>soundSettings</code>
+            attribute of the <code>msg.payload</code>.
+        </dd>
+        <dt>Setting</dt>
+        <dd>
+            Select the sound setting to be retrieved or <i>All</i> to retrieve
+            all settings. The selected setting can be overridden programmatically
+            via the <code>target</code> attribute of the <code>msg.payload</code>.
+        </dd>
+        <dt>Playback Mode List</dt>
+        <dd>
+            Select the playback modes. You can select multiple modes by adding
+            additional rows to the list. The selection can be overridden
+            programmatically via the <code>modeSettings</code> attribute of the
+            <code>msg.payload</code>.
+        </dd>
+        <dt>Mode</dt>
+        <dd>
+            Select the type of playback mode to be retrieved or <i>All</i> to retrieve
+            all modes. The selected mode type can be overridden programmatically via
+            the <code>target</code> attribute of the <code>msg.payload</code>.
+        </dd>
+        <dt>Zone</dt>
+        <dd>
+            Specify the output zone on the device. The value can be overridden
+            programmatically via the <code>zone</code> attribute of the
+            <code>msg.payload</code>.
+        </dd>
+        <dt>All Zones</dt>
+        <dd>
+            If checked, the command applies to all output zones. The same can be
+            achieved by programmatically setting the <code>zone</code>
+            attribute to 0.
+        </dd>
+        <dt>Filters</dt>
+        <dd>
+            You can use filters to filter the response data by certain criteria.
+            Add, remove or reorder filters and select the type of filter. The
+            number on the right side shows the number of the output to which the
+            result of the filter will be sent.
+        </dd>
+    </dl>
+</script>

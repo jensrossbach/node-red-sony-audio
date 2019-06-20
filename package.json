@@ -1,0 +1,36 @@
+{
+    "name": "node-red-contrib-sony-audio",
+    "version": "0.1.0",
+    "description": "Node-RED nodes for accessing Sony Audio Control API",
+    "author": {
+        "name": "Jens-Uwe Rossbach",
+        "email": "devel@jrossbach.de"
+    },
+    "license": "MIT",
+    "keywords": [
+        "node-red",
+        "sony",
+        "audio",
+        "audio control api",
+        "remote control",
+        "home automation"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/jensrossbach/node-red-contrib-sony-audio"
+    },
+    "dependencies": {
+        "request": "^2.88.0",
+        "request-promise": "^4.2.4",
+        "websocket": "^1.0.28"
+    },
+    "main": "none",
+    "scripts": {},
+    "node-red": {
+        "nodes": {
+            "sony-audio-device": "nodes/sony-audio-device.js",
+            "sony-audio-controller": "nodes/sony-audio-controller.js",
+            "sony-audio-receiver": "nodes/sony-audio-receiver.js"
+        }
+    }
+}

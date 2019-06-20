@@ -1,0 +1,106 @@
+<!--
+Copyright (c) 2019 Jens-Uwe Rossbach
+
+This code is licensed under the MIT License.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+
+<script type="text/javascript">
+    RED.nodes.registerType("sony-audio-device",
+    {
+        category: "config",
+        icon:     "sony.png",
+        label: function()
+        {
+            return (this.name || this.host);
+        },
+        defaults:
+        {
+            name:
+            {
+                value:    ""
+            },
+            host:
+            {
+                value:    "",
+                required: true,
+                validate: RED.validators.regex(/^([0-9]{1,3}\.){3}[0-9]{1,3}$|^([a-zA-Z0-9]+(([\-]?[a-zA-Z0-9]+)*\.)+)*[a-zA-Z]{2,}$/)
+            },
+            port:
+            {
+                value:    "10000",
+                required: true,
+                validate: RED.validators.number()
+            }
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="sony-audio-device">
+    <style>
+        .checkbox-row
+        {
+            padding-top: 10px;
+            padding-bottom: 5px;
+        }
+
+        input[type=checkbox]
+        {
+            vertical-align: top;
+            bottom:         8px;
+        }
+    </style>
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-config-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-host"><i class="fa fa-globe"></i> Host</label>
+        <input type="text" id="node-config-input-host" placeholder="Host">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-port"><i class="fa fa-bookmark"></i> Port</label>
+        <input type="text" id="node-config-input-port" placeholder="Port">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="sony-audio-device">
+    <p>
+        Node to configure a Sony audio device supporting the Sony Audio Control API.
+    </p>
+    <h3>Details</h3>
+    <p>
+        Please configure the networt parameters of your Sony audio device so
+        that the nodes can connect to it. You can create multiple configuration
+        nodes if you have more than one Sony audio device.
+    </p>
+    <dt>Name</dt>
+    <dd>
+        Optionally specify a name for the configuration.
+    </dd>
+    <dt>Host</dt>
+    <dd>
+        Specify the host (IP address or host name) of the device.
+    </dd>
+    <dt>Port</dt>
+    <dd>
+        Specify the port for the API service.
+    </dd>
+</script>
