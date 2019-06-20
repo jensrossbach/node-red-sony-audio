@@ -291,6 +291,7 @@ The filters are configured by a list which can be extended or reduced as needed.
 >
 > ##### Sound Setting
 > Extracts sound settings from the response. Depending on wether a specific or all sound settings have been requested by the command, the `msg.payload` is either a single attribute or an array. The format depends on the type of sound setting as shown below:
+>
 > |Setting|Format|
 > |-------|------|
 > |soundField|string|
