@@ -19,12 +19,20 @@ The node collection consists of two flow nodes and one configuration node. The c
 ### Controller Node
 Node for controlling a Sony audio device via the Audio Control API. The node sends requests to a Sony audio device and provides the returned result. The details of the request can be set via the node's configuration page. All settings (except the filters) can also be programmatically overridden, see input description below.
 
+![Controller Node](images/controller_node.png)
+
 The node also supports a low-level mode for cases where the built-in commands are not sufficient. Via specific attributes (see input description below), any request supported by the Sony Audio Control API can be sent to the device. See Sony <a href="https://developer.sony.com/develop/audio-control-api/api-references/api-overview-2">Audio Control API</a> reference for more details about the API methods and their parameters.
 
 #### Configuration
 On the configuration page, you can configure various settings of the node. Optionally enter a name to be displayed - if omitted, "control: _command_" will be shown as name. Next you must select the Sony audio device to talk to. The following three checkboxes control which outputs will be provided by the node. The _Filters_ checkbox enables or disables the group of filter output ports, the _Response_ checkbox enables or disables the response output port and the _Error_ checkbox enables or disables the error output port. See chapter [Outputs](#outputs) below for more information.
 
-The next dropdown box selects the command to send to the device including its parameters. Depending on the selected command, different widgets for configuring the command parameters appear. The following commands are supported.
+![General Settings](images/controller_settings1.png)
+
+The next dropdown box selects the command to send to the device including its parameters. Depending on the selected command, different widgets for configuring the command parameters appear.
+
+![Command Settings](images/controller_settings2.png)
+
+The following commands are supported.
 
 > ##### Get Power Status
 > Retrieves the current power status of the device.
@@ -152,6 +160,8 @@ Only certain combinations are meaningful, see the following table.
 |scanBackward| | | | |X|
 |scanForward| | | | |X|
 
+For details to the input message attributes, please also check the [Filters](#filters-2) chapter further down.
+
 ##### Low-Level Request
 To send a low-level request to the Audio Control API, i.e. a request which is directly understood by the device, the following attributes according to the Sony Audio Control API specification are required in the input message.
 
@@ -173,7 +183,7 @@ For more information on how to form a request, please refer to the Sony [Audio C
 The node provides a variable number of output ports depending on the configuration. There are two output ports for the raw response and error information as well as a variable number of outputs depending on the filter configuration.
 
 ##### Filters
-If enabled, the filter output ports provide filtered result data according to the configured filters. The number of filter output ports is determined by the number of filters whereat each filter gets a dedicated output assigned. When there is a response from the device arriving and a filter matches (i.e. it can handle the method of the request), it will process the response and send a message with filtered data on its dedicated output. If multiple filters match the response, there will be multiple output messages sent. The filtered data is contained in the `msg.payload` of the output messages, see [Filters](#filters-1) chapter for a description of the message format.
+If enabled, the filter output ports provide filtered result data according to the configured filters. The number of filter output ports is determined by the number of filters whereat each filter gets a dedicated output assigned. When there is a response from the device arriving and a filter matches (i.e. it can handle the method of the request), it will process the response and send a message with filtered data on its dedicated output. If multiple filters match the response, there will be multiple output messages sent. The filtered data is contained in the `msg.payload` of the output messages, see [Filters](#filters-2) chapter for a description of the message format.
 
 ##### Response
 If enabled, the response output port provides the raw / low-level response as sent by the Audio Control API in case the node's operation succeeded. The message has the following format:
@@ -206,13 +216,27 @@ If enabled, the error output port provides error information in case the node's 
 }
 ```
 
+Most [error codes](https://developer.sony.com/develop/audio-control-api/api-references/error-codes) are specified by the Audio Control API, however some custom node specific error codes have been additionally defined:
+
+|Error Code|Description                      |
+|----------|---------------------------------|
+|32768     |Invalid node input               |
+|32769     |Invalid command                  |
+|32770     |Communication or processing error|
+
 ### Receiver Node
 Notifies an event from a Sony audio device via the Sony Audio Control API. The node listens for notifications and provides the event data upon reception. The service to listen to can be set via the node's configuration page.
+
+![Receiver Node](images/receiver_node.png)
 
 #### Configuration
 On the configuration page, you can configure various settings of the node. Optionally enter a name to be displayed - if omitted, "receiver: _service_" will be shown as name. Next you must select the Sony audio device to listen to. The following two checkboxes control which outputs will be provided by the node. The _Filters_ checkbox enables or disables the group of filter output ports and the _Event_ checkbox enables or disables the event output port. See chapter [Outputs](#outputs-1) below for more information.
 
+![General Settings](images/receiver_settings1.png)
+
 The next dropdown box selects the service to bind to. Depending on the selected service, different checkboxes for the available events appear. Each checkbox allows to subscribe to the corresponding notification.
+
+![Service & Notification Settings](images/receiver_settings2.png)
 
 If the filter output ports are enabled, filters for post processing the notification from the device can be configured in the last section. See [Filters](#filters-2) chapter for more information on how to setup the filters.
 
@@ -243,6 +267,8 @@ If enabled, the event output port provides the raw / low-level event data as sen
 ### Filters
 The filters are configured by a list which can be extended or reduced as needed. Use the button under the list to add new filters, use the 'x' button on the right side of each filter to delete it or drag the filter rows to reorder the list. Each filter gets a dedicated output assigned which is indicated on the right side of the filter. Via the dropdown box, you can select the filter, some filters have further selection possibilities. The following filters are supported.
 
+![Filter Settings](images/filter_settings.png)
+
 > ##### Powered
 > Results in `true` or `false` of the `msg.payload` depending on wether the device is powered on or not. If _Explicit_ is checked, a message is sent only if the result is `true`.
 >
@@ -261,6 +287,23 @@ The filters are configured by a list which can be extended or reduced as needed.
 >     "port":     "number"   // the port in case of an HDMI source
 > }
 > ```
+> The following combinations are possible:
+>
+> |scheme  |resource|port|
+> |--------|--------|----|
+> |extInput|tv      |    |
+> |extInput|sat-catv|    |
+> |extInput|hdmi    |1..9|
+> |extInput|video   |    |
+> |extInput|sacd-cd |    |
+> |extInput|bd-dvd  |    |
+> |extInput|line    |    |
+> |extInput|btAudio |    |
+> |extInput|game    |    |
+> |extInput|source  |    |
+> |storage |usb1    |    |
+> |dlna    |music   |    |
+> |radio   |fm      |    |
 >
 > ##### Absolute Volume
 > Extracts the absolute volume from the response. If the response does not contain a zone, the `msg.payload` is a number, otherwise it is an object with the following format:
@@ -292,16 +335,20 @@ The filters are configured by a list which can be extended or reduced as needed.
 > ##### Sound Setting
 > Extracts sound settings from the response. Depending on wether a specific or all sound settings have been requested by the command, the `msg.payload` is either a single attribute or an array. The format depends on the type of sound setting as shown below:
 >
-> |Setting|Format|
-> |-------|------|
-> |soundField|string|
-> |voice|string|
-> |clearAudio|boolean|
-> |nightMode|boolean|
+> |Setting     |Format |
+> |------------|-------|
+> |soundField  |string |
+> |voice       |string |
+> |clearAudio  |boolean|
+> |nightMode   |boolean|
 > |footballMode|boolean|
+>
+> For possible values of settings `soundField` and `voice`, please refer to API specification of method [getSoundSettings](https://developer.sony.com/develop/audio-control-api/api-references/api-overview-2#_getsoundsettings_v1_1).
 >
 > ##### Playback Mode
 > Extracts playback mode settings from the response. Depending on wether a specific or all playback mode settings have been requested by the command, the `msg.payload` is either a single attribute or an array. The format is always a string.
+>
+> For possible values of settings `playType`, `repeatType` and `shuffleType`, please refer to API specification of method [getPlaybackModeSettings](https://developer.sony.com/develop/audio-control-api/api-references/api-overview-2#_getplaybackmodesettings_v1_0).
 
 ## License
 Copyright (c) 2019 Jens-Uwe Rossbach
