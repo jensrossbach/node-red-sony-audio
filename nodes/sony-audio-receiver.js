@@ -178,8 +178,8 @@ module.exports = function(RED)
                                 node.debug("Event for " + msg.method + " received");
 
                                 let eventMsg = {service: node.config.service,
-                                                method: msg.metho,
-                                                version: msg.versio,
+                                                method: msg.method,
+                                                version: msg.version,
                                                 payload: (msg.params.length == 0) ? null : msg.params[0]};
 
                                 sendEvent(eventMsg);

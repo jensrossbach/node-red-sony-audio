@@ -41,10 +41,7 @@ The following commands are supported.
 > Switches on power of the device.
 >
 > ##### Power OFF
-> Switches off power of the device (device is not reachable via network anymore!).
->
-> ##### Standby
-> Switches the device into standby mode.
+> Switches off power of the device (device goes into standby mode).
 >
 > ##### Get Source
 > Retrieves the currently active audio source on a specific zone of the device.

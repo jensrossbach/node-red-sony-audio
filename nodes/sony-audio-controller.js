@@ -361,11 +361,6 @@ module.exports = function(RED)
                             setPowerStatus("off");
                             break;
                         }
-                        case "standby":
-                        {
-                            setPowerStatus("standby");
-                            break;
-                        }
                         case "setVolume":
                         {
                             let args = {volume: node.config.volume,
