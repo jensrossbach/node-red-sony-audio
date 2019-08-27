@@ -19,6 +19,8 @@
         "type": "git",
         "url": "https://github.com/jensrossbach/node-red-contrib-sony-audio"
     },
+    "homepage": "https://github.com/jensrossbach/node-red-contrib-sony-audio#readme",
+    "bugs": "https://github.com/jensrossbach/node-red-contrib-sony-audio/issues",
     "dependencies": {
         "request": "^2.88.0",
         "request-promise": "^4.2.4",

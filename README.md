@@ -14,7 +14,9 @@ If you would like to propose a new feature or any kind of improvement or if you 
     - [License Audio Control API](#license-audio-control-api)
 
 ## Documentation
-The node collection consists of two flow nodes and one configuration node. The configuration node stores the network address of your Sony audio device. You have to specify a host name (or IP address) and the port (by default, port 10000 is used). This node collection is the successor of the [node-red-contrib-sony-audio-control](https://github.com/jensrossbach/node-red-contrib-sony-audio-control) node collection. It contains new powerful flow nodes providing the same functionality and flexibility as the old node collection.
+This package is the successor of the [node-red-contrib-sony-audio-control](https://github.com/jensrossbach/node-red-contrib-sony-audio-control) node collection. It contains new powerful flow nodes providing the same and more functionality and flexibility as the old package.
+
+The node collection consists of two flow nodes and one configuration node. The configuration node stores the network address of your Sony audio device. You have to specify a host name (or IP address) and the port (by default, port 10000 is used).
 
 ### Controller Node
 Node for controlling a Sony audio device via the Audio Control API. The node sends requests to a Sony audio device and provides the returned result. The details of the request can be set via the node's configuration page. All settings (except the filters) can also be programmatically overridden, see input description below.
