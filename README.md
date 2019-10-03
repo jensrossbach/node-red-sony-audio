@@ -26,15 +26,15 @@ Node for controlling a Sony audio device via the Audio Control API. The node sen
 The node also supports a low-level mode for cases where the built-in commands are not sufficient. Via specific attributes (see input description below), any request supported by the Sony Audio Control API can be sent to the device. See Sony <a href="https://developer.sony.com/develop/audio-control-api/api-references/api-overview-2">Audio Control API</a> reference for more details about the API methods and their parameters.
 
 #### Configuration
-On the configuration page, you can configure various settings of the node. Optionally enter a name to be displayed - if omitted, "control: _command_" will be shown as name. Next you must select the Sony audio device to talk to. The following three checkboxes control which outputs will be provided by the node. The _Filters_ checkbox enables or disables the group of filter output ports, the _Response_ checkbox enables or disables the response output port and the _Error_ checkbox enables or disables the error output port. See chapter [Outputs](#outputs) below for more information.
+On the configuration page, you can configure various settings of the node. Optionally enter a name to be displayed - if omitted, "control: _command_" will be shown as name. You have to select the Sony audio device to talk to from the dropdown box (or create a new device configuration if not yet done). The next three checkboxes control which outputs will be provided by the node. The _Filters_ checkbox enables or disables the group of filter output ports and the _Response_ checkbox enables or disables the response output port. See chapter [Outputs](#outputs) below for more information.
 
 ![General Settings](images/controller_settings1.png)
 
-The next dropdown box selects the command to send to the device including its parameters. Depending on the selected command, different widgets for configuring the command parameters appear.
+The following dropdown box selects the command to send to the device including its parameters. Depending on the selected command, different widgets for configuring the command parameters appear.
 
 ![Command Settings](images/controller_settings2.png)
 
-The following commands are supported.
+Below is a list of supported commands.
 
 > ##### Get Power Status
 > Retrieves the current power status of the device.
@@ -179,7 +179,7 @@ To send a low-level request to the Audio Control API, i.e. a request which is di
 For more information on how to form a request, please refer to the Sony [Audio Control API](https://developer.sony.com/develop/audio-control-api/api-references/api-overview-2) reference. There is no need to encapsulate the payload into an array, this is automatically done by the node. For methods that do not have parameters, the `msg.payload` must be set to `null`.
 
 #### Outputs
-The node provides a variable number of output ports depending on the configuration. There are two output ports for the raw response and error information as well as a variable number of outputs depending on the filter configuration.
+The node provides a variable number of output ports depending on the configuration. There is one output port for the raw response as well as a variable number of outputs depending on the filter configuration. Any errors occurring during execution of the node can be handled using a catch node.
 
 ##### Filters
 If enabled, the filter output ports provide filtered result data according to the configured filters. The number of filter output ports is determined by the number of filters whereat each filter gets a dedicated output assigned. When there is a response from the device arriving and a filter matches (i.e. it can handle the method of the request), it will process the response and send a message with filtered data on its dedicated output. If multiple filters match the response, there will be multiple output messages sent. The filtered data is contained in the `msg.payload` of the output messages, see [Filters](#filters-2) chapter for a description of the message format.
@@ -198,30 +198,6 @@ If enabled, the response output port provides the raw / low-level response as se
     }
 }
 ```
-
-##### Error
-If enabled, the error output port provides error information in case the node's operation failed for whatever reason. The message has the following format:
-
-```javascript
-{
-    "service": "string",  // the API service of the request
-    "method":  "string",  // the API method of the request
-    "version": "string",  // the API version of the request
-    "payload":
-    {
-        "error":   "number",  // the error code
-        "details": "string"   // human readable details of the error
-    }
-}
-```
-
-Most [error codes](https://developer.sony.com/develop/audio-control-api/api-references/error-codes) are specified by the Audio Control API, however some custom node specific error codes have been additionally defined:
-
-|Error Code|Description                      |
-|----------|---------------------------------|
-|32768     |Invalid node input               |
-|32769     |Invalid command                  |
-|32770     |Communication or processing error|
 
 ### Receiver Node
 Notifies an event from a Sony audio device via the Sony Audio Control API. The node listens for notifications and provides the event data upon reception. The service to listen to can be set via the node's configuration page.
@@ -243,7 +219,7 @@ If the filter output ports are enabled, filters for post processing the notifica
 The node has no input ports.
 
 #### Outputs
-The node provides a variable number of output ports depending on the configuration. There is one output ports for the raw event data as well as a variable number of outputs depending on the filter configuration.
+The node provides a variable number of output ports depending on the configuration. There is one output ports for the raw event data as well as a variable number of outputs depending on the filter configuration. Any errors occurring in the node can be handled using a catch node.
 
 ##### Filters
 If enabled, the filter output ports provide filtered result data according to the configured filters. The number of filter output ports is determined by the number of filters whereat each filter gets a dedicated output assigned. When there is an event from the device arriving and a filter matches (i.e. it can handle the method of the notification), it will process the event and send a message with filtered data on its dedicated output. If multiple filters match the event, there will be multiple output messages sent. The filtered data is contained in the `msg.payload` of the output messages, see [Filters](#filters-2) chapter for a description of the message format.

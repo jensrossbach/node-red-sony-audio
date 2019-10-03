@@ -48,49 +48,54 @@ module.exports = function(RED)
 
         node.timeout = null;
 
-        function setPowerStatus(status)
+        function setPowerStatus(handler, status)
         {
-            sendRequest("system",
+            sendRequest(handler,
+                        "system",
                         "setPowerStatus",
                         "1.1",
                         {status: status});
         }
 
-        function setAudioVolume(volume, relative = false, zone = 0)
+        function setAudioVolume(handler, volume, relative = false, zone = 0)
         {
-            sendRequest("audio",
+            sendRequest(handler,
+                        "audio",
                         "setAudioVolume",
                         "1.1",
                         {output: (zone > 0) ? "extOutput:zone?zone=" + zone : "",
                          volume: (relative && (volume > 0)) ? "+" + volume : volume.toString()});
         }
 
-        function setAudioMute(mute, zone = 0)
+        function setAudioMute(handler, mute, zone = 0)
         {
-            sendRequest("audio",
+            sendRequest(handler,
+                        "audio",
                         "setAudioMute",
                         "1.1",
                         {output: (zone > 0) ? "extOutput:zone?zone=" + zone : "",
                          mute: mute});
         }
 
-        function setSoundSettings(params)
+        function setSoundSettings(handler, params)
         {
-            sendRequest("audio",
+            sendRequest(handler,
+                        "audio",
                         "setSoundSettings",
                         "1.1",
                         {settings: params});
         }
 
-        function setPlaybackModeSettings(params)
+        function setPlaybackModeSettings(handler, params)
         {
-            sendRequest("avContent",
+            sendRequest(handler,
+                        "avContent",
                         "setPlaybackModeSettings",
                         "1.0",
                         {settings: params});
         }
 
-        function setPlayContent(source, port = 0, zone = 0)
+        function setPlayContent(handler, source, port = 0, zone = 0)
         {
             var uri = source;
             if ((source == "extInput:hdmi") && (port > 0))
@@ -98,89 +103,100 @@ module.exports = function(RED)
                 uri += "?port=" + port;
             }
 
-            sendRequest("avContent",
+            sendRequest(handler,
+                        "avContent",
                         "setPlayContent",
                         "1.2",
                         {output: (zone > 0) ? "extOutput:zone?zone=" + zone : "",
                          uri: uri});
         }
 
-        function stopPlayingContent(zone = 0)
+        function stopPlayingContent(handler, zone = 0)
         {
-            sendRequest("avContent",
+            sendRequest(handler,
+                        "avContent",
                         "stopPlayingContent",
                         "1.1",
                         {output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
         }
 
-        function pausePlayingContent(zone = 0)
+        function pausePlayingContent(handler, zone = 0)
         {
-            sendRequest("avContent",
+            sendRequest(handler,
+                        "avContent",
                         "pausePlayingContent",
                         "1.1",
                         {output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
         }
 
-        function setPlayPreviousContent(zone = 0)
+        function setPlayPreviousContent(handler, zone = 0)
         {
-            sendRequest("avContent",
+            sendRequest(handler,
+                        "avContent",
                         "setPlayPreviousContent",
                         "1.0",
                         {output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
         }
 
-        function setPlayNextContent(zone = 0)
+        function setPlayNextContent(handler, zone = 0)
         {
-            sendRequest("avContent",
+            sendRequest(handler,
+                        "avContent",
                         "setPlayNextContent",
                         "1.0",
                         {output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
         }
 
-        function scanPlayingContent(fwd, zone = 0)
+        function scanPlayingContent(handler, fwd, zone = 0)
         {
-            sendRequest("avContent",
+            sendRequest(handler,
+                        "avContent",
                         "scanPlayingContent",
                         "1.0",
                         {direction: fwd ? "fwd" : "bwd",
                          output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
         }
 
-        function getPowerStatus()
+        function getPowerStatus(handler)
         {
-            sendRequest("system",
+            sendRequest(handler,
+                        "system",
                         "getPowerStatus",
                         "1.1",
                         null);
         }
 
-        function getPlayingContentInfo(zone = 0)
+        function getPlayingContentInfo(handler, zone = 0)
         {
-            sendRequest("avContent",
+            sendRequest(handler,
+                        "avContent",
                         "getPlayingContentInfo",
                         "1.2",
                         {output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
         }
 
-        function getVolumeInfo(zone = 0)
+        function getVolumeInfo(handler, zone = 0)
         {
-            sendRequest("audio",
+            sendRequest(handler,
+                        "audio",
                         "getVolumeInformation",
                         "1.1",
                         {output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
         }
 
-        function getSoundSettings(target)
+        function getSoundSettings(handler, target)
         {
-            sendRequest("audio",
+            sendRequest(handler,
+                        "audio",
                         "getSoundSettings",
                         "1.1",
                         {target: target});
         }
 
-        function getPlaybackModeSettings(target)
+        function getPlaybackModeSettings(handler, target)
         {
-            sendRequest("avContent",
+            sendRequest(handler,
+                        "avContent",
                         "getPlaybackModeSettings",
                         "1.0",
                         {target: target});
@@ -206,7 +222,7 @@ module.exports = function(RED)
             }
         }
 
-        function createOuputArray(filterMsgs, respMsg, errMsg)
+        function createOuputArray(filterMsgs, respMsg)
         {
             var arr = [];
 
@@ -223,15 +239,10 @@ module.exports = function(RED)
                 arr.push(respMsg);
             }
 
-            if (node.config.outError)
-            {
-                arr.push(errMsg);
-            }
-
             return arr;
         }
 
-        function sendRequest(service, method, version, args)
+        function sendRequest(handler, service, method, version, args)
         {
             setStatus(STATUS_SENDING);
 
@@ -253,49 +264,25 @@ module.exports = function(RED)
                                    version: version,
                                    payload: (response.result.length == 1) ? response.result[0] : null};
 
-                    sendResponse(respMsg);
+                    sendResponse(handler, respMsg);
                     setStatus(STATUS_SUCCESS, STATUS_TEMP_DURATION);
+
+                    handler.done();
                 }
                 else if ("error" in response)
                 {
-                    let errMsg = {service: service,
-                                  method: method,
-                                  version: version,
-                                  payload: {error: response.error[0], details: response.error[1]}};
-
-                    if (node.config.outError)
-                    {
-                        node.send(createOuputArray([], null, errMsg));
-                    }
-                    else
-                    {
-                        node.error(JSON.stringify(errMsg.payload));
-                    }
-
                     setStatus(STATUS_ERROR, STATUS_TEMP_DURATION);
+                    handler.error(response.error[1] + " (" + response.error[0] + ")");
                 }
             })
             .catch(error =>
             {
-                let errMsg = {service: service,
-                              method: method,
-                              version: version,
-                              payload: {error: 32770, details: error}};
-
-                if (node.config.outError)
-                {
-                    node.send(createOuputArray([], null, errMsg));
-                }
-                else
-                {
-                    node.error(JSON.stringify(errMsg.payload));
-                }
-
                 setStatus(STATUS_ERROR, STATUS_TEMP_DURATION);
+                handler.error(error);
             });
         }
 
-        function sendResponse(respMsg)
+        function sendResponse(handler, respMsg)
         {
             var filteredMsgs = [];
 
@@ -312,7 +299,7 @@ module.exports = function(RED)
 
             if (node.config.outFilters || node.config.outResponse)
             {
-                node.send(createOuputArray(filteredMsgs, respMsg, null));
+                handler.send(createOuputArray(filteredMsgs, respMsg));
             }
         }
 
@@ -333,14 +320,44 @@ module.exports = function(RED)
                 setStatus();
             }
 
-            node.on("input", function(msg)
+            node.on("input", function(msg, send, done)
             {
+                var handler = {};
+
+                if (send)
+                {
+                    handler.send = send;
+                }
+                else
+                {
+                    // Node-RED 0.x backwards compatibility
+                    handler.send = function() { node.send.apply(node, arguments); };
+                }
+
+                if (done)
+                {
+                    handler.done = done;
+                    handler.error = done;
+                }
+                else
+                {
+                    // Node-RED 0.x backwards compatibility
+                    handler.done = function() {};
+                    handler.error = function()
+                    {
+                        var args = [...arguments];
+                        args.push(msg);
+                        node.error.apply(node, args);
+                    };
+                }
+
                 if ((typeof msg.service == "string") &&
                     (typeof msg.method == "string") &&
                     (typeof msg.version == "string") &&
                     (typeof msg.payload == "object"))
                 {
-                    sendRequest(msg.service,
+                    sendRequest(handler,
+                                msg.service,
                                 msg.method,
                                 msg.version,
                                 msg.payload);
@@ -353,12 +370,12 @@ module.exports = function(RED)
                     {
                         case "powerOn":
                         {
-                            setPowerStatus("active");
+                            setPowerStatus(handler, "active");
                             break;
                         }
                         case "powerOff":
                         {
-                            setPowerStatus("off");
+                            setPowerStatus(handler, "off");
                             break;
                         }
                         case "setVolume":
@@ -392,22 +409,14 @@ module.exports = function(RED)
                                 if ((args.relativeVolume && (args.volume == 0)) ||
                                     (!args.relativeVolume && (args.volume < 0)))
                                 {
-                                    let errMsg = {payload: {error: 32768, details: "Invalid volume"}};
-
-                                    if (node.config.outError)
-                                    {
-                                        node.send(createOuputArray([], null, errMsg));
-                                    }
-                                    else
-                                    {
-                                        node.error(JSON.stringify(errMsg.payload));
-                                    }
+                                    setStatus(STATUS_ERROR, STATUS_TEMP_DURATION);
+                                    handler.error("Invalid " + (args.relativeVolume ? "relative" : "absolute") + " volume: " + args.volume);
 
                                     break;
                                 }
                             }
 
-                            setAudioVolume(args.volume, args.relativeVolume, args.zone);
+                            setAudioVolume(handler, args.volume, args.relativeVolume, args.zone);
                             break;
                         }
                         case "mute":
@@ -420,7 +429,7 @@ module.exports = function(RED)
                                 args.zone = msg.payload.zone;
                             }
 
-                            setAudioMute("on", args.zone);
+                            setAudioMute(handler, "on", args.zone);
                             break;
                         }
                         case "unmute":
@@ -433,7 +442,7 @@ module.exports = function(RED)
                                 args.zone = msg.payload.zone;
                             }
 
-                            setAudioMute("off", args.zone);
+                            setAudioMute(handler, "off", args.zone);
                             break;
                         }
                         case "toggleMute":
@@ -446,7 +455,7 @@ module.exports = function(RED)
                                 args.zone = msg.payload.zone;
                             }
 
-                            setAudioMute("toggle", args.zone);
+                            setAudioMute(handler, "toggle", args.zone);
                             break;
                         }
                         case "setSoundSettings":
@@ -459,7 +468,7 @@ module.exports = function(RED)
                                 args.soundSettings = msg.payload.settings;
                             }
 
-                            setSoundSettings(args.soundSettings);
+                            setSoundSettings(handler, args.soundSettings);
                             break;
                         }
                         case "setSource":
@@ -490,7 +499,7 @@ module.exports = function(RED)
                                 }
                             }
 
-                            setPlayContent(args.source, args.port, args.zone);
+                            setPlayContent(handler, args.source, args.port, args.zone);
                             break;
                         }
                         case "setPlaybackModes":
@@ -503,7 +512,7 @@ module.exports = function(RED)
                                 args.modeSettings = msg.payload.settings;
                             }
 
-                            setPlaybackModeSettings(args.modeSettings);
+                            setPlaybackModeSettings(handler, args.modeSettings);
                             break;
                         }
                         case "stop":
@@ -516,7 +525,7 @@ module.exports = function(RED)
                                 args.zone = msg.payload.zone;
                             }
 
-                            stopPlayingContent(args.zone);
+                            stopPlayingContent(handler, args.zone);
                             break;
                         }
                         case "togglePause":
@@ -529,7 +538,7 @@ module.exports = function(RED)
                                 args.zone = msg.payload.zone;
                             }
 
-                            pausePlayingContent(args.zone);
+                            pausePlayingContent(handler, args.zone);
                             break;
                         }
                         case "skipPrev":
@@ -542,7 +551,7 @@ module.exports = function(RED)
                                 args.zone = msg.payload.zone;
                             }
 
-                            setPlayPreviousContent(args.zone);
+                            setPlayPreviousContent(handler, args.zone);
                             break;
                         }
                         case "skipNext":
@@ -555,7 +564,7 @@ module.exports = function(RED)
                                 args.zone = msg.payload.zone;
                             }
 
-                            setPlayNextContent(args.zone);
+                            setPlayNextContent(handler, args.zone);
                             break;
                         }
                         case "scanBackward":
@@ -568,7 +577,7 @@ module.exports = function(RED)
                                 args.zone = msg.payload.zone;
                             }
 
-                            scanPlayingContent(false, args.zone);
+                            scanPlayingContent(handler, false, args.zone);
                             break;
                         }
                         case "scanForward":
@@ -581,12 +590,12 @@ module.exports = function(RED)
                                 args.zone = msg.payload.zone;
                             }
 
-                            scanPlayingContent(true, args.zone);
+                            scanPlayingContent(handler, true, args.zone);
                             break;
                         }
                         case "getPowerStatus":
                         {
-                            getPowerStatus(msg);
+                            getPowerStatus(handler, msg);
                             break;
                         }
                         case "getSource":
@@ -599,7 +608,7 @@ module.exports = function(RED)
                                 args.zone = msg.payload.zone;
                             }
 
-                            getPlayingContentInfo(args.zone);
+                            getPlayingContentInfo(handler, args.zone);
                             break;
                         }
                         case "getVolumeInfo":
@@ -612,7 +621,7 @@ module.exports = function(RED)
                                 args.zone = msg.payload.zone;
                             }
 
-                            getVolumeInfo(args.zone);
+                            getVolumeInfo(handler, args.zone);
                             break;
                         }
                         case "getSoundSettings":
@@ -625,7 +634,7 @@ module.exports = function(RED)
                                 args.target = (msg.payload.target == "all") ? "" : msg.payload.target;
                             }
 
-                            getSoundSettings(args.target);
+                            getSoundSettings(handler, args.target);
                             break;
                         }
                         case "getPlaybackModes":
@@ -638,21 +647,13 @@ module.exports = function(RED)
                                 args.target = (msg.payload.target == "all") ? "" : msg.payload.target;
                             }
 
-                            getPlaybackModeSettings(args.target);
+                            getPlaybackModeSettings(handler, args.target);
                             break;
                         }
                         default:
                         {
-                            let errMsg = {payload: {error: 32769, details: cmd}};
-
-                            if (node.config.outError)
-                            {
-                                node.send(createOuputArray([], null, errMsg));
-                            }
-                            else
-                            {
-                                node.error(JSON.stringify(errMsg.payload));
-                            }
+                            setStatus(STATUS_ERROR, STATUS_TEMP_DURATION);
+                            handler.error("Invalid command: " + cmd);
 
                             break;
                         }

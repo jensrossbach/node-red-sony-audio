@@ -186,7 +186,7 @@ module.exports = function(RED)
                             }
                             else
                             {
-                                node.warn("Unsupported event: " + msg.method);
+                                node.error("Unsupported event: " + msg.method);
                             }
                         }
                     }
@@ -195,7 +195,7 @@ module.exports = function(RED)
                 connection.on("error", function(error)
                 {
                     node.status(STATUS_ERROR);
-                    node.warn("Connection error: " + error.toString());
+                    node.error("Connection error: " + error.toString());
                 });
 
                 connection.on("close", function()
@@ -210,7 +210,7 @@ module.exports = function(RED)
             node.client.on("connectFailed", function(error)
             {
                 node.status(STATUS_ERROR);
-                node.warn("Failed to connect to Sony device: " + error.toString());
+                node.error("Failed to connect to Sony device: " + error.toString());
             });
 
             node.on("close", function()

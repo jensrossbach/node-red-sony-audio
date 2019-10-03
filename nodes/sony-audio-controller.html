@@ -71,10 +71,6 @@ SOFTWARE.
             {
                 value: false
             },
-            outError:
-            {
-                value: false
-            },
             command:
             {
                 value: "powerOn"
@@ -680,12 +676,6 @@ SOFTWARE.
                 node.outputPorts.push({label: "response"});
                 node.outputs++;
             }
-
-            if ($("#node-input-outError").prop("checked"))
-            {
-                node.outputPorts.push({label: "error"});
-                node.outputs++;
-            }
         }
     });
 </script>
@@ -728,10 +718,6 @@ SOFTWARE.
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-outResponse">
                 <label class="form-checkbox-label" style="width: auto;" for="node-input-outResponse">Response</label>
-            </div>
-            <div>
-                <input type="checkbox" class="form-checkbox" id="node-input-outError">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-outError">Error</label>
             </div>
         </div>
     </div>
@@ -920,22 +906,6 @@ SOFTWARE.
                 <dd>the API version of the request</dd>
                 <dt>payload<span class="property-type">object</span></dt>
                 <dd>the result data of the request</dd>
-            </dl>
-        </li>
-        <li>Error
-            <p>
-                Contains error information in case the node's operation
-                failed for whatever reason.
-            </p>
-            <dl class="message-properties">
-                <dt>service<span class="property-type">string</span></dt>
-                <dd>the API service of the request</dd>
-                <dt>method<span class="property-type">string</span></dt>
-                <dd>the API method of the request</dd>
-                <dt>version<span class="property-type">string</span></dt>
-                <dd>the API version of the request</dd>
-                <dt>payload<span class="property-type">object</span></dt>
-                <dd>the error information</dd>
             </dl>
         </li>
     </ol>
