@@ -71,6 +71,10 @@ SOFTWARE.
             {
                 value: false
             },
+            enableTopic:
+            {
+                value: false
+            },
             command:
             {
                 value: "powerOn"
@@ -721,6 +725,15 @@ SOFTWARE.
             </div>
         </div>
     </div>
+    <div class="form-row">
+        <label style="float: left;"><i class="fa fa-tasks"></i> Topic</label>
+        <div class="form-checkbox-row">
+            <div>
+                <input type="checkbox" class="form-checkbox" id="node-input-enableTopic">
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-enableTopic">Enable Override</label>
+            </div>
+        </div>
+    </div>
     <div class="form-row"></div>
     <div class="form-row">
         <label for="node-input-command"><i class="fa fa-exchange"></i> Command</label>
@@ -857,6 +870,11 @@ SOFTWARE.
         <dd>the overridden command settings</dd>
     </dl>
     <p>
+        If <i>Enable Override</i> in the <i>Topic</i> section of the configuration
+        page is activated, the command can alternatively be specified in the
+        <code>msg.topic</code>.
+    </p>
+    <p>
         If all of the following attributes are present, sends a raw /
         low-level request to the Audio Control API ignoring the node's
         command configuration.
@@ -871,6 +889,12 @@ SOFTWARE.
         <dt class="optional">payload<span class="property-type">object</span></dt>
         <dd>the arguments of the request</dd>
     </dl>
+    <p>
+        If <i>Enable Override</i> in the <i>Topic</i> section of the configuration
+        page is activated, the API service, API method and API version can
+        alternatively be specified in the <code>msg.topic</code> in the form
+        <i>service</i>/<i>method</i>/<i>version</i>.
+    </p>
     <h3>Outputs</h3>
     <p>
         The node provides a variable number of outputs which can be selected via

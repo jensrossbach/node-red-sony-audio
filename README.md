@@ -26,7 +26,7 @@ Node for controlling a Sony audio device via the Audio Control API. The node sen
 The node also supports a low-level mode for cases where the built-in commands are not sufficient. Via specific attributes (see input description below), any request supported by the Sony Audio Control API can be sent to the device. See Sony <a href="https://developer.sony.com/develop/audio-control-api/api-references/api-overview-2">Audio Control API</a> reference for more details about the API methods and their parameters.
 
 #### Configuration
-On the configuration page, you can configure various settings of the node. Optionally enter a name to be displayed - if omitted, "control: _command_" will be shown as name. You have to select the Sony audio device to talk to from the dropdown box (or create a new device configuration if not yet done). The next three checkboxes control which outputs will be provided by the node. The _Filters_ checkbox enables or disables the group of filter output ports and the _Response_ checkbox enables or disables the response output port. See chapter [Outputs](#outputs) below for more information.
+On the configuration page, you can configure various settings of the node. Optionally enter a name to be displayed - if omitted, "control: _command_" will be shown as name. You have to select the Sony audio device to talk to from the dropdown box (or create a new device configuration if not yet done). The next two checkboxes control which outputs will be provided by the node. The _Filters_ checkbox enables or disables the group of filter output ports and the _Response_ checkbox enables or disables the response output port. See chapter [Outputs](#outputs) below for more information. The checkbox _Enable Override_ controls if the node interprets the `msg.topic` property as alternative to command or low level request overrides (see chapter [Input](#input) for more information).
 
 ![General Settings](images/controller_settings1.png)
 
@@ -133,6 +133,8 @@ By providing any of the following attributes in the input message, the correspon
 }
 ```
 
+If _Enable Override_ in the _Topic_ section is activated, the command can alternatively be overridden via the `msg.topic` property. This is useful if you want to provide the command via an inject node without using a change node (because the inject node can only set `msg.topic`and `msg.payload`).
+
 Only certain combinations are meaningful, see the following table.
 
 |Command|source|volume|settings|target|zone|
@@ -176,7 +178,60 @@ To send a low-level request to the Audio Control API, i.e. a request which is di
 }
 ```
 
+If _Enable Override_ in the _Topic_ section is activated, the service, method and version can alternatively be overridden via the `msg.topic` property. This is useful if you want to provide the request via an inject node without using a change node (because the inject node can only set `msg.topic`and `msg.payload`). The topic must be provided in the form `service`/`method`/`version`.
+
+
 For more information on how to form a request, please refer to the Sony [Audio Control API](https://developer.sony.com/develop/audio-control-api/api-references/api-overview-2) reference. There is no need to encapsulate the payload into an array, this is automatically done by the node. For methods that do not have parameters, the `msg.payload` must be set to `null`.
+
+##### Examples
+```javascript
+// set absolute volume to 12 on zone 2 (via command)
+{
+    "command": "setVolume",
+    "payload":
+    {
+        "volume":
+        {
+            "absolute": 12
+        },
+        "zone": 2
+    }
+}
+
+// set source to HDMI port 4 (via command using topic)
+{
+    "topic": "setSource",
+    "payload":
+    {
+        "source":
+        {
+            "scheme": "extInput",
+            "resource": "hdmi",
+            "port": 4
+        }
+    }
+}
+
+// pause playback on zone 1 (via low-level request)
+{
+    "service": "avContent",
+    "method": "pausePlayingContent",
+    "version": "1.1",
+    "payload":
+    {
+        "output": "extOutput:zone?zone=1"
+    }
+}
+
+// get sound setting for clearAudio (via low-level request using topic)
+{
+    "topic": "audio/getSoundSettings/1.1",
+    "payload":
+    {
+        "target": "clearAudio"
+    }
+}
+```
 
 #### Outputs
 The node provides a variable number of output ports depending on the configuration. There is one output port for the raw response as well as a variable number of outputs depending on the filter configuration. Any errors occurring during execution of the node can be handled using a catch node.

@@ -48,6 +48,35 @@ module.exports = function(RED)
 
         node.timeout = null;
 
+        function getAPIFromTopic(topic)
+        {
+            const TOPIC_REGEX = /^([a-zA-Z]+)\/([a-zA-Z]+)\/([0-9]+\.[0-9]+)$/;
+
+            var matches = topic.match(TOPIC_REGEX);
+            var api = null;
+
+            if (matches !== null)
+            {
+                api = {service: matches[1], method: matches[2], version: matches[3]};
+            }
+
+            return api;
+        }
+
+        function getAPIFromMessage(msg)
+        {
+            var api = null;
+
+            if ((typeof msg.service == "string") &&
+                (typeof msg.method == "string") &&
+                (typeof msg.version == "string"))
+            {
+                api = {service: msg.service, method: msg.method, version: msg.version};
+            }
+
+            return api;
+        }
+
         function setPowerStatus(handler, status)
         {
             sendRequest(handler,
@@ -351,20 +380,37 @@ module.exports = function(RED)
                     };
                 }
 
-                if ((typeof msg.service == "string") &&
-                    (typeof msg.method == "string") &&
-                    (typeof msg.version == "string") &&
-                    (typeof msg.payload == "object"))
+                var api = null;
+                var cmd = null;
+                if (node.config.enableTopic && msg.topic && (typeof msg.topic == "string"))
+                {
+                    api = getAPIFromTopic(msg.topic);
+
+                    if (!api)
+                    {
+                        cmd = msg.topic;
+                    }
+                }
+
+                if (!api)
+                {
+                    api = getAPIFromMessage(msg);
+                }
+
+                if (api)
                 {
                     sendRequest(handler,
-                                msg.service,
-                                msg.method,
-                                msg.version,
+                                api.service,
+                                api.method,
+                                api.version,
                                 msg.payload);
                 }
                 else
                 {
-                    let cmd = (typeof msg.command == "string") ? msg.command : node.config.command;
+                    if (!cmd)
+                    {
+                        cmd = (typeof msg.command == "string") ? msg.command : node.config.command;
+                    }
 
                     switch (cmd)
                     {
