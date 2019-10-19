@@ -88,7 +88,40 @@ module.exports = function(RED)
                 {
                     if ("filter" in node.config.outputPorts[i])
                     {
-                        filteredMsgs.push(APIFilter.filterData(eventMsg, node.config.outputPorts[i].filter));
+                        let filter = {name: ""};
+
+                        if (node.config.outputPorts[i].filter.name == "auto")
+                        {
+                            switch (eventMsg.method)
+                            {
+                                case "notifyPowerStatus":
+                                {
+                                    filter = {name: "powered", explicit: false};
+                                    break;
+                                }
+                                case "notifySWUpdateInfo":
+                                {
+                                    filter = {name: "swupdate", explicit: false};
+                                    break;
+                                }
+                                case "notifyPlayingContentInfo":
+                                {
+                                    filter = {name: "source"};
+                                    break;
+                                }
+                                case "notifyVolumeInformation":
+                                {
+                                    filter = {name: "absoluteVolume"};
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            filter = node.config.outputPorts[i].filter;
+                        }
+
+                        filteredMsgs.push(APIFilter.filterData(eventMsg, filter));
                     }
                 }
             }

@@ -45,6 +45,9 @@ Below is a list of supported commands.
 > ##### Power OFF
 > Switches off power of the device (device goes into standby mode).
 >
+> ##### Get SW-Update Information
+> Retrieves information if a firmware update is available for the device.
+>
 > ##### Get Source
 > Retrieves the currently active audio source on a specific zone of the device.
 >
@@ -52,7 +55,7 @@ Below is a list of supported commands.
 > Sets the currently active audio source for a specific zone of the device. In case of a HDMI source, the port can be specified.
 >
 > ##### Get Volume Information
-> Retrieves information about current volume and mute state on a specific zone of the device.
+> Retrieves information about current volume and mute status on a specific zone of the device.
 >
 > ##### Set Volume
 > Sets the current volume for a specific zone of the device. If _Relative Volume_ is checked, the value is a relative volume step, otherwise it is an absolute volume.
@@ -142,7 +145,7 @@ Only certain combinations are meaningful, see the following table.
 |getPowerStatus| | | | | |
 |powerOn| | | | | |
 |powerOff| | | | | |
-|standby| | | | | |
+|getSWUpdateInfo| | | | | |
 |getSource| | | | |X|
 |setSource|X| | | |X|
 |getVolumeInfo| | | | |X|
@@ -161,7 +164,23 @@ Only certain combinations are meaningful, see the following table.
 |scanBackward| | | | |X|
 |scanForward| | | | |X|
 
-For details to the input message attributes, please also check the [Filters](#filters-2) chapter further down.
+The commands _getPowerStatus_, _getSWUpdateInfo_ and _getVolumeInfo_ can be extended with a suffix in the form `command:suffix`. The suffix is only relevant when using the auto filter in order to tell the filter what to filter for. The following suffixes are supported:
+
+|Command        |Suffix         |Description                               |
+|---------------|---------------|------------------------------------------|
+|getPowerStatus |n/a            |Filter for powered status                 |
+|getPowerStatus |powered        |Filter for powered status                 |
+|getPowerStatus |poweredExplicit|Filter for powered status (explicit)      |
+|getPowerStatus |standby        |Filter for standby status                 |
+|getPowerStatus |standbyExplicit|Filter for standby status (explicit)      |
+|getSWUpdateInfo|n/a            |Filter for software update info           |
+|getSWUpdateInfo|explicit       |Filter for software update info (explicit)|
+|getVolumeInfo  |n/a            |Filter for absolute volume                |
+|getVolumeInfo  |absolute       |Filter for absolute volume                |
+|getVolumeInfo  |relative       |Filter for relative volume                |
+|getVolumeInfo  |muted          |Filter for mute status                    |
+
+For more details to the input message attributes, please also check the [Filters](#filters-2) chapter further down.
 
 ##### Low-Level Request
 To send a low-level request to the Audio Control API, i.e. a request which is directly understood by the device, the following attributes according to the Sony Audio Control API specification are required in the input message.
@@ -299,6 +318,9 @@ The filters are configured by a list which can be extended or reduced as needed.
 
 ![Filter Settings](images/filter_settings.png)
 
+> ##### Auto
+> Automatically selects the filter depending on the command (controller node) or notification (receiver node). In case of a controller node, use command suffixes to further configure the filter programmatically.
+>
 > ##### Powered
 > Results in `true` or `false` of the `msg.payload` depending on wether the device is powered on or not. If _Explicit_ is checked, a message is sent only if the result is `true`.
 >

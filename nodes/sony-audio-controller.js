@@ -77,18 +77,18 @@ module.exports = function(RED)
             return api;
         }
 
-        function setPowerStatus(handler, status)
+        function setPowerStatus(context, status)
         {
-            sendRequest(handler,
+            sendRequest(context,
                         "system",
                         "setPowerStatus",
                         "1.1",
                         {status: status});
         }
 
-        function setAudioVolume(handler, volume, relative = false, zone = 0)
+        function setAudioVolume(context, volume, relative = false, zone = 0)
         {
-            sendRequest(handler,
+            sendRequest(context,
                         "audio",
                         "setAudioVolume",
                         "1.1",
@@ -96,9 +96,9 @@ module.exports = function(RED)
                          volume: (relative && (volume > 0)) ? "+" + volume : volume.toString()});
         }
 
-        function setAudioMute(handler, mute, zone = 0)
+        function setAudioMute(context, mute, zone = 0)
         {
-            sendRequest(handler,
+            sendRequest(context,
                         "audio",
                         "setAudioMute",
                         "1.1",
@@ -106,25 +106,25 @@ module.exports = function(RED)
                          mute: mute});
         }
 
-        function setSoundSettings(handler, params)
+        function setSoundSettings(context, params)
         {
-            sendRequest(handler,
+            sendRequest(context,
                         "audio",
                         "setSoundSettings",
                         "1.1",
                         {settings: params});
         }
 
-        function setPlaybackModeSettings(handler, params)
+        function setPlaybackModeSettings(context, params)
         {
-            sendRequest(handler,
+            sendRequest(context,
                         "avContent",
                         "setPlaybackModeSettings",
                         "1.0",
                         {settings: params});
         }
 
-        function setPlayContent(handler, source, port = 0, zone = 0)
+        function setPlayContent(context, source, port = 0, zone = 0)
         {
             var uri = source;
             if ((source == "extInput:hdmi") && (port > 0))
@@ -132,7 +132,7 @@ module.exports = function(RED)
                 uri += "?port=" + port;
             }
 
-            sendRequest(handler,
+            sendRequest(context,
                         "avContent",
                         "setPlayContent",
                         "1.2",
@@ -140,45 +140,45 @@ module.exports = function(RED)
                          uri: uri});
         }
 
-        function stopPlayingContent(handler, zone = 0)
+        function stopPlayingContent(context, zone = 0)
         {
-            sendRequest(handler,
+            sendRequest(context,
                         "avContent",
                         "stopPlayingContent",
                         "1.1",
                         {output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
         }
 
-        function pausePlayingContent(handler, zone = 0)
+        function pausePlayingContent(context, zone = 0)
         {
-            sendRequest(handler,
+            sendRequest(context,
                         "avContent",
                         "pausePlayingContent",
                         "1.1",
                         {output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
         }
 
-        function setPlayPreviousContent(handler, zone = 0)
+        function setPlayPreviousContent(context, zone = 0)
         {
-            sendRequest(handler,
+            sendRequest(context,
                         "avContent",
                         "setPlayPreviousContent",
                         "1.0",
                         {output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
         }
 
-        function setPlayNextContent(handler, zone = 0)
+        function setPlayNextContent(context, zone = 0)
         {
-            sendRequest(handler,
+            sendRequest(context,
                         "avContent",
                         "setPlayNextContent",
                         "1.0",
                         {output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
         }
 
-        function scanPlayingContent(handler, fwd, zone = 0)
+        function scanPlayingContent(context, fwd, zone = 0)
         {
-            sendRequest(handler,
+            sendRequest(context,
                         "avContent",
                         "scanPlayingContent",
                         "1.0",
@@ -186,45 +186,54 @@ module.exports = function(RED)
                          output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
         }
 
-        function getPowerStatus(handler)
+        function getPowerStatus(context)
         {
-            sendRequest(handler,
+            sendRequest(context,
                         "system",
                         "getPowerStatus",
                         "1.1",
                         null);
         }
 
-        function getPlayingContentInfo(handler, zone = 0)
+        function getSWUpdateInfo(context, network)
         {
-            sendRequest(handler,
+            sendRequest(context,
+                        "system",
+                        "getSWUpdateInfo",
+                        "1.0",
+                        {network: network ? "true" : "false"});
+        }
+
+        function getPlayingContentInfo(context, zone = 0)
+        {
+            sendRequest(context,
                         "avContent",
                         "getPlayingContentInfo",
                         "1.2",
                         {output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
         }
 
-        function getVolumeInfo(handler, zone = 0)
+        function getVolumeInfo(context, zone = 0)
         {
-            sendRequest(handler,
+            sendRequest(context,
                         "audio",
                         "getVolumeInformation",
                         "1.1",
                         {output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
         }
 
-        function getSoundSettings(handler, target)
+        function getSoundSettings(context, target)
         {
-            sendRequest(handler,
+            sendRequest(context,
                         "audio",
                         "getSoundSettings",
                         "1.1",
                         {target: target});
         }
 
-        function getPlaybackModeSettings(handler, target)
+        function getPlaybackModeSettings(context, target)
         {
-            sendRequest(handler,
+            sendRequest(context,
                         "avContent",
                         "getPlaybackModeSettings",
                         "1.0",
@@ -251,7 +260,7 @@ module.exports = function(RED)
             }
         }
 
-        function createOuputArray(filterMsgs, respMsg)
+        function createOuputArray(context, filterMsgs, respMsg)
         {
             var arr = [];
 
@@ -259,6 +268,12 @@ module.exports = function(RED)
             {
                 for (let i=0; i<filterMsgs.length; ++i)
                 {
+                    if ((filterMsgs[i] != null) &&
+                        (typeof context.command == "string"))
+                    {
+                        filterMsgs[i].command = context.command;
+                    }
+
                     arr.push(filterMsgs[i]);
                 }
             }
@@ -271,7 +286,7 @@ module.exports = function(RED)
             return arr;
         }
 
-        function sendRequest(handler, service, method, version, args)
+        function sendRequest(context, service, method, version, args)
         {
             setStatus(STATUS_SENDING);
 
@@ -293,25 +308,25 @@ module.exports = function(RED)
                                    version: version,
                                    payload: (response.result.length == 1) ? response.result[0] : null};
 
-                    sendResponse(handler, respMsg);
+                    sendResponse(context, respMsg);
                     setStatus(STATUS_SUCCESS, STATUS_TEMP_DURATION);
 
-                    handler.done();
+                    context.done();
                 }
                 else if ("error" in response)
                 {
                     setStatus(STATUS_ERROR, STATUS_TEMP_DURATION);
-                    handler.error(response.error[1] + " (" + response.error[0] + ")");
+                    context.error(response.error[1] + " (" + response.error[0] + ")");
                 }
             })
             .catch(error =>
             {
                 setStatus(STATUS_ERROR, STATUS_TEMP_DURATION);
-                handler.error(error);
+                context.error(error);
             });
         }
 
-        function sendResponse(handler, respMsg)
+        function sendResponse(context, respMsg)
         {
             var filteredMsgs = [];
 
@@ -321,14 +336,121 @@ module.exports = function(RED)
                 {
                     if ("filter" in node.config.outputPorts[i])
                     {
-                        filteredMsgs.push(APIFilter.filterData(respMsg, node.config.outputPorts[i].filter));
+                        let filter = {name: ""};
+
+                        if ((node.config.outputPorts[i].filter.name == "auto") &&
+                            (typeof context.command == "string"))
+                        {
+                            switch (context.command)
+                            {
+                                case "getPowerStatus":
+                                {
+                                    if (typeof context.suffix == "string")
+                                    {
+                                        switch (context.suffix)
+                                        {
+                                            case "powered":
+                                            {
+                                                filter = {name: "powered", explicit: false};
+                                                break;
+                                            }
+                                            case "poweredExplicit":
+                                            {
+                                                filter = {name: "powered", explicit: true};
+                                                break;
+                                            }
+                                            case "standby":
+                                            {
+                                                filter = {name: "standby", explicit: false};
+                                                break;
+                                            }
+                                            case "standbyExplicit":
+                                            {
+                                                filter = {name: "standby", explicit: true};
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        filter = {name: "powered", explicit: false};
+                                    }
+
+                                    break;
+                                }
+                                case "getSWUpdateInfo":
+                                {
+                                    if (context.suffix === "explicit")
+                                    {
+                                        filter = {name: "swupdate", explicit: true};
+                                    }
+                                    else
+                                    {
+                                        filter = {name: "swupdate", explicit: false};
+                                    }
+
+                                    break;
+                                }
+                                case "getSource":
+                                {
+                                    filter = {name: "source"};
+                                    break;
+                                }
+                                case "getVolumeInfo":
+                                {
+                                    if (typeof context.suffix == "string")
+                                    {
+                                        switch (context.suffix)
+                                        {
+                                            case "absolute":
+                                            {
+                                                filter = {name: "absoluteVolume"};
+                                                break;
+                                            }
+                                            case "relative":
+                                            {
+                                                filter = {name: "relativeVolume"};
+                                                break;
+                                            }
+                                            case "muted":
+                                            {
+                                                filter = {name: "muted"};
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        filter = {name: "absoluteVolume"};
+                                    }
+
+                                    break;
+                                }
+                                case "getSoundSettings":
+                                {
+                                    filter = {name: "soundSetting"};
+                                    break;
+                                }
+                                case "getPlaybackModes":
+                                {
+                                    filter = {name: "playbackMode"};
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            filter = node.config.outputPorts[i].filter;
+                        }
+
+                        filteredMsgs.push(APIFilter.filterData(respMsg, filter));
                     }
                 }
             }
 
             if (node.config.outFilters || node.config.outResponse)
             {
-                handler.send(createOuputArray(filteredMsgs, respMsg));
+                context.send(createOuputArray(context, filteredMsgs, respMsg));
             }
         }
 
@@ -351,28 +473,28 @@ module.exports = function(RED)
 
             node.on("input", function(msg, send, done)
             {
-                var handler = {};
+                var context = {msg: msg};
 
                 if (send)
                 {
-                    handler.send = send;
+                    context.send = send;
                 }
                 else
                 {
                     // Node-RED 0.x backwards compatibility
-                    handler.send = function() { node.send.apply(node, arguments); };
+                    context.send = function() { node.send.apply(node, arguments); };
                 }
 
                 if (done)
                 {
-                    handler.done = done;
-                    handler.error = done;
+                    context.done = done;
+                    context.error = done;
                 }
                 else
                 {
                     // Node-RED 0.x backwards compatibility
-                    handler.done = function() {};
-                    handler.error = function()
+                    context.done = function() {};
+                    context.error = function()
                     {
                         var args = [...arguments];
                         args.push(msg);
@@ -399,7 +521,7 @@ module.exports = function(RED)
 
                 if (api)
                 {
-                    sendRequest(handler,
+                    sendRequest(context,
                                 api.service,
                                 api.method,
                                 api.version,
@@ -412,16 +534,23 @@ module.exports = function(RED)
                         cmd = (typeof msg.command == "string") ? msg.command : node.config.command;
                     }
 
-                    switch (cmd)
+                    let parts = cmd.split(":");
+                    context.command = parts[0];
+                    if (parts.length > 1)
+                    {
+                        context.suffix = parts[1];
+                    }
+
+                    switch (context.command)
                     {
                         case "powerOn":
                         {
-                            setPowerStatus(handler, "active");
+                            setPowerStatus(context, "active");
                             break;
                         }
                         case "powerOff":
                         {
-                            setPowerStatus(handler, "off");
+                            setPowerStatus(context, "off");
                             break;
                         }
                         case "setVolume":
@@ -456,13 +585,13 @@ module.exports = function(RED)
                                     (!args.relativeVolume && (args.volume < 0)))
                                 {
                                     setStatus(STATUS_ERROR, STATUS_TEMP_DURATION);
-                                    handler.error("Invalid " + (args.relativeVolume ? "relative" : "absolute") + " volume: " + args.volume);
+                                    context.error("Invalid " + (args.relativeVolume ? "relative" : "absolute") + " volume: " + args.volume);
 
                                     break;
                                 }
                             }
 
-                            setAudioVolume(handler, args.volume, args.relativeVolume, args.zone);
+                            setAudioVolume(context, args.volume, args.relativeVolume, args.zone);
                             break;
                         }
                         case "mute":
@@ -475,7 +604,7 @@ module.exports = function(RED)
                                 args.zone = msg.payload.zone;
                             }
 
-                            setAudioMute(handler, "on", args.zone);
+                            setAudioMute(context, "on", args.zone);
                             break;
                         }
                         case "unmute":
@@ -488,7 +617,7 @@ module.exports = function(RED)
                                 args.zone = msg.payload.zone;
                             }
 
-                            setAudioMute(handler, "off", args.zone);
+                            setAudioMute(context, "off", args.zone);
                             break;
                         }
                         case "toggleMute":
@@ -501,7 +630,7 @@ module.exports = function(RED)
                                 args.zone = msg.payload.zone;
                             }
 
-                            setAudioMute(handler, "toggle", args.zone);
+                            setAudioMute(context, "toggle", args.zone);
                             break;
                         }
                         case "setSoundSettings":
@@ -514,7 +643,7 @@ module.exports = function(RED)
                                 args.soundSettings = msg.payload.settings;
                             }
 
-                            setSoundSettings(handler, args.soundSettings);
+                            setSoundSettings(context, args.soundSettings);
                             break;
                         }
                         case "setSource":
@@ -545,7 +674,7 @@ module.exports = function(RED)
                                 }
                             }
 
-                            setPlayContent(handler, args.source, args.port, args.zone);
+                            setPlayContent(context, args.source, args.port, args.zone);
                             break;
                         }
                         case "setPlaybackModes":
@@ -558,7 +687,7 @@ module.exports = function(RED)
                                 args.modeSettings = msg.payload.settings;
                             }
 
-                            setPlaybackModeSettings(handler, args.modeSettings);
+                            setPlaybackModeSettings(context, args.modeSettings);
                             break;
                         }
                         case "stop":
@@ -571,7 +700,7 @@ module.exports = function(RED)
                                 args.zone = msg.payload.zone;
                             }
 
-                            stopPlayingContent(handler, args.zone);
+                            stopPlayingContent(context, args.zone);
                             break;
                         }
                         case "togglePause":
@@ -584,7 +713,7 @@ module.exports = function(RED)
                                 args.zone = msg.payload.zone;
                             }
 
-                            pausePlayingContent(handler, args.zone);
+                            pausePlayingContent(context, args.zone);
                             break;
                         }
                         case "skipPrev":
@@ -597,7 +726,7 @@ module.exports = function(RED)
                                 args.zone = msg.payload.zone;
                             }
 
-                            setPlayPreviousContent(handler, args.zone);
+                            setPlayPreviousContent(context, args.zone);
                             break;
                         }
                         case "skipNext":
@@ -610,7 +739,7 @@ module.exports = function(RED)
                                 args.zone = msg.payload.zone;
                             }
 
-                            setPlayNextContent(handler, args.zone);
+                            setPlayNextContent(context, args.zone);
                             break;
                         }
                         case "scanBackward":
@@ -623,7 +752,7 @@ module.exports = function(RED)
                                 args.zone = msg.payload.zone;
                             }
 
-                            scanPlayingContent(handler, false, args.zone);
+                            scanPlayingContent(context, false, args.zone);
                             break;
                         }
                         case "scanForward":
@@ -636,12 +765,25 @@ module.exports = function(RED)
                                 args.zone = msg.payload.zone;
                             }
 
-                            scanPlayingContent(handler, true, args.zone);
+                            scanPlayingContent(context, true, args.zone);
                             break;
                         }
                         case "getPowerStatus":
                         {
-                            getPowerStatus(handler, msg);
+                            getPowerStatus(context);
+                            break;
+                        }
+                        case "getSWUpdateInfo":
+                        {
+                            let args = {network: node.config.networkUpdate};
+
+                            if ((typeof msg.payload == "object") &&
+                                (typeof msg.payload.network == "boolean"))
+                            {
+                                args.network = msg.payload.network;
+                            }
+
+                            getSWUpdateInfo(context, args.network);
                             break;
                         }
                         case "getSource":
@@ -654,7 +796,7 @@ module.exports = function(RED)
                                 args.zone = msg.payload.zone;
                             }
 
-                            getPlayingContentInfo(handler, args.zone);
+                            getPlayingContentInfo(context, args.zone);
                             break;
                         }
                         case "getVolumeInfo":
@@ -667,7 +809,7 @@ module.exports = function(RED)
                                 args.zone = msg.payload.zone;
                             }
 
-                            getVolumeInfo(handler, args.zone);
+                            getVolumeInfo(context, args.zone);
                             break;
                         }
                         case "getSoundSettings":
@@ -680,7 +822,7 @@ module.exports = function(RED)
                                 args.target = (msg.payload.target == "all") ? "" : msg.payload.target;
                             }
 
-                            getSoundSettings(handler, args.target);
+                            getSoundSettings(context, args.target);
                             break;
                         }
                         case "getPlaybackModes":
@@ -693,13 +835,13 @@ module.exports = function(RED)
                                 args.target = (msg.payload.target == "all") ? "" : msg.payload.target;
                             }
 
-                            getPlaybackModeSettings(handler, args.target);
+                            getPlaybackModeSettings(context, args.target);
                             break;
                         }
                         default:
                         {
                             setStatus(STATUS_ERROR, STATUS_TEMP_DURATION);
-                            handler.error("Invalid command: " + cmd);
+                            context.error("Invalid command: " + context.command);
 
                             break;
                         }

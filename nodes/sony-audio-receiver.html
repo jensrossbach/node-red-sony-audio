@@ -59,7 +59,7 @@ SOFTWARE.
             },
             outputPorts:
             {
-                value: [{label: "filter: powered", filter: {name: "powered"}}]
+                value: [{label: "filter: auto", filter: {name: "auto"}}]
             },
             outFilters:
             {
@@ -148,11 +148,12 @@ SOFTWARE.
                 {
                     if (!("name" in filter))
                     {
-                        filter.name = "powered";
+                        filter.name = "auto";
                     }
 
                     var filterName = $("<select/>", {class: "node-input-filterName",
                                                      style: "width: 200px;"}).appendTo(item);
+                    filterName.append($("<option></option>").val("auto").text("Auto"));
                     filterName.append($("<option></option>").val("powered").text("Powered"));
                     filterName.append($("<option></option>").val("standby").text("Standby"));
                     filterName.append($("<option></option>").val("swupdate").text("Software Update"));

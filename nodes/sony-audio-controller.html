@@ -61,7 +61,7 @@ SOFTWARE.
             },
             outputPorts:
             {
-                value: [{label: "filter: powered", filter: {name: "powered"}}]
+                value: [{label: "filter: auto", filter: {name: "auto"}}]
             },
             outFilters:
             {
@@ -78,6 +78,10 @@ SOFTWARE.
             command:
             {
                 value: "powerOn"
+            },
+            networkUpdate:
+            {
+                value: true
             },
             volume:
             {
@@ -412,9 +416,8 @@ SOFTWARE.
 
             commandSelect.change(function()
             {
-                $("#form-row-psfilter").hide();
+                $("#form-row-swupdate").hide();
                 $("#form-row-volume").hide();
-                $("#form-row-vifilter").hide();
                 $("#form-row-source").hide();
                 $("#form-row-zone").hide();
                 $("#form-row-port").hide();
@@ -426,9 +429,9 @@ SOFTWARE.
                 var value = $(this).val();
                 switch (value)
                 {
-                    case "getPowerStatus":
+                    case "getSWUpdateInfo":
                     {
-                        $("#form-row-psfilter").show();
+                        $("#form-row-swupdate").show();
                         break;
                     }
                     case "setSource":
@@ -440,13 +443,6 @@ SOFTWARE.
                         {
                             $("#form-row-port").show();
                         }
-
-                        break;
-                    }
-                    case "getVolumeInfo":
-                    {
-                        $("#form-row-vifilter").show();
-                        $("#form-row-zone").show();
 
                         break;
                     }
@@ -467,6 +463,7 @@ SOFTWARE.
                     case "skipNext":
                     case "scanForward":
                     case "scanBackward":
+                    case "getVolumeInfo":
                     {
                         $("#form-row-zone").show();
                         break;
@@ -522,11 +519,12 @@ SOFTWARE.
                 {
                     if (!("name" in filter))
                     {
-                        filter.name = "powered";
+                        filter.name = "auto";
                     }
 
                     var filterName = $("<select/>", {class: "node-input-filterName",
                                                      style: "width: 200px;"}).appendTo(item);
+                    filterName.append($("<option></option>").val("auto").text("Auto"));
                     filterName.append($("<option></option>").val("powered").text("Powered"));
                     filterName.append($("<option></option>").val("standby").text("Standby"));
                     filterName.append($("<option></option>").val("swupdate").text("Software Update"));
@@ -742,6 +740,7 @@ SOFTWARE.
                 <option value="getPowerStatus">Get Power Status</option>
                 <option value="powerOn">Power ON</option>
                 <option value="powerOff">Power OFF</option>
+                <option value="getSWUpdateInfo">Get SW-Update Information</option>
             </optgroup>
             <optgroup label="Audio">
                 <option value="getVolumeInfo">Get Volume Information</option>
@@ -765,6 +764,13 @@ SOFTWARE.
                 <option value="scanForward">Scan Forward</option>
             </optgroup>
         </select>
+    </div>
+    <div id="form-row-swupdate" class="form-row">
+        <label for="node-input-source"><i class="fa fa-sign-in"></i> Source</label>
+        <span>
+            <input id="node-input-networkUpdate" type="checkbox" style="vertical-align: text-bottom; width: auto;">
+            <label for="node-input-networkUpdate" style="width: auto;">Software Update from Network</label>
+        </span>
     </div>
     <div id="form-row-volume" class="form-row">
         <label for="node-input-volume"><i class="fa fa-volume-up"></i> Volume</label>

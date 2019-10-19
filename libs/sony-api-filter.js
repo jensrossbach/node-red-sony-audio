@@ -29,7 +29,7 @@ module.exports =
         const URI_REGEX    = /^([a-zA-Z0-9\-]+)\:([a-zA-Z0-9\-]+)(?:\?port\=([0-9]))?$/;
         const OUTPUT_REGEX = /^([a-zA-Z0-9\-]+)\:([a-zA-Z0-9\-]+)(?:\?zone\=([0-9]))?$/;
 
-        let outputMsg = null;
+        var outputMsg = null;
 
         switch (filter.name)
         {
