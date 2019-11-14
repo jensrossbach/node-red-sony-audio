@@ -27,7 +27,7 @@ SOFTWARE.
     {
         category: "config",
         icon:     "sony.png",
-        label: function()
+        label:    function()
         {
             return (this.name || this.host);
         },
@@ -49,6 +49,70 @@ SOFTWARE.
                 required: true,
                 validate: RED.validators.number()
             }
+        },
+        oneditprepare: function()
+        {
+            function deviceDiscovery(msearch)
+            {
+                if (msearch)
+                {
+                    $("#node-config-input-discovery").attr("disabled", true);
+                    $("#node-config-input-devices").attr("disabled", true);
+                    RED.notify("Searching for Sony audio devices...", "info");
+                }
+
+                $.getJSON("sony_audio_devices", {type: msearch ? "msearch" : "cached"}).done(data =>
+                {
+                    $("#node-config-input-devices").find("option").remove();
+                    $("#node-config-input-devices").append($("<option></option>").val("none").text("[SELECT DEVICE]"));
+
+                    data.forEach(device =>
+                    {
+                        $("#node-config-input-devices").append($("<option></option>").val(JSON.stringify(device.address)).text(device.name));
+                    });
+
+                    if (msearch)
+                    {
+                        $("#node-config-input-discovery").attr("disabled", false);
+                        $("#node-config-input-devices").attr("disabled", false);
+
+                        if (data.length == 0)
+                        {
+                            RED.notify("No devices found.", "info");
+                        }
+                        else
+                        {
+                            RED.notify("Found " + data.length + ((data.length > 1) ? " devices" : " device") + ".", "success");
+                        }
+                    }
+                }).fail(error =>
+                {
+                    if (msearch)
+                    {
+                        RED.notify("Error retrieving devices!", "error");
+                    }
+                });
+            }
+
+            $("#node-config-input-discovery").click(function()
+            {
+                deviceDiscovery(true);
+            });
+
+            $("#node-config-input-devices").change(function()
+            {
+                var self = $(this).find("option:selected");
+                if (self.val() != "none")
+                {
+                    var address = JSON.parse(self.val());
+
+                    $("#node-config-input-name").val(self.text());
+                    $("#node-config-input-host").val(address.host);
+                    $("#node-config-input-port").val(address.port);
+                }
+            });
+
+            deviceDiscovery(false);
         }
     });
 </script>
@@ -78,6 +142,13 @@ SOFTWARE.
     <div class="form-row">
         <label for="node-config-input-port"><i class="fa fa-bookmark"></i> Port</label>
         <input type="text" id="node-config-input-port" placeholder="Port">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-port"><i class="fa fa-binoculars"></i> Discovery</label>
+        <span>
+            <select id="node-config-input-devices"></select>
+            <button type="button" id="node-config-input-discovery" class="red-ui-button"><i class='fa fa-refresh'></i></button>
+        </span>
     </div>
 </script>
 

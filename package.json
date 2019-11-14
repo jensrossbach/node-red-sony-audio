@@ -24,7 +24,9 @@
     "dependencies": {
         "request": "^2.88.0",
         "request-promise": "^4.2.4",
-        "websocket": "^1.0.28"
+        "websocket": "^1.0.28",
+        "node-ssdp": "^4.0.0",
+        "xml-js": "^1.6.11"
     },
     "main": "none",
     "scripts": {},

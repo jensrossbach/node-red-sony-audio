@@ -24,6 +24,67 @@
 
 module.exports = function(RED)
 {
+    const DISCOVERY_SEARCH_TARGET = "urn:schemas-sony-com:service:ScalarWebAPI:1";
+    const URI_REGEX               = /^http\:\/\/([a-zA-Z0-9\.\-]+)\:([0-9]+)\/sony$/;
+
+    const httpRequest = require("request-promise");
+    const xmlConverter = require("xml-js");
+
+    const SSDPClient = require("node-ssdp").Client;
+    var ssdpClient = new SSDPClient({explicitSocketBind: true});
+
+    var deviceList = [];
+
+    RED.httpAdmin.get("/sony_audio_devices", RED.auth.needsPermission("sony-audio.read"), function(req, res)
+    {
+        if (req.query.type === "cached")
+        {
+            // return cached values
+            RED.log.debug("Returning cached Sony audio devices.");
+            res.json(deviceList);
+        }
+        else
+        {
+            RED.log.debug("Searching for Sony audio devices...");
+
+            deviceList = [];
+            ssdpClient.search(DISCOVERY_SEARCH_TARGET);
+
+            setTimeout(() =>
+            {
+                ssdpClient.stop();
+                res.json(deviceList);
+            }, 5000);
+        }
+    });
+
+    ssdpClient.on("response", function(headers, code, rinfo)
+    {
+        if (code == 200)
+        {
+            httpRequest({method: "get", uri: headers.LOCATION}).then(response =>
+            {
+                let desc = xmlConverter.xml2js(response, {compact: true});
+                let devName = desc.root.device.friendlyName._text;
+                let devURL = desc.root.device["av:X_ScalarWebAPI_DeviceInfo"]["av:X_ScalarWebAPI_BaseURL"]._text;
+
+                let matches = devURL.match(URI_REGEX);
+                if (matches !== null)
+                {
+                    RED.log.debug("Found Sony audio device: " + devName + "@" + matches[1] + ":" + matches[2]);
+                    deviceList.push({name: devName, address: {host: matches[1], port: matches[2]}});
+                }
+            }).catch(error =>
+            {
+                RED.log.error("Error getting device description: " + error);
+            });
+        }
+        else
+        {
+            RED.log.error("Error searching device: code=" + code);
+        }
+    });
+
     function SonyAudioDeviceNode(config)
     {
         RED.nodes.createNode(this, config);
