@@ -27,7 +27,58 @@ module.exports =
     filterData: function(data, filter)
     {
         const URI_REGEX    = /^([a-zA-Z0-9\-]+)\:([a-zA-Z0-9\-]+)(?:\?port\=([0-9]))?$/;
-        const OUTPUT_REGEX = /^([a-zA-Z0-9\-]+)\:([a-zA-Z0-9\-]+)(?:\?zone\=([0-9]))?$/;
+        const OUTPUT_REGEX = /^[a-zA-Z0-9\-]+\:[a-zA-Z0-9\-]+(?:\?zone\=([0-9]))?$/;
+
+        function filterVolumeInfo(data, getFilteredData)
+        {
+            var ret = null;
+            var payload = null;
+
+            if (data.method == "getVolumeInformation")
+            {
+                if (data.payload.length > 0)
+                {
+                    payload = data.payload;
+                }
+            }
+            else if (data.method == "notifyVolumeInformation")
+            {
+                payload = [];
+                payload.push(data.payload);
+            }
+
+            if (payload !== null)
+            {
+                out = [];
+                for (let i = 0; i < payload.length; ++i)
+                {
+                    let zone = 0;
+                    if (typeof payload[i].output == "string")
+                    {
+                        let matches = payload[i].output.match(OUTPUT_REGEX);
+
+                        if ((matches !== null) && (matches[1] !== null))
+                        {
+                            zone = Number(matches[1]);
+                        }
+                    }
+
+                    flt = getFilteredData(payload[i], zone);
+                    if (flt != null) { out.push(flt); }
+                }
+
+                if (out.length == 1)
+                {
+                    ret = {payload: out[0]};
+                }
+                else if (out.length > 1)
+                {
+                    ret = {payload: out};
+                }
+            }
+
+            return ret;
+        }
 
         var outputMsg = null;
 
@@ -116,115 +167,49 @@ module.exports =
             }
             case "absoluteVolume":
             {
-                let payload = null;
-
-                if (data.method == "getVolumeInformation")
+                outputMsg = filterVolumeInfo(data, (payload, zone) =>
                 {
-                    if (data.payload.length > 0)
-                    {
-                        payload = data.payload[0];
-                    }
-                }
-                else if (data.method == "notifyVolumeInformation")
-                {
-                    payload = data.payload;
-                }
+                    var ret = null;
 
-                if ((payload !== null) && (payload.volume >= 0))
-                {
-                    let zone = 0;
-                    let matches = payload.output.match(OUTPUT_REGEX);
-
-                    if ((matches !== null) && (matches[3] !== null))
+                    if (payload.volume >= 0)
                     {
-                        zone = Number(matches[3]);
+                        ret = (zone > 0) ? {volume: payload.volume, zone: zone} : payload.volume;
                     }
 
-                    if (zone > 0)
-                    {
-                        outputMsg = {payload: {volume: payload.volume, zone: zone}};
-                    }
-                    else
-                    {
-                        outputMsg = {payload: payload.volume};
-                    }
-                }
+                    return ret;
+                });
 
                 break;
             }
             case "relativeVolume":
             {
-                let payload = null;
-
-                if (data.method == "getVolumeInformation")
+                outputMsg = filterVolumeInfo(data, (payload, zone) =>
                 {
-                    if (data.payload.length > 0)
-                    {
-                        payload = data.payload[0];
-                    }
-                }
-                else if (data.method == "notifyVolumeInformation")
-                {
-                    payload = data.payload;
-                }
+                    var ret = null;
 
-                if ((payload !== null) && (payload.step != 0))
-                {
-                    let zone = 0;
-                    let matches = payload.output.match(OUTPUT_REGEX);
-
-                    if ((matches !== null) && (matches[3] !== null))
+                    if (payload.step != 0)
                     {
-                        zone = Number(matches[3]);
+                        ret = (zone > 0) ? {volume: payload.step, zone: zone} : payload.step;
                     }
 
-                    if (zone > 0)
-                    {
-                        outputMsg = {payload: {volume: payload.step, zone: zone}};
-                    }
-                    else
-                    {
-                        outputMsg = {payload: payload.step};
-                    }
-                }
+                    return ret;
+                });
 
                 break;
             }
             case "muted":
             {
-                let payload = null;
-
-                if (data.method == "getVolumeInformation")
+                outputMsg = filterVolumeInfo(data, (payload, zone) =>
                 {
-                    if (data.payload.length > 0)
-                    {
-                        payload = data.payload[0];
-                    }
-                }
-                else if (data.method == "notifyVolumeInformation")
-                {
-                    payload = data.payload;
-                }
+                    var ret = null;
 
-                if ((payload !== null) && (payload.mute !== "toggle"))
-                {
-                    let zone = 0;
-                    let matches = payload.output.match(OUTPUT_REGEX);
-
-                    if ((matches !== null) && (matches[3] !== null))
+                    if (payload.mute !== "toggle")
                     {
-                        zone = Number(matches[3]);
+                        ret = (zone > 0) ? {muted: (payload.mute === "on"), zone: zone} : (payload.mute === "on");
                     }
 
-                    if (zone > 0)
-                    {
-                        outputMsg = {payload: {muted: (payload.mute === "on"), zone: zone}};
-                    }
-                    else
-                    {
-                        outputMsg = {payload: (payload.mute === "on")};
-                    }
-                }
+                    return ret;
+                });
 
                 break;
             }

@@ -18,7 +18,7 @@ This package is the successor of the [node-red-contrib-sony-audio-control](https
 
 The node collection consists of two flow nodes and one configuration node. The configuration node stores the network address of your Sony audio device. You have to specify a host name (or IP address) and the port (by default, port 10000 is used). Alternatively you can start a device discovery to search for Sony audio devices in the local network. Press the refresh button on the right side of the discovery dropdown box to start or repeat device discovery. After devices have been found, their IP address, port and friendly name can be taken over into the configuration by selecting an appropriate entry in the dropdown box.
 
-![Device Node](images/device_node.png)
+![Device Settings](images/device_settings.png)
 
 ### Controller Node
 Node for controlling a Sony audio device via the Audio Control API. The node sends requests to a Sony audio device and provides the returned result. The details of the request can be set via the node's configuration page. All settings (except the filters) can also be programmatically overridden, see input description below.
@@ -360,29 +360,29 @@ The filters are configured by a list which can be extended or reduced as needed.
 > |radio   |fm      |    |
 >
 > ##### Absolute Volume
-> Extracts the absolute volume from the response. If the response does not contain a zone, the `msg.payload` is a number, otherwise it is an object with the following format:
+> Extracts the absolute volume from the response. Depending on wether a specific or all zones have been requested by the command, the `msg.payload` is either a single attribute or an array. If the volume is not associated with a specific zone, the attribute is a number, otherwise it is an object with the following format:
 > ```javascript
 > {
 >     "volume": "number",  // the absolute volume
->     "zone":   "number"   // the zone
+>     "zone":   "number"   // the associated zone
 > }
 > ```
 >
 > ##### Relative Volume
-> Extracts the relative volume from the response. If the response does not contain a zone, the `msg.payload` is a number, otherwise it is an object with the following format:
+> Extracts the relative volume from the response. Depending on wether a specific or all zones have been requested by the command, the `msg.payload` is either a single attribute or an array. If the volume is not associated with a specific zone, the attribute is a number, otherwise it is an object with the following format:
 > ```javascript
 > {
 >     "volume": "number",  // the relative volume
->     "zone":   "number"   // the zone
+>     "zone":   "number"   // the associated zone
 > }
 > ```
 >
 > ##### Muted
-> Extracts the mute state from the response. If the response does not contain a zone, the `msg.payload` is a boolean, otherwise it is an object with the following format:
+> Extracts the mute state from the response. Depending on wether a specific or all zones have been requested by the command, the `msg.payload` is either a single attribute or an array. If the mute state is not associated with a specific zone, the attribute is a boolean, otherwise it is an object with the following format:
 > ```javascript
 > {
 >     "muted": "boolean",  // the mute state
->     "zone":  "number"    // the zone
+>     "zone":  "number"    // the associated zone
 > }
 > ```
 >
