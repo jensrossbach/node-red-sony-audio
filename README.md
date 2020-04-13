@@ -405,7 +405,7 @@ The filters are configured by a list which can be extended or reduced as needed.
 > For possible values of settings `playType`, `repeatType` and `shuffleType`, please refer to API specification of method [getPlaybackModeSettings](https://developer.sony.com/develop/audio-control-api/api-references/api-overview-2#_getplaybackmodesettings_v1_0).
 
 ## License
-Copyright (c) 2019 Jens-Uwe Rossbach
+Copyright (c) 2020 Jens-Uwe Rossbach
 
 This code is licensed under the MIT License.
 
@@ -432,7 +432,7 @@ SOFTWARE.
 The trademark "SONY" and any other product names, service names or logos of SONY used, quoted and/or referenced in this Web Site are trademarks or registered trademarks of Sony Corporation or any of its affiliates.
 
 ### License Audio Control API
-Copyright (c) 2019 Sony Corporation. All rights reserved.
+Copyright (c) 2020 Sony Corporation. All rights reserved.
 
 The 'Audio Control API' is licensed to the user by Sony Video & Sound products Inc. under the license terms of the [Creative Commons Attribution-NoDerivatives 4.0 International Public License](https://creativecommons.org/licenses/by-nd/4.0/legalcode).
 

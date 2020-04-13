@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Jens-Uwe Rossbach
+ * Copyright (c) 2020 Jens-Uwe Rossbach
  *
  * This code is licensed under the MIT License.
  *
