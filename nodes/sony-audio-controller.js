@@ -580,15 +580,28 @@ module.exports = function(RED)
                                 {
                                     args.zone = msg.payload.zone;
                                 }
+                            }
+                            else if (typeof msg.payload == "number")
+                            {
+                                args.volume = msg.payload;
 
-                                if ((args.relativeVolume && (args.volume == 0)) ||
-                                    (!args.relativeVolume && (args.volume < 0)))
+                                if (context.suffix === "absolute")
                                 {
-                                    setStatus(STATUS_ERROR, STATUS_TEMP_DURATION);
-                                    context.error("Invalid " + (args.relativeVolume ? "relative" : "absolute") + " volume: " + args.volume);
-
-                                    break;
+                                    args.relativeVolume = false;
                                 }
+                                else if (context.suffix === "relative")
+                                {
+                                    args.relativeVolume = true;
+                                }
+                            }
+
+                            if ((args.relativeVolume && (args.volume == 0)) ||
+                                (!args.relativeVolume && (args.volume < 0)))
+                            {
+                                setStatus(STATUS_ERROR, STATUS_TEMP_DURATION);
+                                context.error("Invalid " + (args.relativeVolume ? "relative" : "absolute") + " volume: " + args.volume);
+
+                                break;
                             }
 
                             setAudioVolume(context, args.volume, args.relativeVolume, args.zone);

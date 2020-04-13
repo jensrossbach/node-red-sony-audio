@@ -138,7 +138,7 @@ By providing any of the following attributes in the input message, the correspon
 }
 ```
 
-If _Enable Override_ in the _Topic_ section is activated, the command can alternatively be overridden via the `msg.topic` property. This is useful if you want to provide the command via an inject node without using a change node (because the inject node can only set `msg.topic`and `msg.payload`).
+If _Enable Override_ in the _Topic_ section is activated, the command can alternatively be overridden via the `msg.topic` property. This is useful if you want to provide the command via an inject node without using a change node (because the inject node can only set `msg.topic` and `msg.payload`).
 
 Only certain combinations are meaningful, see the following table.
 
@@ -166,7 +166,9 @@ Only certain combinations are meaningful, see the following table.
 |scanBackward| | | | |X|
 |scanForward| | | | |X|
 
-The commands _getPowerStatus_, _getSWUpdateInfo_ and _getVolumeInfo_ can be extended with a suffix in the form `command:suffix`. The suffix is only relevant when using the auto filter in order to tell the filter what to filter for. The following suffixes are supported:
+The command _setVolume_ supports a simple alternative to specify the target volume by providing the volume in form of a payload of type 'number'. Use the command suffix (see below) in this case to tell the node if the volume is absolute or relative.
+
+The commands _getPowerStatus_, _getSWUpdateInfo_, _getVolumeInfo_ and _setVolume_ can be extended with a suffix in the form `command:suffix`. The suffix is only relevant when specifying the volume as payload of type 'number' or when using the auto filter in order to tell the filter what to filter for. The following suffixes are supported:
 
 |Command        |Suffix         |Description                               |
 |---------------|---------------|------------------------------------------|
@@ -181,6 +183,8 @@ The commands _getPowerStatus_, _getSWUpdateInfo_ and _getVolumeInfo_ can be exte
 |getVolumeInfo  |absolute       |Filter for absolute volume                |
 |getVolumeInfo  |relative       |Filter for relative volume                |
 |getVolumeInfo  |muted          |Filter for mute status                    |
+|setVolume      |absolute       |Payload contains absolute volume          |
+|setVolume      |relative       |Payload contains relative volume          |
 
 For more details to the input message attributes, please also check the [Filters](#filters-2) chapter further down.
 
