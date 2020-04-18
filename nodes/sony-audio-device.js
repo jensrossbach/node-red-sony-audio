@@ -69,6 +69,7 @@ module.exports = function(RED)
             {
                 let desc = xmlConverter.xml2js(response, {compact: true});
                 let devName = desc.root.device.friendlyName._text;
+                let modelName = desc.root.device.modelName._text;
 
                 if (desc.root.device.hasOwnProperty("av:X_ScalarWebAPI_DeviceInfo"))
                 {
@@ -77,8 +78,8 @@ module.exports = function(RED)
                     let matches = devURL.match(URI_REGEX);
                     if (matches !== null)
                     {
-                        RED.log.debug("Found Sony audio device: " + devName + "@" + matches[1] + ":" + matches[2]);
-                        deviceList.push({name: devName, address: {host: matches[1], port: matches[2]}});
+                        RED.log.debug("Found Sony audio device: " + modelName + "/" + devName + "@" + matches[1] + ":" + matches[2]);
+                        deviceList.push({name: devName, model: modelName, address: {host: matches[1], port: matches[2]}});
                     }
                 }
                 else

@@ -68,7 +68,7 @@ SOFTWARE.
 
                     data.forEach(device =>
                     {
-                        $("#node-config-input-devices").append($("<option></option>").val(JSON.stringify(device.address)).text(device.name));
+                        $("#node-config-input-devices").append($("<option></option>").val(JSON.stringify(device.address)).text(device.name + " [" + device.model + "]"));
                     });
 
                     if (msearch)
