@@ -30,22 +30,25 @@ module.exports = function(RED)
     const httpRequest = require("request-promise");
     const xmlConverter = require("xml-js");
 
+    const EventReceiver = require("../libs/sony-event-recv.js");
+
     const SSDPClient = require("node-ssdp").Client;
     var ssdpClient = new SSDPClient({explicitSocketBind: true});
 
     var deviceList = [];
+
 
     RED.httpAdmin.get("/sony_audio_devices", RED.auth.needsPermission("sony-audio.read"), function(req, res)
     {
         if (req.query.type === "cached")
         {
             // return cached values
-            RED.log.debug("Returning cached Sony audio devices.");
+            RED.log.debug("Returning cached Sony audio devices");
             res.json(deviceList);
         }
         else
         {
-            RED.log.debug("Searching for Sony audio devices...");
+            RED.log.debug("Searching for Sony audio devices");
 
             deviceList = [];
             ssdpClient.search(DISCOVERY_SEARCH_TARGET);
@@ -85,6 +88,7 @@ module.exports = function(RED)
         }
     });
 
+
     function SonyAudioDeviceNode(config)
     {
         RED.nodes.createNode(this, config);
@@ -92,7 +96,123 @@ module.exports = function(RED)
         this.name = config.name;
         this.host = config.host;
         this.port = config.port;
+
+        this.subscribers = {};
+        this.nextSubscrId = 1;
+
+        this.statusListeners = [];
+        this.receivers = {};
+
+        this.on("close", () =>
+        {
+            Object.values(this.receivers).forEach(receiver =>
+            {
+                receiver.disconnect();
+            });
+        });
+    }
+
+    SonyAudioDeviceNode.prototype.subscribe = function(service, filter, callback)
+    {
+        this.debug("Subscribing for service '" + service + "' with filter b:" + filter.toString(2).padStart(4, "0"));
+
+        const id = this.nextSubscrId;
+        this.nextSubscrId++;
+
+        this.subscribers[id] = {service: service,
+                                filter: filter,
+                                callback: callback};
+
+        if (service in this.receivers)
+        {
+            this.receivers[service].updateEventMask(calculateEventMask(this.subscribers, service));
+        }
+        else
+        {
+            let receiver = new EventReceiver(service, this);
+
+            receiver.registerStatusListener(status =>
+            {
+                this.statusListeners.forEach(cb =>
+                {
+                    cb(status);
+                });
+            });
+
+            receiver.connect(calculateEventMask(this.subscribers, service), (method, msg) =>
+            {
+                Object.values(this.subscribers).forEach(subscriber =>
+                {
+                    if ((msg.service == subscriber.service) && ((method & subscriber.filter) != 0))
+                    {
+                        subscriber.callback(msg);
+                    }
+                });
+            });
+
+            this.receivers[service] = receiver;
+        }
+
+        this.debug("Successfully subscribed, subscriber ID is " + id);
+        return id;
+    }
+
+    SonyAudioDeviceNode.prototype.unsubscribe = function(id)
+    {
+        if (id in this.subscribers)
+        {
+            this.debug("Unsubscribing subscriber with ID " + id);
+
+            const service = this.subscribers[id].service;
+            delete this.subscribers[id];
+
+            let found = false;
+            for (const subscriber of Object.values(this.subscribers))
+            {
+                if (subscriber.service == service)
+                {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (found)
+            {
+                this.receivers[service].updateEventMask(calculateEventMask(this.subscribers, service));
+            }
+            else
+            {
+                this.debug("Last subscriber for service '" + service + "' vanished");
+
+                this.receivers[service].disconnect();
+                delete this.receivers[service];
+            }
+        }
+        else
+        {
+            this.warn("Unknown subscriber with ID " + id);
+        }
+    }
+
+    SonyAudioDeviceNode.prototype.onStatus = function(callback)
+    {
+        this.statusListeners.push(callback);
+    }
+
+    function calculateEventMask(subscribers, service)
+    {
+        var ret = 0;
+
+        Object.values(subscribers).forEach(subscriber =>
+        {
+            if (subscriber.service == service)
+            {
+                ret = ret | subscriber.filter;
+            }
+        });
+
+        return ret;
     }
 
     RED.nodes.registerType("sony-audio-device", SonyAudioDeviceNode);
-}
+};

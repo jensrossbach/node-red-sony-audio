@@ -24,18 +24,11 @@
 
 module.exports = function(RED)
 {
-    const MSG_GET_NOTIFICATIONS = 1;
-    const MSG_SET_NOTIFICATIONS = 2;
+    const STATUS_UNCONFIGURED = {fill: "yellow", shape: "dot", text: "unconfigured"};
+    const STATUS_CONNECTING   = {fill: "grey",   shape: "dot", text: "connecting"  };
 
-    const STATUS_UNCONFIGURED = {fill: "yellow", shape: "dot", text: "unconfigured"    };
-    const STATUS_NOTCONNECTED = {fill: "grey",   shape: "dot", text: "not connected"   };
-    const STATUS_CONNECTING   = {fill: "grey",   shape: "dot", text: "connecting"      };
-    const STATUS_CONNECTED    = {fill: "blue",   shape: "dot", text: "connected"       };
-    const STATUS_READY        = {fill: "green",  shape: "dot", text: "ready"           };
-    const STATUS_ERROR        = {fill: "red",    shape: "dot", text: "connection error"};
-
-    const WebSocketClient = require("websocket").client;
     const APIFilter = require("../libs/sony-api-filter");
+    const Events = require("../libs/sony-event-constants.js");
 
 
     function SonyAudioReceiverNode(config)
@@ -45,18 +38,6 @@ module.exports = function(RED)
 
         node.config = config;
         node.name = config.name;
-
-        node.notifications = {notifyPowerStatus:               config.notifyPowerStatus,
-                              notifyStorageStatus:             config.notifyStorageStatus,
-                              notifySettingsUpdate:            config.notifySettingsUpdate,
-                              notifySWUpdateInfo:              config.notifySWUpdateInfo,
-                              notifyVolumeInformation:         config.notifyVolumeInformation,
-                              notifyExternalTerminalStatus:    config.notifyExternalTerminalStatus,
-                              notifyAvailablePlaybackFunction: config.notifyAvailablePlaybackFunction,
-                              notifyPlayingContentInfo:        config.notifyPlayingContentInfo};
-
-        node.client = null;
-        node.connection = null;
 
         function createOuputArray(filterMsgs, eventMsg)
         {
@@ -132,133 +113,77 @@ module.exports = function(RED)
             }
         }
 
-        function switchNotifications(id, disable, enable)
-        {
-            var params = {};
-
-            if (disable != null)
-            {
-                params.disabled = disable;
-            }
-
-            if (enable != null)
-            {
-                params.enabled = enable;
-            }
-
-            return {id: id,
-                    method: "switchNotifications",
-                    version: "1.0",
-                    params: [params]}
-        }
-
         node.device = RED.nodes.getNode(config.device);
-        if (node.device &&
-            (node.config.outputs > 0))
+        if (node.device && (node.config.outputs > 0))
         {
-            node.client = new WebSocketClient();
+            let filter = 0;
 
-            node.client.on("connect", function(connection)
+            switch (config.service)
             {
-                node.status(STATUS_CONNECTED);
-
-                node.debug("Client connected");
-                node.connection = connection;
-
-                connection.on("message", function(message)
+                case "system":
                 {
-                    if (message.type === "utf8")
+                    if (config.notifyPowerStatus)
                     {
-                        let msg = JSON.parse(message.utf8Data);
-
-                        if ("id" in msg)
-                        {
-                            if (msg.id == MSG_GET_NOTIFICATIONS)
-                            {
-                                let notif = msg.result[0].disabled.concat(msg.result[0].enabled);
-                                let enable = [];
-                                let disable = [];
-
-                                notif.forEach(item =>
-                                {
-                                    if ((item.name in node.notifications) && (node.notifications[item.name]))
-                                    {
-                                        enable.push(item);
-                                    }
-                                    else
-                                    {
-                                        disable.push(item);
-                                    }
-                                });
-
-                                let subscribeRequest = JSON.stringify(switchNotifications(MSG_SET_NOTIFICATIONS,
-                                                                                          (disable.length == 0) ? null : disable,
-                                                                                          (enable.length == 0) ? null : enable));
-
-                                node.debug(subscribeRequest);
-                                connection.sendUTF(subscribeRequest);
-                            }
-                            else if (msg.id == MSG_SET_NOTIFICATIONS)
-                            {
-                                node.status(STATUS_READY);
-                                node.debug("Result: " + JSON.stringify(msg.result[0]));
-                            }
-                        }
-                        else if (("method" in msg) && ("params" in msg))
-                        {
-                            if (msg.method in node.notifications)
-                            {
-                                node.debug("Event for " + msg.method + " received");
-
-                                let eventMsg = {service: node.config.service,
-                                                method: msg.method,
-                                                version: msg.version,
-                                                payload: (msg.params.length == 0) ? null : msg.params[0]};
-
-                                sendEvent(eventMsg);
-                            }
-                            else
-                            {
-                                node.error("Unsupported event: " + msg.method);
-                            }
-                        }
+                        filter = filter | Events.EVENT_SYSTEM_NOTIFY_POWER_STATUS;
                     }
-                });
+                    if (config.notifyStorageStatus)
+                    {
+                        filter = filter | Events.EVENT_SYSTEM_NOTIFY_STORAGE_STATUS;
+                    }
+                    if (config.notifySettingsUpdate)
+                    {
+                        filter = filter | Events.EVENT_SYSTEM_NOTIFY_SETTINGS_UPDATE;
+                    }
+                    if (config.notifySWUpdateInfo)
+                    {
+                        filter = filter | Events.EVENT_SYSTEM_NOTIFY_SWUPDATE_INFO;
+                    }
 
-                connection.on("error", function(error)
-                {
-                    node.status(STATUS_ERROR);
-                    node.error("Connection error: " + error.toString());
-                });
-
-                connection.on("close", function()
-                {
-                    node.status(STATUS_NOTCONNECTED);
-                    node.debug("Connection closed");
-                });
-
-                connection.sendUTF(JSON.stringify(switchNotifications(MSG_GET_NOTIFICATIONS, [], [])));
-            });
-
-            node.client.on("connectFailed", function(error)
-            {
-                node.status(STATUS_ERROR);
-                node.error("Failed to connect to Sony device: " + error.toString());
-            });
-
-            node.on("close", function()
-            {
-                if (node.connection)
-                {
-                    node.connection.close();
+                    break;
                 }
-            });
+                case "audio":
+                {
+                    if (config.notifyVolumeInformation)
+                    {
+                        filter = filter | Events.EVENT_AUDIO_NOTIFY_VOLUME_INFO;
+                    }
 
-            let url = "ws://" + node.device.host + ":" + node.device.port + "/sony/" + node.config.service;
+                    break;
+                }
+                case "avContent":
+                {
+                    if (config.notifyExternalTerminalStatus)
+                    {
+                        filter = filter | Events.EVENT_AVCONTENT_NOTIFY_EXT_TERM_STATUS;
+                    }
+                    if (config.notifyAvailablePlaybackFunction)
+                    {
+                        filter = filter | Events.EVENT_AVCONTENT_NOTIFY_AVAIL_PB_FUNCTION;
+                    }
+                    if (config.notifyPlayingContentInfo)
+                    {
+                        filter = filter | Events.EVENT_AVCONTENT_NOTIFY_PLAYING_CONTENT_INFO;
+                    }
+
+                    break;
+                }
+            }
+
+            node.device.onStatus(status =>
+            {
+                node.status(status);
+            });
 
             node.status(STATUS_CONNECTING);
-            node.debug("Connecting to: " + url);
-            node.client.connect(url);
+            node.subscribeId = node.device.subscribe(config.service, filter, msg =>
+            {
+                sendEvent(msg);
+            });
+
+            node.on("close", () =>
+            {
+                node.device.unsubscribe(node.subscribeId);
+            });
         }
         else
         {
