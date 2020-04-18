@@ -69,13 +69,21 @@ module.exports = function(RED)
             {
                 let desc = xmlConverter.xml2js(response, {compact: true});
                 let devName = desc.root.device.friendlyName._text;
-                let devURL = desc.root.device["av:X_ScalarWebAPI_DeviceInfo"]["av:X_ScalarWebAPI_BaseURL"]._text;
 
-                let matches = devURL.match(URI_REGEX);
-                if (matches !== null)
+                if (desc.root.device.hasOwnProperty("av:X_ScalarWebAPI_DeviceInfo"))
                 {
-                    RED.log.debug("Found Sony audio device: " + devName + "@" + matches[1] + ":" + matches[2]);
-                    deviceList.push({name: devName, address: {host: matches[1], port: matches[2]}});
+                    let devURL = desc.root.device["av:X_ScalarWebAPI_DeviceInfo"]["av:X_ScalarWebAPI_BaseURL"]._text;
+
+                    let matches = devURL.match(URI_REGEX);
+                    if (matches !== null)
+                    {
+                        RED.log.debug("Found Sony audio device: " + devName + "@" + matches[1] + ":" + matches[2]);
+                        deviceList.push({name: devName, address: {host: matches[1], port: matches[2]}});
+                    }
+                }
+                else
+                {
+                    RED.log.debug("Ignoring device with malformed descriptor");
                 }
             }).catch(error =>
             {
