@@ -3,6 +3,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2020-04-19
+### Added
+- Device discovery now also provides model name of each found device.
+- Added the possibility to provide the volume for setVolume command as payload of type 'number'.
+
+### Changed
+- Direct access to Sony audio control web API now abstracted by device node.
+- Manage connections to Sony audio notification API centrally from device node instead of each receiver node.
+
+### Fixed
+- Fixed error logs during device discovery for non-conform devices using Sony's SSDP search scheme.
+
 ## [1.4.0] - 2019-11-17
 ### Added
 - Device discovery to search for Sony audio devices in the network
