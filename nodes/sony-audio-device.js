@@ -29,7 +29,6 @@ module.exports = function(RED)
 
     const httpRequest = require("request-promise");
     const xmlConverter = require("xml-js");
-    const request = require("request-promise");
 
     const EventReceiver = require("../libs/sony-event-recv.js");
     const SSDPClient = require("node-ssdp").Client;
@@ -132,7 +131,7 @@ module.exports = function(RED)
                             params: (args == null) ? [] : [args]}};
 
         // this.debug(JSON.stringify(req));
-        request(req)
+        httpRequest(req)
         .then(response =>
         {
             if ("result" in response)
