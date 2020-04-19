@@ -32,7 +32,6 @@ module.exports = function(RED)
     const STATUS_SUCCESS       = {fill: "green",  shape: "dot", text: "success"             };
     const STATUS_ERROR         = {fill: "red",    shape: "dot", text: "error"               };
 
-    const request = require("request-promise");
     const APIFilter = require("../libs/sony-api-filter");
 
 
@@ -290,36 +289,13 @@ module.exports = function(RED)
         {
             setStatus(STATUS_SENDING);
 
-            var req = {method: "post",
-                       uri: node.baseURI + "/" + service,
-                       json: true,
-                       body: {id: 1,
-                              method: method,
-                              version: version,
-                              params: (args == null) ? [] : [args]}};
-
-            request(req)
-            .then(response =>
+            node.device.sendRequest(service, method, version, args, respMsg =>
             {
-                if ("result" in response)
-                {
-                    let respMsg = {service: service,
-                                   method: method,
-                                   version: version,
-                                   payload: (response.result.length == 1) ? response.result[0] : null};
+                sendResponse(context, respMsg);
+                setStatus(STATUS_SUCCESS, STATUS_TEMP_DURATION);
 
-                    sendResponse(context, respMsg);
-                    setStatus(STATUS_SUCCESS, STATUS_TEMP_DURATION);
-
-                    context.done();
-                }
-                else if ("error" in response)
-                {
-                    setStatus(STATUS_ERROR, STATUS_TEMP_DURATION);
-                    context.error(response.error[1] + " (" + response.error[0] + ")");
-                }
-            })
-            .catch(error =>
+                context.done();
+            }, error =>
             {
                 setStatus(STATUS_ERROR, STATUS_TEMP_DURATION);
                 context.error(error);
@@ -456,8 +432,6 @@ module.exports = function(RED)
 
         if (node.device)
         {
-            node.baseURI = "http://" + node.device.host + ":" + node.device.port + "/sony";
-
             if ((node.config.outputs == 0) ||
                 ((node.config.command == "setSoundSettings") &&
                  (node.config.soundSettings.length == 0)) ||

@@ -104,12 +104,12 @@ function EventReceiver(service, node)
                                                                                   (disable.length == 0) ? null : disable,
                                                                                   (enable.length == 0) ? null : enable));
 
-                        this.node.debug(subscribeRequest);
+                        // this.node.debug(subscribeRequest);
                         connection.sendUTF(subscribeRequest);
                     }
                     else if (msg.id == MSG_SET_NOTIFICATIONS)
                     {
-                        this.node.debug("Result: " + JSON.stringify(msg.result[0]));
+                        // this.node.debug("Result: " + JSON.stringify(msg.result[0]));
 
                         if (this.statusListener != null)
                         {
@@ -217,7 +217,7 @@ EventReceiver.prototype.connect = function(mask, callback)
         this.node.debug("Connecting to: " + this.url);
         this.client.connect(this.url);
     }
-}
+};
 
 EventReceiver.prototype.disconnect = function()
 {
@@ -228,7 +228,7 @@ EventReceiver.prototype.disconnect = function()
 
         this.connection = null;
     }
-}
+};
 
 EventReceiver.prototype.updateEventMask = function(mask)
 {
@@ -239,12 +239,12 @@ EventReceiver.prototype.updateEventMask = function(mask)
     {
         this.connection.sendUTF(JSON.stringify(switchNotifications(MSG_GET_NOTIFICATIONS, [], [])));
     }
-}
+};
 
 EventReceiver.prototype.registerStatusListener = function(listener)
 {
     this.statusListener = listener;
-}
+};
 
 function switchNotifications(id, disable, enable)
 {

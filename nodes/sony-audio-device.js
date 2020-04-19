@@ -29,9 +29,9 @@ module.exports = function(RED)
 
     const httpRequest = require("request-promise");
     const xmlConverter = require("xml-js");
+    const request = require("request-promise");
 
     const EventReceiver = require("../libs/sony-event-recv.js");
-
     const SSDPClient = require("node-ssdp").Client;
     var ssdpClient = new SSDPClient({explicitSocketBind: true});
 
@@ -121,7 +121,42 @@ module.exports = function(RED)
         });
     }
 
-    SonyAudioDeviceNode.prototype.subscribe = function(service, filter, callback)
+    SonyAudioDeviceNode.prototype.sendRequest = function(service, method, version, args, resultCb, errorCb)
+    {
+        const req = {method: "post",
+                     uri: "http://" + this.host + ":" + this.port + "/sony/" + service,
+                     json: true,
+                     body: {id: 1,
+                            method: method,
+                            version: version,
+                            params: (args == null) ? [] : [args]}};
+
+        // this.debug(JSON.stringify(req));
+        request(req)
+        .then(response =>
+        {
+            if ("result" in response)
+            {
+                let respMsg = {service: service,
+                               method: method,
+                               version: version,
+                               payload: (response.result.length == 1) ? response.result[0] : null};
+
+                // this.debug(JSON.stringify(respMsg));
+                resultCb(respMsg);
+            }
+            else if ("error" in response)
+            {
+                errorCb(response.error[1] + " (" + response.error[0] + ")");
+            }
+        })
+        .catch(error =>
+        {
+            errorCb(error);
+        });
+    };
+
+    SonyAudioDeviceNode.prototype.subscribeEvents = function(service, filter, callback)
     {
         this.debug("Subscribing for service '" + service + "' with filter b:" + filter.toString(2).padStart(4, "0"));
 
@@ -164,9 +199,9 @@ module.exports = function(RED)
 
         this.debug("Successfully subscribed, subscriber ID is " + id);
         return id;
-    }
+    };
 
-    SonyAudioDeviceNode.prototype.unsubscribe = function(id)
+    SonyAudioDeviceNode.prototype.unsubscribeEvents = function(id)
     {
         if (id in this.subscribers)
         {
@@ -201,12 +236,12 @@ module.exports = function(RED)
         {
             this.warn("Unknown subscriber with ID " + id);
         }
-    }
+    };
 
     SonyAudioDeviceNode.prototype.onStatus = function(callback)
     {
         this.statusListeners.push(callback);
-    }
+    };
 
     function calculateEventMask(subscribers, service)
     {

@@ -175,14 +175,14 @@ module.exports = function(RED)
             });
 
             node.status(STATUS_CONNECTING);
-            node.subscribeId = node.device.subscribe(config.service, filter, msg =>
+            node.subscribeId = node.device.subscribeEvents(config.service, filter, msg =>
             {
                 sendEvent(msg);
             });
 
             node.on("close", () =>
             {
-                node.device.unsubscribe(node.subscribeId);
+                node.device.unsubscribeEvents(node.subscribeId);
             });
         }
         else
