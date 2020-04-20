@@ -263,7 +263,7 @@ function switchNotifications(id, disable, enable)
     return {id: id,
             method: "switchNotifications",
             version: "1.0",
-            params: [params]}
+            params: [params]};
 }
 
 module.exports = EventReceiver;

@@ -26,8 +26,8 @@ module.exports =
 {
     filterData: function(data, filter)
     {
-        const URI_REGEX    = /^([a-zA-Z0-9\-]+)\:([a-zA-Z0-9\-]+)(?:\?port\=([0-9]))?$/;
-        const OUTPUT_REGEX = /^[a-zA-Z0-9\-]+\:[a-zA-Z0-9\-]+(?:\?zone\=([0-9]))?$/;
+        const URI_REGEX    = /^([a-zA-Z0-9-]+):([a-zA-Z0-9-]+)(?:\?port=([0-9]))?$/;
+        const OUTPUT_REGEX = /^[a-zA-Z0-9-]+:[a-zA-Z0-9-]+(?:\?zone=([0-9]))?$/;
 
         function filterVolumeInfo(data, getFilteredData)
         {
@@ -47,9 +47,9 @@ module.exports =
                 payload.push(data.payload);
             }
 
-            if (payload !== null)
+            if (payload != null)
             {
-                out = [];
+                let out = [];
                 for (let i = 0; i < payload.length; ++i)
                 {
                     let zone = 0;
@@ -57,13 +57,13 @@ module.exports =
                     {
                         let matches = payload[i].output.match(OUTPUT_REGEX);
 
-                        if ((matches !== null) && (matches[1] !== null))
+                        if ((matches != null) && (matches[1] != null))
                         {
                             zone = Number(matches[1]);
                         }
                     }
 
-                    flt = getFilteredData(payload[i], zone);
+                    let flt = getFilteredData(payload[i], zone);
                     if (flt != null) { out.push(flt); }
                 }
 
@@ -148,13 +148,13 @@ module.exports =
                     uri = data.payload.uri;
                 }
 
-                if (uri !== null)
+                if (uri != null)
                 {
                     let matches = uri.match(URI_REGEX);
-                    if (matches !== null)
+                    if (matches != null)
                     {
                         let source = {scheme: matches[1], resource: matches[2]};
-                        if (matches[3] !== null)
+                        if (matches[3] != null)
                         {
                             source.port = Number(matches[3]);
                         }
@@ -288,4 +288,4 @@ module.exports =
 
         return outputMsg;
     }
-}
+};

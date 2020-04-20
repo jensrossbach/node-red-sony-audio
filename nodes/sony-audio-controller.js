@@ -54,7 +54,7 @@ module.exports = function(RED)
             var matches = topic.match(TOPIC_REGEX);
             var api = null;
 
-            if (matches !== null)
+            if (matches != null)
             {
                 api = {service: matches[1], method: matches[2], version: matches[3]};
             }
@@ -306,7 +306,7 @@ module.exports = function(RED)
         {
             var filteredMsgs = [];
 
-            if (node.config.outFilters && (respMsg.payload !== null))
+            if (node.config.outFilters && (respMsg.payload != null))
             {
                 for (let i=0; i<node.config.outputPorts.length; ++i)
                 {
@@ -651,7 +651,7 @@ module.exports = function(RED)
 
                                     if (typeof msg.payload.source.port == "number")
                                     {
-                                        args.port = msg.payload.source.port
+                                        args.port = msg.payload.source.port;
                                     }
                                 }
 
@@ -852,4 +852,4 @@ module.exports = function(RED)
     }
 
     RED.nodes.registerType("sony-audio-controller", SonyAudioControllerNode);
-}
+};

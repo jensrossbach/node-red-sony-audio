@@ -63,7 +63,7 @@ module.exports = function(RED)
         {
             var filteredMsgs = [];
 
-            if (node.config.outFilters && (eventMsg.payload !== null))
+            if (node.config.outFilters && (eventMsg.payload != null))
             {
                 for (let i=0; i<node.config.outputPorts.length; ++i)
                 {
@@ -192,4 +192,4 @@ module.exports = function(RED)
     }
 
     RED.nodes.registerType("sony-audio-receiver", SonyAudioReceiverNode);
-}
+};

@@ -25,7 +25,7 @@
 module.exports = function(RED)
 {
     const DISCOVERY_SEARCH_TARGET = "urn:schemas-sony-com:service:ScalarWebAPI:1";
-    const URI_REGEX               = /^http\:\/\/([a-zA-Z0-9\.\-]+)\:([0-9]+)\/sony$/;
+    const URI_REGEX               = /^http:\/\/([a-zA-Z0-9.-]+):([0-9]+)\/sony$/;
 
     const httpRequest = require("request-promise");
     const xmlConverter = require("xml-js");
@@ -60,7 +60,7 @@ module.exports = function(RED)
         }
     });
 
-    ssdpClient.on("response", function(headers, code, rinfo)
+    ssdpClient.on("response", function(headers, code)
     {
         if (code == 200)
         {
@@ -70,12 +70,12 @@ module.exports = function(RED)
                 let devName = desc.root.device.friendlyName._text;
                 let modelName = desc.root.device.modelName._text;
 
-                if (desc.root.device.hasOwnProperty("av:X_ScalarWebAPI_DeviceInfo"))
+                if (Object.prototype.hasOwnProperty.call(desc.root.device, "av:X_ScalarWebAPI_DeviceInfo"))
                 {
                     let devURL = desc.root.device["av:X_ScalarWebAPI_DeviceInfo"]["av:X_ScalarWebAPI_BaseURL"]._text;
 
                     let matches = devURL.match(URI_REGEX);
-                    if (matches !== null)
+                    if (matches != null)
                     {
                         RED.log.debug("Found Sony audio device: " + modelName + "/" + devName + "@" + matches[1] + ":" + matches[2]);
                         deviceList.push({name: devName, model: modelName, address: {host: matches[1], port: matches[2]}});
