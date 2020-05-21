@@ -185,7 +185,7 @@ function EventReceiver(service, node)
         connection.sendUTF(JSON.stringify(switchNotifications(MSG_GET_NOTIFICATIONS, [], [])));
     });
 
-    this.client.on("connectFailed", function(error)
+    this.client.on("connectFailed", error =>
     {
         this.node.error("Connection failed: " + error.toString());
         if (this.statusListener != null)
