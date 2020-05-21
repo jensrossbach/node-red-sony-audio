@@ -24,8 +24,8 @@
 
 module.exports = function(RED)
 {
-    const STATUS_UNCONFIGURED = {fill: "yellow", shape: "dot", text: "unconfigured"};
-    const STATUS_CONNECTING   = {fill: "grey",   shape: "dot", text: "connecting"  };
+    const STATUS_UNCONFIGURED = {fill: "yellow", shape: "dot", text: "receiver.status.unconfigured"};
+    const STATUS_CONNECTING   = {fill: "grey",   shape: "dot", text: "receiver.status.connecting"  };
 
     const APIFilter = require("../libs/sony-api-filter");
     const Events = require("../libs/sony-event-constants.js");

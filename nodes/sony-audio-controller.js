@@ -26,11 +26,11 @@ module.exports = function(RED)
 {
     const STATUS_TEMP_DURATION = 5000;
 
-    const STATUS_UNCONFIGURED  = {fill: "yellow", shape: "dot", text: "unconfigured"        };
-    const STATUS_MISCONFIGURED = {fill: "yellow", shape: "dot", text: "configuration errors"};
-    const STATUS_SENDING       = {fill: "grey",   shape: "dot", text: "sending"             };
-    const STATUS_SUCCESS       = {fill: "green",  shape: "dot", text: "success"             };
-    const STATUS_ERROR         = {fill: "red",    shape: "dot", text: "error"               };
+    const STATUS_UNCONFIGURED  = {fill: "yellow", shape: "dot", text: "controller.status.unconfigured"       };
+    const STATUS_MISCONFIGURED = {fill: "yellow", shape: "dot", text: "controller.status.configurationErrors"};
+    const STATUS_SENDING       = {fill: "grey",   shape: "dot", text: "controller.status.sending"            };
+    const STATUS_SUCCESS       = {fill: "green",  shape: "dot", text: "controller.status.success"            };
+    const STATUS_ERROR         = {fill: "red",    shape: "dot", text: "controller.status.error"              };
 
     const APIFilter = require("../libs/sony-api-filter");
 

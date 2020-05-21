@@ -30,7 +30,10 @@ SOFTWARE.
         icon:         "sony.png",
         inputs:       1,
         outputs:      1,
-        inputLabels:  "trigger/overrides",
+        inputLabels:  function()
+        {
+            return this._("controller.label.inputPort");
+        },
         paletteLabel: "controller",
         label: function()
         {
@@ -61,7 +64,7 @@ SOFTWARE.
             },
             outputPorts:
             {
-                value: [{label: "filter: auto", filter: {name: "auto"}}]
+                value: [{label: "", filter: {name: "auto"}}]
             },
             outFilters:
             {
@@ -216,31 +219,31 @@ SOFTWARE.
                     }
 
                     var soundTarget = $("<select/>", {class: "node-input-soundTarget"}).appendTo(item);
-                    soundTarget.append($("<option></option>").val("soundField").text("Sound Field"));
-                    soundTarget.append($("<option></option>").val("clearAudio").text("Clear Audio +"));
-                    soundTarget.append($("<option></option>").val("nightMode").text("Night Mode"));
-                    soundTarget.append($("<option></option>").val("footballMode").text("Football Mode"));
-                    soundTarget.append($("<option></option>").val("voice").text("Voice"));
+                    soundTarget.append($("<option></option>").val("soundField").text(node._("controller.list.soundTarget.soundField")));
+                    soundTarget.append($("<option></option>").val("clearAudio").text(node._("controller.list.soundTarget.clearAudio")));
+                    soundTarget.append($("<option></option>").val("nightMode").text(node._("controller.list.soundTarget.nightMode")));
+                    soundTarget.append($("<option></option>").val("footballMode").text(node._("controller.list.soundTarget.footballMode")));
+                    soundTarget.append($("<option></option>").val("voice").text(node._("controller.list.soundTarget.voice")));
 
                     var soundFieldContainer = $("<span/>", {id: "item-elem-soundField-" + index,
                                                             style: "padding-left: 10px;"}).appendTo(item);
                     var soundField = $("<select/>", {class: "node-input-soundField",
                                                      style: "width: 120px;"}).appendTo(soundFieldContainer);
-                    soundField.append($("<option></option>").val("off").text("Off"));
-                    soundField.append($("<option></option>").val("standard").text("Standard"));
-                    soundField.append($("<option></option>").val("clearAudio").text("Clear Audio +"));
-                    soundField.append($("<option></option>").val("music").text("Music"));
-                    soundField.append($("<option></option>").val("movie").text("Movie"));
-                    soundField.append($("<option></option>").val("sports").text("Sports"));
-                    soundField.append($("<option></option>").val("game").text("Game"));
+                    soundField.append($("<option></option>").val("off").text(node._("controller.list.soundField.off")));
+                    soundField.append($("<option></option>").val("standard").text(node._("controller.list.soundField.standard")));
+                    soundField.append($("<option></option>").val("clearAudio").text(node._("controller.list.soundField.clearAudio")));
+                    soundField.append($("<option></option>").val("music").text(node._("controller.list.soundField.music")));
+                    soundField.append($("<option></option>").val("movie").text(node._("controller.list.soundField.movie")));
+                    soundField.append($("<option></option>").val("sports").text(node._("controller.list.soundField.sports")));
+                    soundField.append($("<option></option>").val("game").text(node._("controller.list.soundField.game")));
 
                     var voiceTypeContainer = $("<span/>", {id: "item-elem-voiceType-" + index,
                                                            style: "padding-left: 10px;"}).appendTo(item);
                     var voiceType = $("<select/>", {class: "node-input-voiceType",
                                                     style: "width: 120px;"}).appendTo(voiceTypeContainer);
-                    voiceType.append($("<option></option>").val("type1").text("Type 1"));
-                    voiceType.append($("<option></option>").val("type2").text("Type 2"));
-                    voiceType.append($("<option></option>").val("type3").text("Type 3"));
+                    voiceType.append($("<option></option>").val("type1").text(node._("controller.list.voiceType.type1")));
+                    voiceType.append($("<option></option>").val("type2").text(node._("controller.list.voiceType.type2")));
+                    voiceType.append($("<option></option>").val("type3").text(node._("controller.list.voiceType.type3")));
 
                     var switchedOnContainer = $("<span/>", {id: "item-elem-switchedOn-" + index,
                                                             style: "padding-left: 10px;"}).appendTo(item);
@@ -249,7 +252,7 @@ SOFTWARE.
                                                     type: "checkbox",
                                                     style: "vertical-align: text-bottom; width: auto;"}).appendTo(switchedOnContainer);
                     $("<label/>", {for: "node-input-switchedOn-" + index,
-                                   style: "padding-left: 4px;"}).text("Switched On").appendTo(switchedOnContainer);
+                                   style: "padding-left: 4px;"}).text(node._("controller.label.switchedOn")).appendTo(switchedOnContainer);
 
                     soundTarget.change(function()
                     {
@@ -303,36 +306,36 @@ SOFTWARE.
                     }
 
                     var modeType = $("<select/>", {class: "node-input-modeTarget"}).appendTo(item);
-                    modeType.append($("<option></option>").val("playType").text("Playback Mode"));
-                    modeType.append($("<option></option>").val("repeatType").text("Repeat Mode"));
-                    modeType.append($("<option></option>").val("shuffleType").text("Shuffle Mode"));
+                    modeType.append($("<option></option>").val("playType").text(node._("controller.list.modeTarget.playType")));
+                    modeType.append($("<option></option>").val("repeatType").text(node._("controller.list.modeTarget.repeatType")));
+                    modeType.append($("<option></option>").val("shuffleType").text(node._("controller.list.modeTarget.shuffleType")));
 
                     var playTypeContainer = $("<span/>", {id: "item-elem-playType-" + index,
                                                             style: "padding-left: 10px;"}).appendTo(item);
                     var playType = $("<select/>", {class: "node-input-playType",
                                                    style: "width: 120px;"}).appendTo(playTypeContainer);
-                    playType.append($("<option></option>").val("normal").text("Normal"));
-                    playType.append($("<option></option>").val("repeatAll").text("Folder"));
-                    playType.append($("<option></option>").val("repeatFolder").text("Repeat All"));
-                    playType.append($("<option></option>").val("repeatTrack").text("Repeat Track"));
-                    playType.append($("<option></option>").val("shuffleAll").text("Shuffle All"));
+                    playType.append($("<option></option>").val("normal").text(node._("controller.list.playType.normal")));
+                    playType.append($("<option></option>").val("repeatAll").text(node._("controller.list.playType.repeatAll")));
+                    playType.append($("<option></option>").val("repeatFolder").text(node._("controller.list.playType.repeatFolder")));
+                    playType.append($("<option></option>").val("repeatTrack").text(node._("controller.list.playType.repeatTrack")));
+                    playType.append($("<option></option>").val("shuffleAll").text(node._("controller.list.playType.shuffleAll")));
 
                     var repeatTypeContainer = $("<span/>", {id: "item-elem-repeatType-" + index,
                                                             style: "padding-left: 10px;"}).appendTo(item);
                     var repeatType = $("<select/>", {class: "node-input-repeatType",
                                                     style: "width: 120px;"}).appendTo(repeatTypeContainer);
-                    repeatType.append($("<option></option>").val("off").text("Off"));
-                    repeatType.append($("<option></option>").val("all").text("All"));
-                    repeatType.append($("<option></option>").val("folder").text("Folder"));
-                    repeatType.append($("<option></option>").val("track").text("Track"));
-                    repeatType.append($("<option></option>").val("chapter").text("Chapter"));
+                    repeatType.append($("<option></option>").val("off").text(node._("controller.list.repeatType.off")));
+                    repeatType.append($("<option></option>").val("all").text(node._("controller.list.repeatType.all")));
+                    repeatType.append($("<option></option>").val("folder").text(node._("controller.list.repeatType.folder")));
+                    repeatType.append($("<option></option>").val("track").text(node._("controller.list.repeatType.track")));
+                    repeatType.append($("<option></option>").val("chapter").text(node._("controller.list.repeatType.chapter")));
 
                     var shuffleTypeContainer = $("<span/>", {id: "item-elem-shuffleType-" + index,
                                                              style: "padding-left: 10px;"}).appendTo(item);
                     var shuffleType = $("<select/>", {class: "node-input-shuffleType",
                                                       style: "width: 120px;"}).appendTo(shuffleTypeContainer);
-                    shuffleType.append($("<option></option>").val("off").text("Off"));
-                    shuffleType.append($("<option></option>").val("folder").text("Folder"));
+                    shuffleType.append($("<option></option>").val("off").text(node._("controller.list.shuffleType.off")));
+                    shuffleType.append($("<option></option>").val("folder").text(node._("controller.list.shuffleType.folder")));
 
                     modeType.change(function()
                     {
@@ -524,16 +527,16 @@ SOFTWARE.
 
                     var filterName = $("<select/>", {class: "node-input-filterName",
                                                      style: "width: 200px;"}).appendTo(item);
-                    filterName.append($("<option></option>").val("auto").text("Auto"));
-                    filterName.append($("<option></option>").val("powered").text("Powered"));
-                    filterName.append($("<option></option>").val("standby").text("Standby"));
-                    filterName.append($("<option></option>").val("swupdate").text("Software Update"));
-                    filterName.append($("<option></option>").val("source").text("Source"));
-                    filterName.append($("<option></option>").val("absoluteVolume").text("Absolute Volume"));
-                    filterName.append($("<option></option>").val("relativeVolume").text("Relative Volume"));
-                    filterName.append($("<option></option>").val("muted").text("Muted"));
-                    filterName.append($("<option></option>").val("soundSetting").text("Sound Setting"));
-                    filterName.append($("<option></option>").val("playbackMode").text("Playback Mode"));
+                    filterName.append($("<option></option>").val("auto").text(node._("controller.list.filter.auto")));
+                    filterName.append($("<option></option>").val("powered").text(node._("controller.list.filter.powered")));
+                    filterName.append($("<option></option>").val("standby").text(node._("controller.list.filter.standby")));
+                    filterName.append($("<option></option>").val("swupdate").text(node._("controller.list.filter.swupdate")));
+                    filterName.append($("<option></option>").val("source").text(node._("controller.list.filter.source")));
+                    filterName.append($("<option></option>").val("absoluteVolume").text(node._("controller.list.filter.absoluteVolume")));
+                    filterName.append($("<option></option>").val("relativeVolume").text(node._("controller.list.filter.relativeVolume")));
+                    filterName.append($("<option></option>").val("muted").text(node._("controller.list.filter.muted")));
+                    filterName.append($("<option></option>").val("soundSetting").text(node._("controller.list.filter.soundSetting")));
+                    filterName.append($("<option></option>").val("playbackMode").text(node._("controller.list.filter.playbackMode")));
 
                     var explicitContainer = $("<span/>", {id: "item-elemExplicit-" + index,
                                                           style: "padding-left: 10px;"}).appendTo(item);
@@ -542,7 +545,7 @@ SOFTWARE.
                                                   type: "checkbox",
                                                   style: "vertical-align: text-bottom; width: auto;"}).appendTo(explicitContainer);
                     $("<label/>", {for: "node-input-filterExplicit-" + index,
-                                   style: "padding-left: 4px;"}).text("Explicit").appendTo(explicitContainer);
+                                   style: "padding-left: 4px;"}).text(node._("controller.label.explicit")).appendTo(explicitContainer);
 
                     var idx = $("<span/>", {style: "float: right; margin-top: 6px;"}).appendTo(item);
                     idx.append(" &#8594; <span class=\"node-input-filterIndex\">" + (index + 1) + "</span> ");
@@ -668,14 +671,14 @@ SOFTWARE.
                         filter.explicit = $(this).find(".node-input-filterExplicit").prop("checked");
                     }
 
-                    node.outputPorts.push({label: "filter: " + filter.name, filter: filter});
+                    node.outputPorts.push({label: node._("controller.label.filterPort") + ": " + filter.name, filter: filter});
                     node.outputs++;
                 });
             }
 
             if ($("#node-input-outResponse").prop("checked"))
             {
-                node.outputPorts.push({label: "response"});
+                node.outputPorts.push({label: node._("controller.label.responsePort")});
                 node.outputs++;
             }
         }
@@ -703,345 +706,149 @@ SOFTWARE.
         }
     </style>
     <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
-        <input type="text" id="node-input-name" placeholder="Name">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="controller.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]controller.label.name">
     </div>
     <div class="form-row">
-        <label for="node-input-device"><i class="fa fa-cog"></i> Device</label>
-        <input type="text" id="node-input-device" placeholder="Device">
+        <label for="node-input-device"><i class="fa fa-cog"></i> <span data-i18n="controller.label.device"></span></label>
+        <input type="text" id="node-input-device" data-i18n="[placeholder]controller.label.device">
     </div>
     <div class="form-row">
-        <label style="float: left;"><i class="fa fa-link"></i> Outputs</label>
+        <label style="float: left;"><i class="fa fa-link"></i> <span data-i18n="controller.label.outputs"></span></label>
         <div class="form-checkbox-row">
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-outFilters">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-outFilters">Filters</label>
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-outFilters" data-i18n="controller.label.filters"></label>
             </div>
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-outResponse">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-outResponse">Response</label>
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-outResponse" data-i18n="controller.label.response"></label>
             </div>
         </div>
     </div>
     <div class="form-row">
-        <label style="float: left;"><i class="fa fa-tasks"></i> Topic</label>
+        <label style="float: left;"><i class="fa fa-tasks"></i> <span data-i18n="controller.label.topic"></span></label>
         <div class="form-checkbox-row">
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-enableTopic">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-enableTopic">Enable Override</label>
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-enableTopic" data-i18n="controller.label.enableOverride"></label>
             </div>
         </div>
     </div>
     <div class="form-row"></div>
     <div class="form-row">
-        <label for="node-input-command"><i class="fa fa-exchange"></i> Command</label>
+        <label for="node-input-command"><i class="fa fa-exchange"></i> <span data-i18n="controller.label.command"></span></label>
         <select id="node-input-command">
-            <optgroup label="System">
-                <option value="getPowerStatus">Get Power Status</option>
-                <option value="powerOn">Power ON</option>
-                <option value="powerOff">Power OFF</option>
-                <option value="getSWUpdateInfo">Get SW-Update Information</option>
+            <optgroup data-i18n="[label]controller.list.service.system">
+                <option value="getPowerStatus" data-i18n="controller.list.command.getPowerStatus"></option>
+                <option value="powerOn" data-i18n="controller.list.command.powerOn"></option>
+                <option value="powerOff" data-i18n="controller.list.command.powerOff"></option>
+                <option value="getSWUpdateInfo" data-i18n="controller.list.command.getSWUpdateInfo"></option>
             </optgroup>
-            <optgroup label="Audio">
-                <option value="getVolumeInfo">Get Volume Information</option>
-                <option value="setVolume">Set Volume</option>
-                <option value="mute">Mute</option>
-                <option value="unmute">Unmute</option>
-                <option value="toggleMute">Toggle Mute</option>
-                <option value="getSoundSettings">Get Sound Settings</option>
-                <option value="setSoundSettings">Set Sound Settings</option>
+            <optgroup data-i18n="[label]controller.list.service.audio">
+                <option value="getVolumeInfo" data-i18n="controller.list.command.getVolumeInfo"></option>
+                <option value="setVolume" data-i18n="controller.list.command.setVolume"></option>
+                <option value="mute" data-i18n="controller.list.command.mute"></option>
+                <option value="unmute" data-i18n="controller.list.command.unmute"></option>
+                <option value="toggleMute" data-i18n="controller.list.command.toggleMute"></option>
+                <option value="getSoundSettings" data-i18n="controller.list.command.getSoundSettings"></option>
+                <option value="setSoundSettings" data-i18n="controller.list.command.setSoundSettings"></option>
             </optgroup>
-            <optgroup label="A/V Content">
-                <option value="getSource">Get Source</option>
-                <option value="setSource">Set Source</option>
-                <option value="getPlaybackModes">Get Playback Modes</option>
-                <option value="setPlaybackModes">Set Playback Modes</option>
-                <option value="stop">Stop</option>
-                <option value="togglePause">Toggle Pause</option>
-                <option value="skipPrev">Skip Previous</option>
-                <option value="skipNext">Skip Next</option>
-                <option value="scanBackward">Scan Backward</option>
-                <option value="scanForward">Scan Forward</option>
+            <optgroup data-i18n="[label]controller.list.service.avContent">
+                <option value="getSource" data-i18n="controller.list.command.getSource"></option>
+                <option value="setSource" data-i18n="controller.list.command.setSource"></option>
+                <option value="getPlaybackModes" data-i18n="controller.list.command.getPlaybackModes"></option>
+                <option value="setPlaybackModes" data-i18n="controller.list.command.setPlaybackModes"></option>
+                <option value="stop" data-i18n="controller.list.command.stop"></option>
+                <option value="togglePause" data-i18n="controller.list.command.togglePause"></option>
+                <option value="skipPrev" data-i18n="controller.list.command.skipPrev"></option>
+                <option value="skipNext" data-i18n="controller.list.command.skipNext"></option>
+                <option value="scanBackward" data-i18n="controller.list.command.scanBackward"></option>
+                <option value="scanForward" data-i18n="controller.list.command.scanForward"></option>
             </optgroup>
         </select>
     </div>
     <div id="form-row-swupdate" class="form-row">
-        <label for="node-input-source"><i class="fa fa-sign-in"></i> Source</label>
+        <label for="node-input-source"><i class="fa fa-sign-in"></i> <span data-i18n="controller.label.swSource"></span></label>
         <span>
             <input id="node-input-networkUpdate" type="checkbox" style="vertical-align: text-bottom; width: auto;">
-            <label for="node-input-networkUpdate" style="width: auto;">Software Update from Network</label>
+            <label for="node-input-networkUpdate" style="width: auto;" data-i18n="controller.label.networkUpdate"></label>
         </span>
     </div>
     <div id="form-row-volume" class="form-row">
-        <label for="node-input-volume"><i class="fa fa-volume-up"></i> Volume</label>
+        <label for="node-input-volume"><i class="fa fa-volume-up"></i> <span data-i18n="controller.label.volume"></span></label>
         <input id="node-input-volume" style="width: 60px; float: left;" value="1">
         <span style="padding-left: 10px;">
             <input id="node-input-relativeVolume" type="checkbox" style="vertical-align: text-bottom; width: auto;">
-            <label for="node-input-relativeVolume">Relative Volume</label>
+            <label for="node-input-relativeVolume" data-i18n="controller.label.relativeVolume"></label>
         </span>
     </div>
     <div id="form-row-source" class="form-row">
-        <label for="node-input-source"><i class="fa fa-sign-in"></i> Source</label>
+        <label for="node-input-source"><i class="fa fa-sign-in"></i> <span data-i18n="controller.label.audioSource"></span></label>
         <select id="node-input-source">
-            <option value="extInput:tv">TV</option>
-            <option value="extInput:sat-catv">SAT/CATV</option>
-            <option value="extInput:hdmi">HDMI</option>
-            <option value="extInput:video">Video</option>
-            <option value="extInput:sacd-cd">SACD/CD</option>
-            <option value="extInput:bd-dvd">BD/DVD</option>
-            <option value="storage:usb1">USB Storage</option>
-            <option value="extInput:line">Audio Line</option>
-            <option value="extInput:btAudio">Bluetooth Audio</option>
-            <option value="dlna:music">DLNA</option>
-            <option value="radio:fm">FM Radio</option>
-            <option value="extInput:game">Game</option>
-            <option value="extInput:source">Source</option>
+            <option value="extInput:tv" data-i18n="controller.list.source.tv"></option>
+            <option value="extInput:sat-catv" data-i18n="controller.list.source.satcatv"></option>
+            <option value="extInput:hdmi" data-i18n="controller.list.source.hdmi"></option>
+            <option value="extInput:video" data-i18n="controller.list.source.video"></option>
+            <option value="extInput:sacd-cd" data-i18n="controller.list.source.sacdcd"></option>
+            <option value="extInput:bd-dvd" data-i18n="controller.list.source.bddvd"></option>
+            <option value="storage:usb1" data-i18n="controller.list.source.usb"></option>
+            <option value="extInput:line" data-i18n="controller.list.source.line"></option>
+            <option value="extInput:btAudio" data-i18n="controller.list.source.bt"></option>
+            <option value="dlna:music" data-i18n="controller.list.source.dlna"></option>
+            <option value="radio:fm" data-i18n="controller.list.source.fm"></option>
+            <option value="extInput:game" data-i18n="controller.list.source.game"></option>
+            <option value="extInput:source" data-i18n="controller.list.source.source"></option>
         </select>
     </div>
     <div id="form-row-port" class="form-row">
-        <label for="node-input-port"><i class="fa fa-bookmark"></i> Port</label>
+        <label for="node-input-port"><i class="fa fa-bookmark"></i> <span data-i18n="controller.label.port"></span></label>
         <input id="node-input-port" style="width: 60px;" value="1">
     </div>
     <div id="form-row-zone" class="form-row">
-        <label for="node-input-zone"><i class="fa fa-sign-out"></i> Zone</label>
+        <label for="node-input-zone"><i class="fa fa-sign-out"></i> <span data-i18n="controller.label.zone"></span></label>
         <input id="node-input-zone" style="width: 60px;" value="1">
         <span style="padding-left: 10px;">
             <input id="node-input-allzones" type="checkbox" style="vertical-align: text-bottom; width: auto;">
-            <label for="node-input-allzones">All Zones</label>
+            <label for="node-input-allzones" data-i18n="controller.label.allZones"></label>
         </span>
     </div>
     <div id="form-row-soundSettings" class="form-row" style="padding-top: 10px">
-        <label for="node-input-filterList"><i class="fa fa-sliders"></i> Settings</label>
+        <label for="node-input-filterList"><i class="fa fa-sliders"></i> <span data-i18n="controller.label.settings"></span></label>
         <div class="form-row">
             <ol id="node-input-soundSettingsList"></ol>
         </div>
     </div>
     <div id="form-row-soundTarget" class="form-row">
-        <label for="node-input-soundTarget"><i class="fa fa-sliders"></i> Setting</label>
+        <label for="node-input-soundTarget"><i class="fa fa-sliders"></i> <span data-i18n="controller.label.setting"></span></label>
         <select id="node-input-soundTarget">
-            <option value="all">All</option>
-            <option value="soundField">Sound Field</option>
-            <option value="clearAudio">Clear Audio +</option>
-            <option value="nightMode">Night Mode</option>
-            <option value="footballMode">Football Mode</option>
-            <option value="voice">Voice</option>
+            <option value="all" data-i18n="controller.list.soundTarget.all"></option>
+            <option value="soundField" data-i18n="controller.list.soundTarget.soundField"></option>
+            <option value="clearAudio" data-i18n="controller.list.soundTarget.clearAudio"></option>
+            <option value="nightMode" data-i18n="controller.list.soundTarget.nightMode"></option>
+            <option value="footballMode" data-i18n="controller.list.soundTarget.footballMode"></option>
+            <option value="voice" data-i18n="controller.list.soundTarget.voice"></option>
         </select>
     </div>
     <div id="form-row-modeSettings" class="form-row" style="padding-top: 10px">
-        <label for="node-input-filterList"><i class="fa fa-sliders"></i> Settings</label>
+        <label for="node-input-filterList"><i class="fa fa-sliders"></i> <span data-i18n="controller.label.modes"></span></label>
         <div class="form-row">
             <ol id="node-input-modeSettingsList"></ol>
         </div>
     </div>
     <div id="form-row-modeTarget" class="form-row">
-        <label for="node-input-modeTarget"><i class="fa fa-sliders"></i> Mode</label>
+        <label for="node-input-modeTarget"><i class="fa fa-sliders"></i> <span data-i18n="controller.label.mode"></span></label>
         <select id="node-input-modeTarget">
-            <option value="all">All</option>
-            <option value="playType">Playback</option>
-            <option value="repeatType">Repeat</option>
-            <option value="shuffleType">Shuffle</option>
+            <option value="all" data-i18n="controller.list.modeTarget.all"></option>
+            <option value="playType" data-i18n="controller.list.modeTarget.playType"></option>
+            <option value="repeatType" data-i18n="controller.list.modeTarget.repeatType"></option>
+            <option value="shuffleType" data-i18n="controller.list.modeTarget.shuffleType"></option>
         </select>
     </div>
     <div id="form-row-filterList" class="form-row" style="padding-top: 10px">
-        <label for="node-input-filterList"><i class="fa fa-filter"></i> Filters</label>
+        <label for="node-input-filterList"><i class="fa fa-filter"></i> <span data-i18n="controller.label.filters"></span></label>
         <div class="form-row">
             <ol id="node-input-filterList"></ol>
         </div>
     </div>
-</script>
-
-<script type="text/x-red" data-help-name="sony-audio-controller">
-    <style>
-        .list-reset
-        {
-            border: none !important;
-            border-radius: 0 !important;
-            list-style-position: outside !important;
-            padding: 0 !important;
-            margin-bottom: 0 !important;
-        }
-    </style>
-    <p>
-        Node for controlling a Sony audio device via the Audio Control API.
-    </p>
-    <h3>Inputs</h3>
-    <p>
-        Overrides the command and/or the corresponding settings of
-        the node's command configuration.
-    </p>
-    <dl class="message-properties">
-        <dt class="optional">command<span class="property-type">string</span></dt>
-        <dd>the overridden command</dd>
-        <dt class="optional">payload<span class="property-type">object</span></dt>
-        <dd>the overridden command settings</dd>
-    </dl>
-    <p>
-        If <i>Enable Override</i> in the <i>Topic</i> section of the configuration
-        page is activated, the command can alternatively be specified in the
-        <code>msg.topic</code>.
-    </p>
-    <p>
-        If all of the following attributes are present, sends a raw /
-        low-level request to the Audio Control API ignoring the node's
-        command configuration.
-    </p>
-    <dl class="message-properties">
-        <dt class="optional">service<span class="property-type">string</span></dt>
-        <dd>the API service of the request</dd>
-        <dt class="optional">method<span class="property-type">string</span></dt>
-        <dd>the API method of the request</dd>
-        <dt class="optional">version<span class="property-type">string</span></dt>
-        <dd>the API version of the request</dd>
-        <dt class="optional">payload<span class="property-type">object</span></dt>
-        <dd>the arguments of the request</dd>
-    </dl>
-    <p>
-        If <i>Enable Override</i> in the <i>Topic</i> section of the configuration
-        page is activated, the API service, API method and API version can
-        alternatively be specified in the <code>msg.topic</code> in the form
-        <i>service</i>/<i>method</i>/<i>version</i>.
-    </p>
-    <h3>Outputs</h3>
-    <p>
-        The node provides a variable number of outputs which can be selected via
-        the configuration page. By default, only the <i>Filter</i> outputs are
-        active.
-    </p>
-    <ol class="node-ports">
-        <li>Filters
-            <p>
-                Each configured filter provides a dedicated output port to
-                which its filtered data is sent.
-            </p>
-            <dl class="message-properties">
-                <dt>payload<span class="property-type">boolean | number | string | object</span></dt>
-                <dd>
-                    Contains the filtered results of the node's operation.
-                    Messages are only sent on these ports if the result is
-                    applicable to any of the filters.
-                </dd>
-            </dl>
-        </li>
-        <li>Response
-            <p>
-                Contains the raw / low-level response as sent by the Audio
-                Control API in case the node's operation succeeded.
-            </p>
-            <dl class="message-properties">
-                <dt>service<span class="property-type">string</span></dt>
-                <dd>the API service of the request</dd>
-                <dt>method<span class="property-type">string</span></dt>
-                <dd>the API method of the request</dd>
-                <dt>version<span class="property-type">string</span></dt>
-                <dd>the API version of the request</dd>
-                <dt>payload<span class="property-type">object</span></dt>
-                <dd>the result data of the request</dd>
-            </dl>
-        </li>
-    </ol>
-    <h3>Details</h3>
-    <p>
-        This node sends requests to a Sony audio device and provides the returned
-        result. The details of the request can be set via the node's configuration
-        page. All settings (except the filters) can also be programmatically
-        overridden, see input description above.
-    </p>
-    <p>
-        For more information on the commands and their arguments as well as the
-        format of the filtered result, refer to the
-        <a href="https://github.com/jensrossbach/node-red-contrib-sony-audio-control#controller-node">online documentation</a>.
-    </p>
-    <p>
-        The node also supports a low-level mode for cases where the built-in
-        commands are not sufficient. Via specific attributes (see input description
-        above), any request supported by the Sony Audio Control API can be sent
-        to the device.
-    </p>
-    <p>
-        See Sony <a href="https://developer.sony.com/develop/audio-control-api/api-references/api-overview-2">Audio Control API</a>
-        reference for more details about the API methods and their parameters.
-    </p>
-    <h3>Configuration</h3>
-    <dl>
-        <dt>Name</dt>
-        <dd>Optionally specify a name for the node.</dd>
-        <dt>Device</dt>
-        <dd>Select / configure the Sony audio device.</dd>
-        <dt>Outputs</dt>
-        <dd>Select the outputs to be provided by the node.</dd>
-        <dt>Command</dt>
-        <dd>
-            Select the command to be sent to the device. The selected command
-            can be overridden programmatically via the <code>msg.command</code>
-            attribute.
-        </dd>
-        <dt>Source</dt>
-        <dd>
-            Select the source to be activated on the device. The selected source
-            can be overridden programmatically via the <code>source</code>
-            attribute of the <code>msg.payload</code>.
-        </dd>
-        <dt>Port</dt>
-        <dd>
-            Specify the port for HDMI sources. The value can be overridden
-            programmatically via the <code>source</code> attribute of the
-            <code>msg.payload</code>.
-        </dd>
-        <dt>Volume</dt>
-        <dd>
-            Specify the volume to set. The value can be overridden programmatically
-            via the <code>volume</code> attribute of the <code>msg.payload</code>.
-        </dd>
-        <dt>Relative Volume</dt>
-        <dd>
-            If checked, the configured volume is a relative volume step. The flag
-            can be overridden programmatically via the <code>volume</code>
-            attribute of the <code>msg.payload</code>.
-        </dd>
-        <dt>Sound Settings List</dt>
-        <dd>
-            Select the sound settings and their values. You can select multiple
-            sound settings by adding additional rows to the list. The selection
-            can be overridden programmatically via the <code>soundSettings</code>
-            attribute of the <code>msg.payload</code>.
-        </dd>
-        <dt>Setting</dt>
-        <dd>
-            Select the sound setting to be retrieved or <i>All</i> to retrieve
-            all settings. The selected setting can be overridden programmatically
-            via the <code>target</code> attribute of the <code>msg.payload</code>.
-        </dd>
-        <dt>Playback Mode List</dt>
-        <dd>
-            Select the playback modes. You can select multiple modes by adding
-            additional rows to the list. The selection can be overridden
-            programmatically via the <code>modeSettings</code> attribute of the
-            <code>msg.payload</code>.
-        </dd>
-        <dt>Mode</dt>
-        <dd>
-            Select the type of playback mode to be retrieved or <i>All</i> to retrieve
-            all modes. The selected mode type can be overridden programmatically via
-            the <code>target</code> attribute of the <code>msg.payload</code>.
-        </dd>
-        <dt>Zone</dt>
-        <dd>
-            Specify the output zone on the device. The value can be overridden
-            programmatically via the <code>zone</code> attribute of the
-            <code>msg.payload</code>.
-        </dd>
-        <dt>All Zones</dt>
-        <dd>
-            If checked, the command applies to all output zones. The same can be
-            achieved by programmatically setting the <code>zone</code>
-            attribute to 0.
-        </dd>
-        <dt>Filters</dt>
-        <dd>
-            You can use filters to filter the response data by certain criteria.
-            Add, remove or reorder filters and select the type of filter. The
-            number on the right side shows the number of the output to which the
-            result of the filter will be sent.
-        </dd>
-    </dl>
 </script>

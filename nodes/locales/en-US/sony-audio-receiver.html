@@ -1,0 +1,85 @@
+<!--
+Copyright (c) 2020 Jens-Uwe Rossbach
+
+This code is licensed under the MIT License.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+
+<script type="text/x-red" data-help-name="sony-audio-receiver">
+    <p>
+        Notifies an event from a Sony audio device via the Sony Audio Control API.
+    </p>
+    <h3>Outputs</h3>
+    <p>
+        The node provides a variable number of outputs which can be selected via
+        the configuration page. By default, only the <i>Filter</i> outputs are
+        active.
+    </p>
+    <ol class="node-ports">
+        <li>Filters
+            <p>
+                Each configured filter provides a dedicated output port to
+                which its filtered data is sent.
+            </p>
+            <dl class="message-properties">
+                <dt>payload<span class="property-type">boolean | number | string | object</span></dt>
+                <dd>
+                    Contains the filtered data of the received notification.
+                    Messages are only sent on these ports if the event data is
+                    applicable to any of the filters.
+                </dd>
+            </dl>
+        </li>
+        <li>Event
+            <p>
+                Contains the raw / low-level event data as sent by the Audio
+                Control API.
+            </p>
+            <dl class="message-properties">
+                <dt>service<span class="property-type">string</span></dt>
+                <dd>the API service of the event</dd>
+                <dt>method<span class="property-type">string</span></dt>
+                <dd>the API method of the event</dd>
+                <dt>version<span class="property-type">string</span></dt>
+                <dd>the API version of the event</dd>
+                <dt>payload<span class="property-type">object</span></dt>
+                <dd>the event data</dd>
+            </dl>
+        </li>
+    </ol>
+    <h3>Details</h3>
+    <p>
+        This node listens for notifications and provides the event data.
+    </p>
+    <p>
+        Please choose the service for the events you want to get notified and
+        select one or more corresponding notifications to subscribe for.
+    </p>
+    <p>
+        You can use filters to filter the event data by certain criteria. Add,
+        remove or reorder filters and select the type of filter. The number on
+        the right side shows the number of the output to which the result of
+        the filter will be sent.
+    <p>
+    <p>
+        See Sony <a href="https://developer.sony.com/develop/audio-control-api/api-references/api-overview-2">Audio Control API</a>
+        reference for more details about the notification methods and their parameters.
+    </p>
+</script>

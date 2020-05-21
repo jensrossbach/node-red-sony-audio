@@ -52,19 +52,21 @@ SOFTWARE.
         },
         oneditprepare: function()
         {
+            var node = this;
+
             function deviceDiscovery(msearch)
             {
                 if (msearch)
                 {
                     $("#node-config-input-discovery").attr("disabled", true);
                     $("#node-config-input-devices").attr("disabled", true);
-                    RED.notify("Searching for Sony audio devices...", "info");
+                    RED.notify(node._("device.status.searching"), "info");
                 }
 
                 $.getJSON("sony_audio_devices", {type: msearch ? "msearch" : "cached"}).done(data =>
                 {
                     $("#node-config-input-devices").find("option").remove();
-                    $("#node-config-input-devices").append($("<option></option>").val("none").text("[SELECT DEVICE]"));
+                    $("#node-config-input-devices").append($("<option></option>").val("none").text(node._("device.label.selectDevice")));
 
                     data.forEach(device =>
                     {
@@ -78,18 +80,22 @@ SOFTWARE.
 
                         if (data.length == 0)
                         {
-                            RED.notify("No devices found.", "info");
+                            RED.notify(node._("device.status.noDevices"), "info");
+                        }
+                        else if (data.length == 1)
+                        {
+                            RED.notify(node._("device.status.oneDevice"), "success");
                         }
                         else
                         {
-                            RED.notify("Found " + data.length + ((data.length > 1) ? " devices" : " device") + ".", "success");
+                            RED.notify(node._("device.status.multipleDevices", {num: data.length}), "success");
                         }
                     }
                 }).fail(error =>
                 {
                     if (msearch)
                     {
-                        RED.notify("Error retrieving devices!", "error");
+                        RED.notify(node._("device.status.error"), "error");
                     }
                 });
             }
@@ -132,46 +138,22 @@ SOFTWARE.
         }
     </style>
     <div class="form-row">
-        <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
-        <input type="text" id="node-config-input-name" placeholder="Name">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> <span data-i18n="device.label.name"></span></label>
+        <input type="text" id="node-config-input-name" data-i18n="[placeholder]device.label.name">
     </div>
     <div class="form-row">
-        <label for="node-config-input-host"><i class="fa fa-globe"></i> Host</label>
-        <input type="text" id="node-config-input-host" placeholder="Host">
+        <label for="node-config-input-host"><i class="fa fa-globe"></i> <span data-i18n="device.label.host"></span></label>
+        <input type="text" id="node-config-input-host" data-i18n="[placeholder]device.label.host">
     </div>
     <div class="form-row">
-        <label for="node-config-input-port"><i class="fa fa-bookmark"></i> Port</label>
-        <input type="text" id="node-config-input-port" placeholder="Port">
+        <label for="node-config-input-port"><i class="fa fa-bookmark"></i> <span data-i18n="device.label.port"></span></label>
+        <input type="text" id="node-config-input-port" data-i18n="[placeholder]device.label.port">
     </div>
     <div class="form-row">
-        <label for="node-config-input-port"><i class="fa fa-binoculars"></i> Discovery</label>
+        <label for="node-config-input-port"><i class="fa fa-binoculars"></i> <span data-i18n="device.label.discovery"></span></label>
         <span>
             <select id="node-config-input-devices"></select>
             <button type="button" id="node-config-input-discovery" class="red-ui-button"><i class='fa fa-refresh'></i></button>
         </span>
     </div>
-</script>
-
-<script type="text/x-red" data-help-name="sony-audio-device">
-    <p>
-        Node to configure a Sony audio device supporting the Sony Audio Control API.
-    </p>
-    <h3>Details</h3>
-    <p>
-        Please configure the networt parameters of your Sony audio device so
-        that the nodes can connect to it. You can create multiple configuration
-        nodes if you have more than one Sony audio device.
-    </p>
-    <dt>Name</dt>
-    <dd>
-        Optionally specify a name for the configuration.
-    </dd>
-    <dt>Host</dt>
-    <dd>
-        Specify the host (IP address or host name) of the device.
-    </dd>
-    <dt>Port</dt>
-    <dd>
-        Specify the port for the API service.
-    </dd>
 </script>

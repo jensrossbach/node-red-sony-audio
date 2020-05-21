@@ -28,10 +28,10 @@ const MSG_SET_NOTIFICATIONS = 2;
 const RECOVERY_DELAY  = 5000;
 const MAX_NUM_RETRIES = 5;
 
-const STATUS_NOTCONNECTED = {fill: "grey",  shape: "dot", text: "not connected"   };
-const STATUS_CONNECTED    = {fill: "blue",  shape: "dot", text: "connected"       };
-const STATUS_READY        = {fill: "green", shape: "dot", text: "ready"           };
-const STATUS_ERROR        = {fill: "red",   shape: "dot", text: "connection error"};
+const STATUS_NOTCONNECTED = {fill: "grey",  shape: "dot", text: "receiver.status.notConnected"   };
+const STATUS_CONNECTED    = {fill: "blue",  shape: "dot", text: "receiver.status.connected"      };
+const STATUS_READY        = {fill: "green", shape: "dot", text: "receiver.status.ready"          };
+const STATUS_ERROR        = {fill: "red",   shape: "dot", text: "receiver.status.connectionError"};
 
 const Events = require("../libs/sony-event-constants.js");
 

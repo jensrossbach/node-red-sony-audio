@@ -1,0 +1,54 @@
+{
+    "receiver":
+    {
+        "label":
+        {
+            "filterPort":                      "filter",
+            "eventPort":                       "event",
+            "name":                            "Name",
+            "device":                          "Device",
+            "outputs":                         "Outputs",
+            "filters":                         "Filters",
+            "event":                           "Event",
+            "events":                          "Events",
+            "service":                         "Service",
+            "notifyPowerStatus":               "Power Status",
+            "notifyStorageStatus":             "Storage Status",
+            "notifySettingsUpdate":            "Settings Update",
+            "notifySWUpdateInfo":              "Software Update Information",
+            "notifyVolumeInformation":         "Volume Information",
+            "notifyExternalTerminalStatus":    "External Terminal Status",
+            "notifyAvailablePlaybackFunction": "Available Playback Function",
+            "notifyPlayingContentInfo":        "Playing Content Information",
+            "explicit":                        "Explicit"
+        },
+        "list":
+        {
+            "service":
+            {
+                "system":    "System",
+                "audio":     "Audio",
+                "avContent": "A/V Content"
+            },
+            "filter":
+            {
+                "auto":           "Auto",
+                "powered":        "Powered",
+                "standby":        "Standby",
+                "swupdate":       "Software Update",
+                "source":         "Source",
+                "absoluteVolume": "Absolute Volume",
+                "muted":          "Muted"
+            }
+        },
+        "status":
+        {
+            "unconfigured":    "unconfigured",
+            "notConnected":    "not connected",
+            "connecting":      "connecting",
+            "connected":       "connected",
+            "ready":           "ready",
+            "connectionError": "connection error"
+        }
+    }
+}

@@ -1,0 +1,156 @@
+{
+    "controller":
+    {
+        "label":
+        {
+            "inputPort":      "trigger/overrides",
+            "filterPort":     "filter",
+            "responsePort":   "response",
+            "name":           "Name",
+            "device":         "Device",
+            "outputs":        "Outputs",
+            "response":       "Response",
+            "topic":          "Topic",
+            "enableOverride": "Enable Override",
+            "command":        "Command",
+            "audioSource":    "Source",
+            "swSource":       "Source",
+            "networkUpdate":  "Software Update from Network",
+            "volume":         "Volume",
+            "relativeVolume": "Relative Volume",
+            "setting":        "Setting",
+            "settings":       "Settings",
+            "mode":           "Mode",
+            "modes":          "Modes",
+            "port":           "Port",
+            "zone":           "Zone",
+            "allZones":       "All Zones",
+            "switchedOn":     "Switched On",
+            "filters":        "Filters",
+            "explicit":       "Explicit"
+        },
+        "list":
+        {
+            "service":
+            {
+                "system":    "System",
+                "audio":     "Audio",
+                "avContent": "A/V Content"
+            },
+            "command":
+            {
+                "getPowerStatus":   "Get Power Status",
+                "powerOn":          "Power ON",
+                "powerOff":         "Power OFF",
+                "getSWUpdateInfo":  "Get SW-Update Information",
+                "getVolumeInfo":    "Get Volume Information",
+                "setVolume":        "Set Volume",
+                "mute":             "Mute",
+                "unmute":           "Unmute",
+                "toggleMute":       "Toggle Mute",
+                "getSoundSettings": "Get Sound Settings",
+                "setSoundSettings": "Set Sound Settings",
+                "getSource":        "Get Source",
+                "setSource":        "Set Source",
+                "getPlaybackModes": "Get Playback Modes",
+                "setPlaybackModes": "Set Playback Modes",
+                "stop":             "Stop",
+                "togglePause":      "Toggle Pause",
+                "skipPrev":         "Skip Previous",
+                "skipNext":         "Skip Next",
+                "scanBackward":     "Scan Backward",
+                "scanForward":      "Scan Forward"
+            },
+            "source":
+            {
+                "tv":      "TV",
+                "satcatv": "SAT/CATV",
+                "hdmi":    "HDMI",
+                "video":   "Video",
+                "sacdcd":  "SACD/CD",
+                "bddvd":   "BD/DVD",
+                "usb":     "USB Storage",
+                "line":    "Audio Line In",
+                "bt":      "Bluetooth Audio",
+                "dlna":    "DLNA",
+                "fm":      "FM Radio",
+                "game":    "Game",
+                "source":  "Source"
+            },
+            "soundTarget":
+            {
+                "all":          "All",
+                "soundField":   "Sound Field",
+                "clearAudio":   "Clear Audio +",
+                "nightMode":    "Night Mode",
+                "footballMode": "Football Mode",
+                "voice":        "Voice"
+            },
+            "soundField":
+            {
+                "off":        "Off",
+                "standard":   "Standard",
+                "clearAudio": "Clear Audio +",
+                "music":      "Music",
+                "movie":      "Movie",
+                "sports":     "Sports",
+                "game":       "Game"
+            },
+            "voiceType":
+            {
+                "type1": "Type 1",
+                "type2": "Type 2",
+                "type3": "Type 3"
+            },
+            "modeTarget":
+            {
+                "all":         "All",
+                "playType":    "Playback",
+                "repeatType":  "Repeat",
+                "shuffleType": "Shuffle"
+            },
+            "playType":
+            {
+                "normal":       "Normal",
+                "repeatAll":    "Folder",
+                "repeatFolder": "Repeat All",
+                "repeatTrack":  "Repeat Track",
+                "shuffleAll":   "Shuffle All"
+            },
+            "repeatType":
+            {
+                "off":     "Off",
+                "all":     "All",
+                "folder":  "Folder",
+                "track":   "Track",
+                "chapter": "Chapter"
+            },
+            "shuffleType":
+            {
+                "off":    "Off",
+                "folder": "Folder"
+            },
+            "filter":
+            {
+                "auto":           "Auto",
+                "powered":        "Powered",
+                "standby":        "Standby",
+                "swupdate":       "Software Update",
+                "source":         "Source",
+                "absoluteVolume": "Absolute Volume",
+                "relativeVolume": "Relative Volume",
+                "muted":          "Muted",
+                "soundSetting":   "Sound Setting",
+                "playbackMode":   "Playback Mode"
+            }
+        },
+        "status":
+        {
+            "unconfigured":        "unconfigured",
+            "configurationErrors": "configuration errors",
+            "sending":             "sending",
+            "success":             "success",
+            "error":               "error"
+        }
+    }
+}

@@ -59,7 +59,7 @@ SOFTWARE.
             },
             outputPorts:
             {
-                value: [{label: "filter: auto", filter: {name: "auto"}}]
+                value: [{label: "", filter: {name: "auto"}}]
             },
             outFilters:
             {
@@ -153,13 +153,13 @@ SOFTWARE.
 
                     var filterName = $("<select/>", {class: "node-input-filterName",
                                                      style: "width: 200px;"}).appendTo(item);
-                    filterName.append($("<option></option>").val("auto").text("Auto"));
-                    filterName.append($("<option></option>").val("powered").text("Powered"));
-                    filterName.append($("<option></option>").val("standby").text("Standby"));
-                    filterName.append($("<option></option>").val("swupdate").text("Software Update"));
-                    filterName.append($("<option></option>").val("source").text("Source"));
-                    filterName.append($("<option></option>").val("absoluteVolume").text("Volume"));
-                    filterName.append($("<option></option>").val("muted").text("Muted"));
+                    filterName.append($("<option></option>").val("auto").text(node._("receiver.list.filter.auto")));
+                    filterName.append($("<option></option>").val("powered").text(node._("receiver.list.filter.powered")));
+                    filterName.append($("<option></option>").val("standby").text(node._("receiver.list.filter.standby")));
+                    filterName.append($("<option></option>").val("swupdate").text(node._("receiver.list.filter.swupdate")));
+                    filterName.append($("<option></option>").val("source").text(node._("receiver.list.filter.source")));
+                    filterName.append($("<option></option>").val("absoluteVolume").text(node._("receiver.list.filter.absoluteVolume")));
+                    filterName.append($("<option></option>").val("muted").text(node._("receiver.list.filter.muted")));
 
                     var explicitContainer = $("<span/>", {id: "item-elem-explicit-" + index,
                                                           style: "padding-left: 10px;"}).appendTo(item);
@@ -168,7 +168,7 @@ SOFTWARE.
                                                   type: "checkbox",
                                                   style: "vertical-align: text-bottom; width: auto;"}).appendTo(explicitContainer);
                     $("<label/>", {for: "node-input-filterExplicit-" + index,
-                                   style: "padding-left: 4px;"}).text("Explicit").appendTo(explicitContainer);
+                                   style: "padding-left: 4px;"}).text(node._("receiver.label.explicit")).appendTo(explicitContainer);
 
                     var idx = $("<span/>", {style: "float: right; margin-top: 6px;"}).appendTo(item);
                     idx.append(" &#8594; <span class=\"node-input-filterIndex\">" + (index + 1) + "</span> ");
@@ -252,14 +252,14 @@ SOFTWARE.
                         filter.explicit = $(this).find(".node-input-filterExplicit").prop("checked");
                     }
 
-                    node.outputPorts.push({label: "filter: " + filter.name, filter: filter});
+                    node.outputPorts.push({label: node._("receiver.label.filterPort") + ": " + filter.name, filter: filter});
                     node.outputs++;
                 });
             }
 
             if ($("#node-input-outEvent").prop("checked"))
             {
-                node.outputPorts.push({label: "event"});
+                node.outputPorts.push({label: node._("receiver.label.eventPort")});
                 node.outputs++;
             }
         }
@@ -287,142 +287,80 @@ SOFTWARE.
         }
     </style>
     <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
-        <input type="text" id="node-input-name" placeholder="Name">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="receiver.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]receiver.label.name">
     </div>
     <div class="form-row">
-        <label for="node-input-device"><i class="fa fa-cog"></i> Device</label>
-        <input type="text" id="node-input-device" placeholder="Device">
+        <label for="node-input-device"><i class="fa fa-cog"></i> <span data-i18n="receiver.label.device"></span></label>
+        <input type="text" id="node-input-device" data-i18n="[placeholder]receiver.label.device">
     </div>
     <div class="form-row">
-        <label style="float: left;"><i class="fa fa-link"></i> Outputs</label>
+        <label style="float: left;"><i class="fa fa-link"></i> <span data-i18n="receiver.label.outputs"></span></label>
         <div class="form-checkbox-row">
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-outFilters">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-outFilters">Filters</label>
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-outFilters" data-i18n="receiver.label.filters"></label>
             </div>
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-outEvent">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-outEvent">Event</label>
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-outEvent" data-i18n="receiver.label.event"></label>
             </div>
         </div>
     </div>
     <div class="form-row"></div>
     <div class="form-row">
-        <label for="node-input-service"><i class="fa fa-wrench"></i> Service</label>
+        <label for="node-input-service"><i class="fa fa-wrench"></i> <span data-i18n="receiver.label.service"></span></label>
         <select id="node-input-service">
-            <option value="system">System</option>
-            <option value="audio">Audio</option>
-            <option value="avContent">A/V Content</option>
+            <option value="system" data-i18n="receiver.list.service.system"></option>
+            <option value="audio" data-i18n="receiver.list.service.audio"></option>
+            <option value="avContent" data-i18n="receiver.list.service.avContent"></option>
         </select>
     </div>
     <div class="form-row">
-        <label style="float: left;"><i class="fa fa-calendar-o"></i> Events</label>
+        <label style="float: left;"><i class="fa fa-calendar-o"></i> <span data-i18n="receiver.label.events"></span></label>
         <div id="form-row-system" class="form-checkbox-row">
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-notifyPowerStatus">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyPowerStatus">Power Status</label>
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyPowerStatus" data-i18n="receiver.label.notifyPowerStatus"></label>
             </div>
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-notifyStorageStatus">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyStorageStatus">Storage Status</label>
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyStorageStatus" data-i18n="receiver.label.notifyStorageStatus"></label>
             </div>
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-notifySettingsUpdate">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifySettingsUpdate">Settings Update</label>
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifySettingsUpdate" data-i18n="receiver.label.notifySettingsUpdate"></label>
             </div>
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-notifySWUpdateInfo">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifySWUpdateInfo">Software Update Information</label>
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifySWUpdateInfo" data-i18n="receiver.label.notifySWUpdateInfo"></label>
             </div>
         </div>
         <div id="form-row-audio" class="form-checkbox-row">
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-notifyVolumeInformation">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyPowerStatus">Volume Information</label>
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyVolumeInformation" data-i18n="receiver.label.notifyVolumeInformation"></label>
             </div>
         </div>
         <div id="form-row-avcontent" class="form-checkbox-row">
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-notifyExternalTerminalStatus">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyPowerStatus">External Terminal Status</label>
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyExternalTerminalStatus" data-i18n="receiver.label.notifyExternalTerminalStatus"></label>
             </div>
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-notifyAvailablePlaybackFunction">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyStorageStatus">Available Playback Function</label>
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyAvailablePlaybackFunction" data-i18n="receiver.label.notifyAvailablePlaybackFunction"></label>
             </div>
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-notifyPlayingContentInfo">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifySettingsUpdate">Playing Content Information</label>
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyPlayingContentInfo" data-i18n="receiver.label.notifyPlayingContentInfo"></label>
             </div>
         </div>
     </div>
     <div id="form-row-filterList" class="form-row" style="padding-top: 10px">
-        <label for="node-input-filterList"><i class="fa fa-filter"></i> Filters</label>
+        <label for="node-input-filterList"><i class="fa fa-filter"></i> <span data-i18n="receiver.label.filters"></span></label>
         <div class="form-row">
             <ol id="node-input-filterList"></ol>
         </div>
     </div>
-</script>
-
-<script type="text/x-red" data-help-name="sony-audio-receiver">
-    <p>
-        Notifies an event from a Sony audio device via the Sony Audio Control API.
-    </p>
-    <h3>Outputs</h3>
-    <p>
-        The node provides a variable number of outputs which can be selected via
-        the configuration page. By default, only the <i>Filter</i> outputs are
-        active.
-    </p>
-    <ol class="node-ports">
-        <li>Filters
-            <p>
-                Each configured filter provides a dedicated output port to
-                which its filtered data is sent.
-            </p>
-            <dl class="message-properties">
-                <dt>payload<span class="property-type">boolean | number | string | object</span></dt>
-                <dd>
-                    Contains the filtered data of the received notification.
-                    Messages are only sent on these ports if the event data is
-                    applicable to any of the filters.
-                </dd>
-            </dl>
-        </li>
-        <li>Event
-            <p>
-                Contains the raw / low-level event data as sent by the Audio
-                Control API.
-            </p>
-            <dl class="message-properties">
-                <dt>service<span class="property-type">string</span></dt>
-                <dd>the API service of the event</dd>
-                <dt>method<span class="property-type">string</span></dt>
-                <dd>the API method of the event</dd>
-                <dt>version<span class="property-type">string</span></dt>
-                <dd>the API version of the event</dd>
-                <dt>payload<span class="property-type">object</span></dt>
-                <dd>the event data</dd>
-            </dl>
-        </li>
-    </ol>
-    <h3>Details</h3>
-    <p>
-        This node listens for notifications and provides the event data.
-    </p>
-    <p>
-        Please choose the service for the events you want to get notified and
-        select one or more corresponding notifications to subscribe for.
-    </p>
-    <p>
-        You can use filters to filter the event data by certain criteria. Add,
-        remove or reorder filters and select the type of filter. The number on
-        the right side shows the number of the output to which the result of
-        the filter will be sent.
-    <p>
-    <p>
-        See Sony <a href="https://developer.sony.com/develop/audio-control-api/api-references/api-overview-2">Audio Control API</a>
-        reference for more details about the notification methods and their parameters.
-    </p>
 </script>
