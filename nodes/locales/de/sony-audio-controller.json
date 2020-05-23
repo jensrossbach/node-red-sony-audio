@@ -1,0 +1,156 @@
+{
+    "controller":
+    {
+        "label":
+        {
+            "inputPort":      "auslösen/überschreiben",
+            "filterPort":     "filter",
+            "responsePort":   "Antwort",
+            "name":           "Name",
+            "device":         "Gerät",
+            "outputs":        "Ausgaben",
+            "response":       "Antwort",
+            "topic":          "Topic",
+            "enableOverride": "Überschreiben aktivieren",
+            "command":        "Kommando",
+            "audioSource":    "Quelle",
+            "swSource":       "Source",
+            "networkUpdate":  "Software-Aktualisierung über das Netzwerk",
+            "volume":         "Lautstärke",
+            "relativeVolume": "Relative Lautstärke",
+            "setting":        "Einstellung",
+            "settings":       "Einstellungen",
+            "mode":           "Abspielmodus",
+            "modes":          "Abspielmodi",
+            "port":           "Anschluss",
+            "zone":           "Zone",
+            "allZones":       "Alle Zonen",
+            "switchedOn":     "Eingeschaltet",
+            "filters":        "Filter",
+            "explicit":       "Explizit"
+        },
+        "list":
+        {
+            "service":
+            {
+                "system":    "System",
+                "audio":     "Audio",
+                "avContent": "A/V Inhalte"
+            },
+            "command":
+            {
+                "getPowerStatus":   "Power-Status abfragen",
+                "powerOn":          "Einschalten",
+                "powerOff":         "Ausschalten",
+                "getSWUpdateInfo":  "SW-Aktualisierung abfragen",
+                "getVolumeInfo":    "Lautstärkeinformationen abfragen",
+                "setVolume":        "Lautstärke setzen",
+                "mute":             "Stumm schalten",
+                "unmute":           "Stumm ausschalten",
+                "toggleMute":       "Stumm umschalten",
+                "getSoundSettings": "Klangeinstellungen abfragen",
+                "setSoundSettings": "Klangeinstellungen setzen",
+                "getSource":        "Quelle abfragen",
+                "setSource":        "Quelle setzen",
+                "getPlaybackModes": "Abspielmodi abfragen",
+                "setPlaybackModes": "Abspielmodi setzen",
+                "stop":             "Stop",
+                "togglePause":      "Pause umschalten",
+                "skipPrev":         "Rückwärts springen",
+                "skipNext":         "Vorwärts springen",
+                "scanBackward":     "Rückwärts scannen",
+                "scanForward":      "Vorwärts scannen"
+            },
+            "source":
+            {
+                "tv":      "TV",
+                "satcatv": "SAT/Kabel",
+                "hdmi":    "HDMI",
+                "video":   "Video",
+                "sacdcd":  "SACD/CD",
+                "bddvd":   "BD/DVD",
+                "usb":     "USB Speicher",
+                "line":    "Audio-Eingang",
+                "bt":      "Bluetooth Audio",
+                "dlna":    "DLNA",
+                "fm":      "FM-Radio",
+                "game":    "Spiele",
+                "source":  "Quelle"
+            },
+            "soundTarget":
+            {
+                "all":          "Alle",
+                "soundField":   "Klangfeld",
+                "clearAudio":   "Clear Audio +",
+                "nightMode":    "Nachtmodus",
+                "footballMode": "Fußballmodus",
+                "voice":        "Sprache"
+            },
+            "soundField":
+            {
+                "off":        "Aus",
+                "standard":   "Standard",
+                "clearAudio": "Clear Audio +",
+                "music":      "Musik",
+                "movie":      "Film",
+                "sports":     "Sport",
+                "game":       "Spiele"
+            },
+            "voiceType":
+            {
+                "type1": "Typ 1",
+                "type2": "Typ 2",
+                "type3": "Typ 3"
+            },
+            "modeTarget":
+            {
+                "all":         "Alle",
+                "playType":    "Abspielen",
+                "repeatType":  "Wiederholen",
+                "shuffleType": "Zufallswiedergabe"
+            },
+            "playType":
+            {
+                "normal":       "Normal",
+                "repeatAll":    "Ordner",
+                "repeatFolder": "Alle wiederholen",
+                "repeatTrack":  "Titel wiederholen",
+                "shuffleAll":   "Alle zufällig"
+            },
+            "repeatType":
+            {
+                "off":     "Aus",
+                "all":     "Alle",
+                "folder":  "Ordner",
+                "track":   "Titel",
+                "chapter": "Kapitel"
+            },
+            "shuffleType":
+            {
+                "off":    "Aus",
+                "folder": "Ordner"
+            },
+            "filter":
+            {
+                "auto":           "Auto",
+                "powered":        "Eingeschaltet",
+                "standby":        "Bereitschaft",
+                "swupdate":       "Software-Aktualisierung",
+                "source":         "Quelle",
+                "absoluteVolume": "Absolute Lautstärke",
+                "relativeVolume": "Relative Lautstärke",
+                "muted":          "Stumm",
+                "soundSetting":   "Klangeinstellungen",
+                "playbackMode":   "Abspielmodus"
+            }
+        },
+        "status":
+        {
+            "unconfigured":        "nicht konfiguriert",
+            "configurationErrors": "fehlerhafte Konfiguration",
+            "sending":             "sende",
+            "success":             "erfolgreich",
+            "error":               "fehlgeschlagen"
+        }
+    }
+}

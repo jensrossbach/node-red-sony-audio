@@ -1,0 +1,89 @@
+<!--
+Copyright (c) 2020 Jens-Uwe Rossbach
+
+This code is licensed under the MIT License.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+
+<script type="text/x-red" data-help-name="sony-audio-receiver">
+    <p>
+        Informiert über Benachrichtigungen von einem Sony Audio-Gerät mittels
+        der Sony Audio Control API.
+    </p>
+    <h3>Ausgaben</h3>
+    <p>
+        Die Node stellt eine variable Anzahl Ausgaben zur Verfügung, die über die
+        Konfigurationsseite ausgewählt werden können. Standardmäßig ist nur der
+        <i>Filter</i>-Ausgang aktiviert.
+    </p>
+    <ol class="node-ports">
+        <li>Filter
+            <p>
+                Jeder konfigurierte Filter stellt einen eigenen Ausgabe-Port
+                zur Verfügung, an den dessen gefilterte Daten geschickt werden.
+            </p>
+            <dl class="message-properties">
+                <dt>payload<span class="property-type">boolean | number | string | object</span></dt>
+                <dd>
+                    Enthält die gefilterten Daten der erhaltenen Benachrichtigung.
+                    Nachrichten werden nur dann an diese Ports geschickt, wenn die
+                    Filter auf die Daten angewendet werden können.
+                </dd>
+            </dl>
+        </li>
+        <li>Benachrichtigung
+            <p>
+                Enthält die Rohdaten-Benachrichtigung so wie sie von der Audio
+                Control API gesendet wurde.
+            </p>
+            <dl class="message-properties">
+                <dt>service<span class="property-type">string</span></dt>
+                <dd>der API-Dienst der Benachrichtigung</dd>
+                <dt>method<span class="property-type">string</span></dt>
+                <dd>die API-Methode der Benachrichtigung</dd>
+                <dt>version<span class="property-type">string</span></dt>
+                <dd>die API-Version der Benachrichtigung</dd>
+                <dt>payload<span class="property-type">object</span></dt>
+                <dd>die Argumente der Benachrichtigung</dd>
+            </dl>
+        </li>
+    </ol>
+    <h3>Details</h3>
+    <p>
+        Diese Node wartet auf Benachrichtigungen und gibt diese bei Eintreffen aus.
+    </p>
+    <p>
+        Zunächst muss der Benachrichtigungsdienst ausgewählt werden. Abhängig
+        von der Auswahl werden die vom Dienst zur Verfügung gestellten
+        Benachrichtigungen anzeigt, von denen die gewünschten selektiert
+        werden können.
+    </p>
+    <p>
+        Filter können benutzt werden, um die Benachrichtigungen vom Gerät nach
+        bestimmten Kriterien zu filtern. Es können beliebig viele Filter hinzugefügt,
+        bearbeitet oder gelöscht werden. Die Zahl an der rechten Seite gibt den
+        Ausgabeport an, zu dem die gefilterte Benachrichtigung geschickt wird.
+    <p>
+    <p>
+        Siehe Sony <a href="https://developer.sony.com/develop/audio-control-api/api-references/api-overview-2">Audio Control API</a>
+        Referenz für weitere Details über die Schnittstelle, deren Dienste, Methoden
+        und Argumente.
+    </p>
+</script>

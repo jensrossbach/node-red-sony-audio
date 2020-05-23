@@ -1,0 +1,54 @@
+{
+    "receiver":
+    {
+        "label":
+        {
+            "filterPort":                      "Filter",
+            "eventPort":                       "Benachrichtigung",
+            "name":                            "Name",
+            "device":                          "Gerät",
+            "outputs":                         "Ausgaben",
+            "filters":                         "Filter",
+            "event":                           "Benachrichtigung",
+            "events":                          "Benachr.",
+            "service":                         "Dienst",
+            "notifyPowerStatus":               "Power-Status",
+            "notifyStorageStatus":             "Speicher-Status",
+            "notifySettingsUpdate":            "Einstellungsaktualisierung",
+            "notifySWUpdateInfo":              "Software-Aktualisierungsinformationen",
+            "notifyVolumeInformation":         "Lautstärkeinformationen",
+            "notifyExternalTerminalStatus":    "Externer Terminal-Status",
+            "notifyAvailablePlaybackFunction": "Verfügbare Abspielfunktionen",
+            "notifyPlayingContentInfo":        "Abspielinformationen",
+            "explicit":                        "Explizit"
+        },
+        "list":
+        {
+            "service":
+            {
+                "system":    "System",
+                "audio":     "Audio",
+                "avContent": "A/V Inhalte"
+            },
+            "filter":
+            {
+                "auto":           "Auto",
+                "powered":        "Eingeschaltet",
+                "standby":        "Bereitschaft",
+                "swupdate":       "Software-Aktualisierung",
+                "source":         "Quelle",
+                "absoluteVolume": "Absolute Lautstärke",
+                "muted":          "Stumm"
+            }
+        },
+        "status":
+        {
+            "unconfigured":    "nicht konfiguriert",
+            "notConnected":    "nicht verbunden",
+            "connecting":      "verbinde",
+            "connected":       "verbunden",
+            "ready":           "bereit",
+            "connectionError": "fehlgeschlagen"
+        }
+    }
+}

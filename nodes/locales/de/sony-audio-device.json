@@ -1,0 +1,21 @@
+{
+    "device":
+    {
+        "label":
+        {
+            "name":         "Name",
+            "host":         "Host",
+            "port":         "Port",
+            "discovery":    "Suche",
+            "selectDevice": "[GERÄT WÄHLEN]"
+        },
+        "status":
+        {
+            "searching":       "Suche nach Sony Audio-Geräten...",
+            "noDevices":       "Es wurden keine Geräte gefunden.",
+            "oneDevice":       "Es wurde 1 Gerät gefunden.",
+            "multipleDevices": "Es wurden __num__ Geräte gefunden.",
+            "error":           "Fehler beim Suchen nach Geräten!"
+        }
+    }
+}

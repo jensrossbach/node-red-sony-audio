@@ -1,0 +1,225 @@
+<!--
+Copyright (c) 2020 Jens-Uwe Rossbach
+
+This code is licensed under the MIT License.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+
+<script type="text/x-red" data-help-name="sony-audio-controller">
+    <style>
+        .list-reset
+        {
+            border: none !important;
+            border-radius: 0 !important;
+            list-style-position: outside !important;
+            padding: 0 !important;
+            margin-bottom: 0 !important;
+        }
+    </style>
+    <p>
+        Node zum Steuern eines Sony Audio-Geräts über die Audio Control API.
+    </p>
+    <h3>Eingaben</h3>
+    <p>
+        Überschreibt das Kommando und/oder die dazugehörigen Einstellungen
+        der Kommando-Konfiguration der Node.
+    </p>
+    <dl class="message-properties">
+        <dt class="optional">command<span class="property-type">string</span></dt>
+        <dd>das überschriebene Kommando</dd>
+        <dt class="optional">payload<span class="property-type">object</span></dt>
+        <dd>die überschriebenen Kommando-Einstellungen</dd>
+    </dl>
+    <p>
+        Wenn <i>Überschreiben aktivieren</i> im Abschnitt <i>Topic</i> der Konfiguration
+        aktiviert ist, kann das Kommando alternativ über <code>msg.topic</code> angegeben
+        werden.
+    </p>
+    <p>
+        Wenn alle der folgenden Rohdaten-Attribute vorhanden sind, wird eine direkte
+        Anfrage an die Audio Control API geschickt und die Kommando-Konfiguration der
+        Node ignoriert.
+    </p>
+    <dl class="message-properties">
+        <dt class="optional">service<span class="property-type">string</span></dt>
+        <dd>der API-Dienst der Anfrage</dd>
+        <dt class="optional">method<span class="property-type">string</span></dt>
+        <dd>die API-Methode der Anfrage</dd>
+        <dt class="optional">version<span class="property-type">string</span></dt>
+        <dd>die API-Version der Anfrage</dd>
+        <dt class="optional">payload<span class="property-type">object</span></dt>
+        <dd>die Argumente der Anfrage</dd>
+    </dl>
+    <p>
+        Wenn <i>Überschreiben aktivieren</i> im Abschnitt <i>Topic</i> der Konfiguration
+        aktiviert ist, können der API-Dienst, die API-Methode und die API-Version
+        alternativ über <code>msg.topic</code> in der Form <i>Dienst</i>/<i>Methode</i>/<i>Version</i>
+        angegeben werden.
+    </p>
+    <h3>Ausgaben</h3>
+    <p>
+        Die Node stellt eine variable Anzahl Ausgaben zur Verfügung, die über die
+        Konfigurationsseite ausgewählt werden können. Standardmäßig ist nur der
+        <i>Filter</i>-Ausgang aktiviert.
+    </p>
+    <ol class="node-ports">
+        <li>Filter
+            <p>
+                Jeder konfigurierte Filter stellt einen eigenen Ausgabe-Port
+                zur Verfügung, an den dessen gefilterte Daten geschickt werden.
+            </p>
+            <dl class="message-properties">
+                <dt>payload<span class="property-type">boolean | number | string | object</span></dt>
+                <dd>
+                    Enthält die gefilterten Ergebnisse der Node-Aktion. Nachrichten
+                    werden nur dann an diese Ports geschickt, wenn die Filter auf
+                    die Daten angewendet werden können.
+                </dd>
+            </dl>
+        </li>
+        <li>Antwort
+            <p>
+                Enthält die Rohdaten-Antwort so wie sie von der Audio Control
+                API gesendet wurde, sofern die Aktion erfolgreich war.
+            </p>
+            <dl class="message-properties">
+                <dt>service<span class="property-type">string</span></dt>
+                <dd>der API-Dienst der Anfrage</dd>
+                <dt>method<span class="property-type">string</span></dt>
+                <dd>die API-Methode der Anfrage</dd>
+                <dt>version<span class="property-type">string</span></dt>
+                <dd>die API-Version der Anfrage</dd>
+                <dt>payload<span class="property-type">object</span></dt>
+                <dd>die Argumente der Anfrage</dd>
+            </dl>
+        </li>
+    </ol>
+    <h3>Details</h3>
+    <p>
+        Diese Node sendet Anfragen an ein Sony Audio-Gerät und stellt die
+        zurückgeschickte Antwort zur Verfügung. Die Details der Anfrage können
+        über die Konfigurationsseite eingestellt werden. Alle Einstellungen bis
+        auf die Filter können zusätzlich programmatisch überschrieben werden,
+        siehe Beschreibung der Eingaben oben.
+    </p>
+    <p>
+        Für weitere Informationen zu den Kommandos und deren Argumenten sowie zu
+        dem Format der gefilterten Ergebnisse, siehe
+        <a href="https://github.com/jensrossbach/node-red-contrib-sony-audio-control#controller-node">Online-Documentation</a>
+        (nur in Englisch).
+    </p>
+    <p>
+        Die Node unterstützt auch einen direkten Modus für Anfragen, die nicht über
+        die verfügbaren Kommandos abgedeckt sind. Mithilfe von speziellen Attributen
+        (siehe Eingaben-Beschreibung oben) kann eine beliebige Anfrage, sofern sie
+        von der Sony Audio Control API unterstützt wird, an das Gerät gesendet werden.
+    </p>
+    <p>
+        Siehe Sony <a href="https://developer.sony.com/develop/audio-control-api/api-references/api-overview-2">Audio Control API</a>
+        Referenz für weitere Details über die Schnittstelle, deren Dienste, Methoden
+        und Argumente.
+    </p>
+    <h3>Konfiguration</h3>
+    <dl>
+        <dt>Name</dt>
+        <dd>Name für die Node (optional).</dd>
+        <dt>Gerät</dt>
+        <dd>Auswahl/Konfiguration des Sony Audio-Geräts.</dd>
+        <dt>Ausgaben</dt>
+        <dd>Ausgabe-Ports, die sichtbar sein sollen.</dd>
+        <dt>Kommando</dt>
+        <dd>
+            Kommando der Anfrage an das Gerät. Das ausgewählte Kommando kann
+            programmatisch über <code>msg.command</code> überschrieben werden.
+        </dd>
+        <dt>Quelle</dt>
+        <dd>
+            Quelle, die auf dem Gerät aktiviert werden soll. Die ausgewählte
+            Quelle kann programmatisch über das <code>source</code>-Attribut
+            in <code>msg.payload</code> überschrieben werden.
+        </dd>
+        <dt>Port</dt>
+        <dd>
+            Port-Nummer von HDMI-Quellen. Der Wert kann programmatisch über
+            das <code>source</code>-Attribut in <code>msg.payload</code>
+            überschrieben werden.
+        </dd>
+        <dt>Lautstärke</dt>
+        <dd>
+            Lautstärke, die eingestellt werden soll. Der Wert kann programmatisch
+            über das <code>volume</code>-Attribut in <code>msg.payload</code>
+            überschrieben werden.
+        </dd>
+        <dt>Relative Lautstärke</dt>
+        <dd>
+            Wenn aktiviert, wird die eingestellte Lautstärke als relativer
+            Lautstärkenschritt interpretiert. Die Eigenschaft kann programmatisch
+            über das <code>volume</code>-Attribut in <code>msg.payload</code>
+            überschrieben werden.
+        </dd>
+        <dt>Klangeinstellungsliste</dt>
+        <dd>
+            Liste der Klangeinstellungen, die aktiviert werden sollen. Mehrere
+            Einstellungen können durch hinzufügen weiterer Zeilen ausgewählt
+            werden. Die Auswahl kann programmatisch über das <code>soundSettings</code>-Attribut
+            in <code>msg.payload</code> überschrieben werden.
+        </dd>
+        <dt>Einstellung</dt>
+        <dd>
+            Klangeinstellung, die angefragt werden soll, oder <i>Alle</i>, um
+            alle Einstellungen abzufragen. Die ausgewählte Einstellung kann
+            programmatisch über das <code>target</code>-Attribut in <code>msg.payload</code>
+            überschrieben werden.
+        </dd>
+        <dt>Abspielmodusliste</dt>
+        <dd>
+            Liste der Abspielmodi, die aktiviert werden sollen. Mehrere
+            Modi können durch hinzufügen weiterer Zeilen ausgewählt werden.
+            Die Auswahl kann programmatisch über das <code>modeSettings</code>-Attribut
+            in <code>msg.payload</code> überschrieben werden.
+        </dd>
+        <dt>Modus</dt>
+        <dd>
+            Abspielmodus, der angefragt werden soll, oder <i>Alle</i>, um
+            alle Modi abzufragen. Der ausgewählte Modus kann programmatisch
+            über das <code>target</code>-Attribut in <code>msg.payload</code>
+            überschrieben werden.
+        </dd>
+        <dt>Zone</dt>
+        <dd>
+            Zone, auf der Audio ausgegeben wird. Der Wert kann programmatisch
+            über das <code>zone</code>-Attribut in <code>msg.payload</code>
+            überschrieben werden.
+        </dd>
+        <dt>Alle Zonen</dt>
+        <dd>
+            Wenn aktiviert, bezieht sich das Kommando auf alle Ausgabezonen anstatt
+            eine speziellen. Das gleiche kann programmatisch erreicht werden, indem
+            das Attribut <code>zone</code> auf 0 gesetzt wird.
+        </dd>
+        <dt>Filter</dt>
+        <dd>
+            Filter können benutzt werden, um die Antworten vom Gerät nach bestimmten
+            Kriterien zu filtern. Es können beliebig viele Filter hinzugefügt,
+            bearbeitet oder gelöscht werden. Die Zahl an der rechten Seite gibt
+            den Ausgabeport an, zu dem die gefilterte Antwort geschickt wird.
+        </dd>
+    </dl>
+</script>
