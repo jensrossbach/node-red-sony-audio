@@ -152,7 +152,7 @@ SOFTWARE.
                     }
 
                     var filterName = $("<select/>", {class: "node-input-filterName",
-                                                     style: "width: 200px;"}).appendTo(item);
+                                                     style: "width: auto;"}).appendTo(item);
                     filterName.append($("<option></option>").val("auto").text(node._("receiver.list.filter.auto")));
                     filterName.append($("<option></option>").val("powered").text(node._("receiver.list.filter.powered")));
                     filterName.append($("<option></option>").val("standby").text(node._("receiver.list.filter.standby")));
@@ -310,7 +310,7 @@ SOFTWARE.
     <div class="form-row"></div>
     <div class="form-row">
         <label for="node-input-service"><i class="fa fa-wrench"></i> <span data-i18n="receiver.label.service"></span></label>
-        <select id="node-input-service">
+        <select id="node-input-service" style="width: auto;">
             <option value="system" data-i18n="receiver.list.service.system"></option>
             <option value="audio" data-i18n="receiver.list.service.audio"></option>
             <option value="avContent" data-i18n="receiver.list.service.avContent"></option>

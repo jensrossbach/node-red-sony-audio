@@ -20,8 +20,8 @@
             "relativeVolume": "Relative Lautstärke",
             "setting":        "Einstellung",
             "settings":       "Einstellungen",
-            "mode":           "Abspielmodus",
-            "modes":          "Abspielmodi",
+            "mode":           "Einstellung",
+            "modes":          "Einstellungen",
             "port":           "Anschluss",
             "zone":           "Zone",
             "allZones":       "Alle Zonen",
@@ -52,8 +52,8 @@
                 "setSoundSettings": "Klangeinstellungen setzen",
                 "getSource":        "Quelle abfragen",
                 "setSource":        "Quelle setzen",
-                "getPlaybackModes": "Abspielmodi abfragen",
-                "setPlaybackModes": "Abspielmodi setzen",
+                "getPlaybackModes": "Abspieleinstellungen abfragen",
+                "setPlaybackModes": "Abspieleinstellungen setzen",
                 "stop":             "Stop",
                 "togglePause":      "Pause umschalten",
                 "skipPrev":         "Rückwärts springen",
@@ -141,7 +141,7 @@
                 "relativeVolume": "Relative Lautstärke",
                 "muted":          "Stumm",
                 "soundSetting":   "Klangeinstellungen",
-                "playbackMode":   "Abspielmodus"
+                "playbackMode":   "Abspieleinstellungen"
             }
         },
         "status":

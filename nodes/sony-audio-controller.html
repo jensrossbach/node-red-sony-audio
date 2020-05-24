@@ -228,7 +228,7 @@ SOFTWARE.
                     var soundFieldContainer = $("<span/>", {id: "item-elem-soundField-" + index,
                                                             style: "padding-left: 10px;"}).appendTo(item);
                     var soundField = $("<select/>", {class: "node-input-soundField",
-                                                     style: "width: 120px;"}).appendTo(soundFieldContainer);
+                                                     style: "width: auto;"}).appendTo(soundFieldContainer);
                     soundField.append($("<option></option>").val("off").text(node._("controller.list.soundField.off")));
                     soundField.append($("<option></option>").val("standard").text(node._("controller.list.soundField.standard")));
                     soundField.append($("<option></option>").val("clearAudio").text(node._("controller.list.soundField.clearAudio")));
@@ -240,7 +240,7 @@ SOFTWARE.
                     var voiceTypeContainer = $("<span/>", {id: "item-elem-voiceType-" + index,
                                                            style: "padding-left: 10px;"}).appendTo(item);
                     var voiceType = $("<select/>", {class: "node-input-voiceType",
-                                                    style: "width: 120px;"}).appendTo(voiceTypeContainer);
+                                                    style: "width: auto;"}).appendTo(voiceTypeContainer);
                     voiceType.append($("<option></option>").val("type1").text(node._("controller.list.voiceType.type1")));
                     voiceType.append($("<option></option>").val("type2").text(node._("controller.list.voiceType.type2")));
                     voiceType.append($("<option></option>").val("type3").text(node._("controller.list.voiceType.type3")));
@@ -313,7 +313,7 @@ SOFTWARE.
                     var playTypeContainer = $("<span/>", {id: "item-elem-playType-" + index,
                                                             style: "padding-left: 10px;"}).appendTo(item);
                     var playType = $("<select/>", {class: "node-input-playType",
-                                                   style: "width: 120px;"}).appendTo(playTypeContainer);
+                                                   style: "width: auto;"}).appendTo(playTypeContainer);
                     playType.append($("<option></option>").val("normal").text(node._("controller.list.playType.normal")));
                     playType.append($("<option></option>").val("repeatAll").text(node._("controller.list.playType.repeatAll")));
                     playType.append($("<option></option>").val("repeatFolder").text(node._("controller.list.playType.repeatFolder")));
@@ -323,7 +323,7 @@ SOFTWARE.
                     var repeatTypeContainer = $("<span/>", {id: "item-elem-repeatType-" + index,
                                                             style: "padding-left: 10px;"}).appendTo(item);
                     var repeatType = $("<select/>", {class: "node-input-repeatType",
-                                                    style: "width: 120px;"}).appendTo(repeatTypeContainer);
+                                                    style: "width: auto;"}).appendTo(repeatTypeContainer);
                     repeatType.append($("<option></option>").val("off").text(node._("controller.list.repeatType.off")));
                     repeatType.append($("<option></option>").val("all").text(node._("controller.list.repeatType.all")));
                     repeatType.append($("<option></option>").val("folder").text(node._("controller.list.repeatType.folder")));
@@ -333,7 +333,7 @@ SOFTWARE.
                     var shuffleTypeContainer = $("<span/>", {id: "item-elem-shuffleType-" + index,
                                                              style: "padding-left: 10px;"}).appendTo(item);
                     var shuffleType = $("<select/>", {class: "node-input-shuffleType",
-                                                      style: "width: 120px;"}).appendTo(shuffleTypeContainer);
+                                                      style: "width: auto;"}).appendTo(shuffleTypeContainer);
                     shuffleType.append($("<option></option>").val("off").text(node._("controller.list.shuffleType.off")));
                     shuffleType.append($("<option></option>").val("folder").text(node._("controller.list.shuffleType.folder")));
 
@@ -526,7 +526,7 @@ SOFTWARE.
                     }
 
                     var filterName = $("<select/>", {class: "node-input-filterName",
-                                                     style: "width: 200px;"}).appendTo(item);
+                                                     style: "width: auto;"}).appendTo(item);
                     filterName.append($("<option></option>").val("auto").text(node._("controller.list.filter.auto")));
                     filterName.append($("<option></option>").val("powered").text(node._("controller.list.filter.powered")));
                     filterName.append($("<option></option>").val("standby").text(node._("controller.list.filter.standby")));
@@ -738,7 +738,7 @@ SOFTWARE.
     <div class="form-row"></div>
     <div class="form-row">
         <label for="node-input-command"><i class="fa fa-exchange"></i> <span data-i18n="controller.label.command"></span></label>
-        <select id="node-input-command">
+        <select id="node-input-command" style="width: auto;">
             <optgroup data-i18n="[label]controller.list.service.system">
                 <option value="getPowerStatus" data-i18n="controller.list.command.getPowerStatus"></option>
                 <option value="powerOn" data-i18n="controller.list.command.powerOn"></option>
@@ -785,7 +785,7 @@ SOFTWARE.
     </div>
     <div id="form-row-source" class="form-row">
         <label for="node-input-source"><i class="fa fa-sign-in"></i> <span data-i18n="controller.label.audioSource"></span></label>
-        <select id="node-input-source">
+        <select id="node-input-source" style="width: auto;">
             <option value="extInput:tv" data-i18n="controller.list.source.tv"></option>
             <option value="extInput:sat-catv" data-i18n="controller.list.source.satcatv"></option>
             <option value="extInput:hdmi" data-i18n="controller.list.source.hdmi"></option>
@@ -821,7 +821,7 @@ SOFTWARE.
     </div>
     <div id="form-row-soundTarget" class="form-row">
         <label for="node-input-soundTarget"><i class="fa fa-sliders"></i> <span data-i18n="controller.label.setting"></span></label>
-        <select id="node-input-soundTarget">
+        <select id="node-input-soundTarget" style="width: auto;">
             <option value="all" data-i18n="controller.list.soundTarget.all"></option>
             <option value="soundField" data-i18n="controller.list.soundTarget.soundField"></option>
             <option value="clearAudio" data-i18n="controller.list.soundTarget.clearAudio"></option>
@@ -838,7 +838,7 @@ SOFTWARE.
     </div>
     <div id="form-row-modeTarget" class="form-row">
         <label for="node-input-modeTarget"><i class="fa fa-sliders"></i> <span data-i18n="controller.label.mode"></span></label>
-        <select id="node-input-modeTarget">
+        <select id="node-input-modeTarget" style="width: auto;">
             <option value="all" data-i18n="controller.list.modeTarget.all"></option>
             <option value="playType" data-i18n="controller.list.modeTarget.playType"></option>
             <option value="repeatType" data-i18n="controller.list.modeTarget.repeatType"></option>

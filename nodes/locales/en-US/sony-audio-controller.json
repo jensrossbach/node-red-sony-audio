@@ -20,8 +20,8 @@
             "relativeVolume": "Relative Volume",
             "setting":        "Setting",
             "settings":       "Settings",
-            "mode":           "Mode",
-            "modes":          "Modes",
+            "mode":           "Setting",
+            "modes":          "Settings",
             "port":           "Port",
             "zone":           "Zone",
             "allZones":       "All Zones",
@@ -52,8 +52,8 @@
                 "setSoundSettings": "Set Sound Settings",
                 "getSource":        "Get Source",
                 "setSource":        "Set Source",
-                "getPlaybackModes": "Get Playback Modes",
-                "setPlaybackModes": "Set Playback Modes",
+                "getPlaybackModes": "Get Playback Settings",
+                "setPlaybackModes": "Set Playback Settings",
                 "stop":             "Stop",
                 "togglePause":      "Toggle Pause",
                 "skipPrev":         "Skip Previous",
@@ -141,7 +141,7 @@
                 "relativeVolume": "Relative Volume",
                 "muted":          "Muted",
                 "soundSetting":   "Sound Setting",
-                "playbackMode":   "Playback Mode"
+                "playbackMode":   "Playback Setting"
             }
         },
         "status":
