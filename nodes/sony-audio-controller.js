@@ -126,7 +126,7 @@ module.exports = function(RED)
         function setPlayContent(context, source, port = 0, zone = 0)
         {
             var uri = source;
-            if ((source == "extInput:hdmi") && (port > 0))
+            if (((source == "extInput:hdmi") || (source == "extInput:line")) && (port > 0))
             {
                 uri += "?port=" + port;
             }

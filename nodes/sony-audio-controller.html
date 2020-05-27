@@ -442,7 +442,8 @@ SOFTWARE.
                         $("#form-row-source").show();
                         $("#form-row-zone").show();
 
-                        if (sourceSelect.val() == "extInput:hdmi")
+                        if ((sourceSelect.val() == "extInput:hdmi") ||
+                            (sourceSelect.val() == "extInput:line"))
                         {
                             $("#form-row-port").show();
                         }
@@ -496,7 +497,8 @@ SOFTWARE.
 
             sourceSelect.change(function()
             {
-                if ($(this).val() == "extInput:hdmi")
+                if (($(this).val() == "extInput:hdmi") ||
+                    ($(this).val() == "extInput:line"))
                 {
                     $("#form-row-port").show();
                 }
