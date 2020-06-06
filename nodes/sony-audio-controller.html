@@ -482,12 +482,12 @@ SOFTWARE.
                         $("#form-row-soundTarget").show();
                         break;
                     }
-                    case "setPlaybackModes":
+                    case "setPlaybackSettings":
                     {
                         $("#form-row-modeSettings").show();
                         break;
                     }
-                    case "getPlaybackModes":
+                    case "getPlaybackSettings":
                     {
                         $("#form-row-modeTarget").show();
                         break;
@@ -507,6 +507,10 @@ SOFTWARE.
                     $("#form-row-port").hide();
                 }
             });
+
+            // backward compatibility
+            if (node.command == "setPlaybackModes") { commandSelect.val("setPlaybackSettings"); }
+            if (node.command == "getPlaybackModes") { commandSelect.val("getPlaybackSettings"); }
 
             commandSelect.change();
             if (node.zone == 0)
@@ -759,8 +763,8 @@ SOFTWARE.
             <optgroup data-i18n="[label]controller.list.service.avContent">
                 <option value="getSource" data-i18n="controller.list.command.getSource"></option>
                 <option value="setSource" data-i18n="controller.list.command.setSource"></option>
-                <option value="getPlaybackModes" data-i18n="controller.list.command.getPlaybackModes"></option>
-                <option value="setPlaybackModes" data-i18n="controller.list.command.setPlaybackModes"></option>
+                <option value="getPlaybackSettings" data-i18n="controller.list.command.getPlaybackSettings"></option>
+                <option value="setPlaybackSettings" data-i18n="controller.list.command.setPlaybackSettings"></option>
                 <option value="stop" data-i18n="controller.list.command.stop"></option>
                 <option value="togglePause" data-i18n="controller.list.command.togglePause"></option>
                 <option value="skipPrev" data-i18n="controller.list.command.skipPrev"></option>

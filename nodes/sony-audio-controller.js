@@ -435,7 +435,8 @@ module.exports = function(RED)
             if ((node.config.outputs == 0) ||
                 ((node.config.command == "setSoundSettings") &&
                  (node.config.soundSettings.length == 0)) ||
-                ((node.config.command == "setPlaybackModes") &&
+                (((node.config.command == "setPlaybackSettings") ||
+                  (node.config.command == "setPlaybackModes")) &&  // backward compatibility
                  (node.config.modeSettings.length == 0)))
             {
                 setStatus(STATUS_MISCONFIGURED);
@@ -455,7 +456,7 @@ module.exports = function(RED)
                 }
                 else
                 {
-                    // Node-RED 0.x backwards compatibility
+                    // Node-RED 0.x backward compatibility
                     context.send = function() { node.send.apply(node, arguments); };
                 }
 
@@ -466,7 +467,7 @@ module.exports = function(RED)
                 }
                 else
                 {
-                    // Node-RED 0.x backwards compatibility
+                    // Node-RED 0.x backward compatibility
                     context.done = function() {};
                     context.error = function()
                     {
@@ -664,7 +665,8 @@ module.exports = function(RED)
                             setPlayContent(context, args.source, args.port, args.zone);
                             break;
                         }
-                        case "setPlaybackModes":
+                        case "setPlaybackModes":  // backward compatibility
+                        case "setPlaybackSettings":
                         {
                             let args = {modeSettings: node.config.modeSettings};
 
@@ -812,7 +814,8 @@ module.exports = function(RED)
                             getSoundSettings(context, args.target);
                             break;
                         }
-                        case "getPlaybackModes":
+                        case "getPlaybackModes":  // backward compatibility
+                        case "getPlaybackSettings":
                         {
                             let args = {target: (node.config.modeTarget == "all") ? "" : node.config.modeTarget};
 
