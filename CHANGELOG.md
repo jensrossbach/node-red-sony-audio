@@ -3,6 +3,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.1] - 2020-06-06
+### Changed
+- Renamed commands getPlaybackModes and setPlaybackModes to getPlaybackSettings and setPlaybackSettings respectively (backward compatible).
+
+### Fixed
+- Fixed setSource command for line input source (added possibility to specify port).
+- Fixed wrong links in documentation.
+- Fixed and optimized configuration page layout.
+- Optimized texts and translations.
+
 ## [1.6.0] - 2020-05-23
 ### Added
 - Added support for localization of UI and documentation texts.
