@@ -45,133 +45,141 @@ const MAP_NOTIFICATIONS = {notifyPowerStatus:               Events.EVENT_SYSTEM_
                            notifyPlayingContentInfo:        Events.EVENT_AVCONTENT_NOTIFY_PLAYING_CONTENT_INFO};
 
 const WebSocketClient = require("websocket").client;
+const EventEmitter = require("events").EventEmitter;
 
-
-function EventReceiver(service, node)
+class EventReceiver extends EventEmitter
 {
-    this.client = new WebSocketClient();
-    this.node = node;
-
-    this.service = service;
-    this.url = "ws://" + this.node.host + ":" + this.node.port + "/sony/" + this.service;
-
-    this.eventMask = 0;
-    this.eventCallback = null;
-
-    this.statusListener = null;
-
-    this.recoverOnClose = false;
-    this.retryCount = MAX_NUM_RETRIES;
-
-    this.client.on("connect", connection =>
+    constructor(service, node)
     {
-        this.connection = connection;
+        super();
 
-        this.node.debug("Connected to service '" + this.service + "'");
-        if (this.statusListener != null)
-        {
-            this.statusListener(STATUS_CONNECTED);
-        }
+        this.client = new WebSocketClient();
+        this.node = node;
 
-        connection.on("message", message =>
+        this.service = service;
+        this.url = "ws://" + this.node.host + ":" + this.node.port + "/sony/" + this.service;
+
+        this.eventMask = 0;
+        this.eventCallback = null;
+
+        this.recoverOnClose = false;
+        this.retryCount = MAX_NUM_RETRIES;
+
+        this.client.on("connect", connection =>
         {
-            if (message.type === "utf8")
+            this.connection = connection;
+
+            this.node.debug("Connected to service '" + this.service + "'");
+            this.emit("status", STATUS_CONNECTED);
+
+            connection.on("message", message =>
             {
-                let msg = JSON.parse(message.utf8Data);
-
-                if ("id" in msg)
+                if (message.type === "utf8")
                 {
-                    if (msg.id == MSG_GET_NOTIFICATIONS)
+                    let msg = JSON.parse(message.utf8Data);
+
+                    if ("id" in msg)
                     {
-                        let notif = msg.result[0].disabled.concat(msg.result[0].enabled);
-                        let enable = [];
-                        let disable = [];
-
-                        this.node.debug("Creating method list for service '" + this.service + "' with event mask b:" + this.eventMask.toString(2).padStart(4, "0"));
-                        notif.forEach(item =>
+                        if (msg.id == MSG_GET_NOTIFICATIONS)
                         {
-                            if ((item.name in MAP_NOTIFICATIONS) && ((MAP_NOTIFICATIONS[item.name] & this.eventMask) != 0))
+                            let notif = msg.result[0].disabled.concat(msg.result[0].enabled);
+                            let enable = [];
+                            let disable = [];
+
+                            this.node.debug("Creating method list for service '" + this.service + "' with event mask b:" + this.eventMask.toString(2).padStart(4, "0"));
+                            notif.forEach(item =>
                             {
-                                enable.push(item);
-                            }
-                            else
-                            {
-                                disable.push(item);
-                            }
-                        });
+                                if ((item.name in MAP_NOTIFICATIONS) && ((MAP_NOTIFICATIONS[item.name] & this.eventMask) != 0))
+                                {
+                                    enable.push(item);
+                                }
+                                else
+                                {
+                                    disable.push(item);
+                                }
+                            });
 
-                        let subscribeRequest = JSON.stringify(switchNotifications(MSG_SET_NOTIFICATIONS,
-                                                                                  (disable.length == 0) ? null : disable,
-                                                                                  (enable.length == 0) ? null : enable));
+                            let subscribeRequest = JSON.stringify(switchNotifications(MSG_SET_NOTIFICATIONS,
+                                                                                    (disable.length == 0) ? null : disable,
+                                                                                    (enable.length == 0) ? null : enable));
 
-                        // this.node.debug(subscribeRequest);
-                        connection.sendUTF(subscribeRequest);
-                    }
-                    else if (msg.id == MSG_SET_NOTIFICATIONS)
-                    {
-                        // this.node.debug("Result: " + JSON.stringify(msg.result[0]));
-
-                        if (this.statusListener != null)
+                            // this.node.debug(subscribeRequest);
+                            connection.sendUTF(subscribeRequest);
+                        }
+                        else if (msg.id == MSG_SET_NOTIFICATIONS)
                         {
-                            this.statusListener(STATUS_READY);
+                            // this.node.debug("Result: " + JSON.stringify(msg.result[0]));
+                            this.emit("status", STATUS_READY);
                         }
                     }
-                }
-                else if (("method" in msg) && ("params" in msg))
-                {
-                    if (msg.method in MAP_NOTIFICATIONS)
+                    else if (("method" in msg) && ("params" in msg))
                     {
-                        this.node.debug("Event for '" + msg.method + "' received");
+                        if (msg.method in MAP_NOTIFICATIONS)
+                        {
+                            this.node.debug("Event for '" + msg.method + "' received");
 
-                        let eventMsg = {service: this.service,
-                                        method: msg.method,
-                                        version: msg.version,
-                                        payload: (msg.params.length == 0) ? null : msg.params[0]};
+                            let eventMsg = {service: this.service,
+                                            method: msg.method,
+                                            version: msg.version,
+                                            payload: (msg.params.length == 0) ? null : msg.params[0]};
 
-                        this.eventCallback(MAP_NOTIFICATIONS[msg.method], eventMsg);
+                            this.eventCallback(MAP_NOTIFICATIONS[msg.method], eventMsg);
+                        }
+                        else
+                        {
+                            this.node.warn("Unsupported event: " + msg.method);
+                        }
                     }
                     else
                     {
-                        this.node.warn("Unsupported event: " + msg.method);
+                        this.node.warn("Unexpected message received");
                     }
                 }
                 else
                 {
-                    this.node.warn("Unexpected message received");
+                    this.node.warn("Unknown message type: " + message.type);
                 }
-            }
-            else
+            });
+
+            connection.on("error", error =>
             {
-                this.node.warn("Unknown message type: " + message.type);
-            }
+                this.node.error("Connection error: " + error.toString());
+                this.emit("status", STATUS_ERROR);
+
+                this.recoverOnClose = true;
+            });
+
+            connection.on("close", (reasonCode, description) =>
+            {
+                this.connection = null;
+
+                this.node.debug("Connection closed: " + reasonCode + " (" + description + ")");
+                this.emit("status", STATUS_NOTCONNECTED);
+
+                if (this.recoverOnClose && (this.retryCount > 0))
+                {
+                    this.recoverOnClose = false;
+
+                    setTimeout(() =>
+                    {
+                        this.node.debug("Trying to recover");
+
+                        this.retryCount--;
+                        this.client.connect(this.url);
+                    }, RECOVERY_DELAY);
+                }
+            });
+
+            connection.sendUTF(JSON.stringify(switchNotifications(MSG_GET_NOTIFICATIONS, [], [])));
         });
 
-        connection.on("error", error =>
+        this.client.on("connectFailed", error =>
         {
-            this.node.error("Connection error: " + error.toString());
+            this.node.error("Connection failed: " + error.toString());
+            this.emit("status", STATUS_ERROR);
 
-            if (this.statusListener != null)
+            if (this.retryCount > 0)
             {
-                this.statusListener(STATUS_ERROR);
-            }
-
-            this.recoverOnClose = true;
-        });
-
-        connection.on("close", (reasonCode, description) =>
-        {
-            this.connection = null;
-
-            this.node.debug("Connection closed: " + reasonCode + " (" + description + ")");
-            if (this.statusListener != null)
-            {
-                this.statusListener(STATUS_NOTCONNECTED);
-            }
-
-            if (this.recoverOnClose && (this.retryCount > 0))
-            {
-                this.recoverOnClose = false;
-
                 setTimeout(() =>
                 {
                     this.node.debug("Trying to recover");
@@ -181,70 +189,43 @@ function EventReceiver(service, node)
                 }, RECOVERY_DELAY);
             }
         });
+    }
 
-        connection.sendUTF(JSON.stringify(switchNotifications(MSG_GET_NOTIFICATIONS, [], [])));
-    });
-
-    this.client.on("connectFailed", error =>
+    connect(mask, callback)
     {
-        this.node.error("Connection failed: " + error.toString());
-        if (this.statusListener != null)
+        if (!this.connection)
         {
-            this.statusListener(STATUS_ERROR);
+            this.eventMask = mask;
+            this.eventCallback = callback;
+            this.retryCount = MAX_NUM_RETRIES;
+
+            this.node.debug("Connecting to: " + this.url);
+            this.client.connect(this.url);
         }
+    }
 
-        if (this.retryCount > 0)
-        {
-            setTimeout(() =>
-            {
-                this.node.debug("Trying to recover");
-
-                this.retryCount--;
-                this.client.connect(this.url);
-            }, RECOVERY_DELAY);
-        }
-    });
-}
-
-EventReceiver.prototype.connect = function(mask, callback)
-{
-    if (!this.connection)
+    disconnect()
     {
+        if (this.connection)
+        {
+            this.node.debug("Disconnecting");
+            this.connection.close();
+
+            this.connection = null;
+        }
+    }
+
+    updateEventMask(mask)
+    {
+        this.node.debug("Updating event mask");
+
         this.eventMask = mask;
-        this.eventCallback = callback;
-        this.retryCount = MAX_NUM_RETRIES;
-
-        this.node.debug("Connecting to: " + this.url);
-        this.client.connect(this.url);
+        if (this.connection)
+        {
+            this.connection.sendUTF(JSON.stringify(switchNotifications(MSG_GET_NOTIFICATIONS, [], [])));
+        }
     }
-};
-
-EventReceiver.prototype.disconnect = function()
-{
-    if (this.connection)
-    {
-        this.node.debug("Disconnecting");
-        this.connection.close();
-
-        this.connection = null;
-    }
-};
-
-EventReceiver.prototype.updateEventMask = function(mask)
-{
-    this.node.debug("Updating event mask");
-
-    this.eventMask = mask;
-    if (this.connection)
-    {
-        this.connection.sendUTF(JSON.stringify(switchNotifications(MSG_GET_NOTIFICATIONS, [], [])));
-    }
-};
-
-EventReceiver.prototype.registerStatusListener = function(listener)
-{
-    this.statusListener = listener;
-};
+}
 
 function switchNotifications(id, disable, enable)
 {

@@ -169,7 +169,7 @@ module.exports = function(RED)
                 }
             }
 
-            node.device.onStatus(status =>
+            node.device.on("sony.status", status =>
             {
                 node.status(status);
             });
