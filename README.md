@@ -1,10 +1,9 @@
 # node-red-contrib-sony-audio
-A collection of Node-RED nodes to control Sony audio devices via the Sony Audio Control API.
 
-<div style="text-align: right;">
 <a href="https://www.npmjs.com/package/node-red-contrib-sony-audio"><img title="npm version" src="https://badgen.net/npm/v/node-red-contrib-sony-audio"></a>
 <a href="https://www.npmjs.com/package/node-red-contrib-sony-audio"><img title="npm downloads" src="https://badgen.net/npm/dt/node-red-contrib-sony-audio"></a>
-</div>
+
+A collection of Node-RED nodes to control Sony audio devices via the Sony Audio Control API.
 
 ![node-red-contrib-sony-audio](images/sony_audio_flow.png)
 
