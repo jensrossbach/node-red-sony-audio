@@ -1,5 +1,5 @@
 # Action for checking code with ESLint on pull requests
-name: Lint
+name: ESLint
 
 # Triggers
 on:
@@ -12,8 +12,8 @@ jobs:
   eslint:
     runs-on: ubuntu-latest
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
-      - name: ESLint Action
-        uses: hallee/eslint-action@1.0.3
+      - name: Install modules
+        run: yarn
+      - name: Run ESLint
+        run: eslint . --ext .js,.jsx,.ts,.tsx
