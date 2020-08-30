@@ -1,6 +1,11 @@
 # node-red-contrib-sony-audio
 A collection of Node-RED nodes to control Sony audio devices via the Sony Audio Control API.
 
+<div style="text-align: right;">
+<a href="https://www.npmjs.com/package/node-red-contrib-sony-audio"><img title="npm version" src="https://badgen.net/npm/v/node-red-contrib-sony-audio"></a>
+<a href="https://www.npmjs.com/package/node-red-contrib-sony-audio"><img title="npm downloads" src="https://badgen.net/npm/dt/node-red-contrib-sony-audio"></a>
+</div>
+
 ![node-red-contrib-sony-audio](images/sony_audio_flow.png)
 
 With these nodes you can connect to your Sony audio devices and send control commands (like powering on/off, change volume etc.), retrieve information (like the current volume, the current value of a sound setting etc.) or get notified of certain events (like a change of the power state, a change of the mute state etc.).
