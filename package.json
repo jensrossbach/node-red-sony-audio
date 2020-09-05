@@ -22,8 +22,7 @@
     "homepage": "https://github.com/jensrossbach/node-red-contrib-sony-audio#readme",
     "bugs": "https://github.com/jensrossbach/node-red-contrib-sony-audio/issues",
     "dependencies": {
-        "request": "^2.88.0",
-        "request-promise": "^4.2.4",
+        "node-fetch": "^2.6.0",
         "websocket": "^1.0.28",
         "node-ssdp": "^4.0.0",
         "xml-js": "^1.6.11"

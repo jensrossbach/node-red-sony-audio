@@ -27,7 +27,7 @@ module.exports = function(RED)
     const DISCOVERY_SEARCH_TARGET = "urn:schemas-sony-com:service:ScalarWebAPI:1";
     const URI_REGEX               = /^http:\/\/([a-zA-Z0-9.-]+):([0-9]+)\/sony$/;
 
-    const httpRequest = require("request-promise");
+    const httpRequest = require("node-fetch");
     const xmlConverter = require("xml-js");
 
     const EventReceiver = require("../libs/sony-event-recv.js");
@@ -64,9 +64,21 @@ module.exports = function(RED)
     {
         if (code == 200)
         {
-            httpRequest({method: "get", uri: headers.LOCATION}).then(response =>
+            httpRequest(headers.LOCATION, {method: "get"})
+            .then(response =>
             {
-                let desc = xmlConverter.xml2js(response, {compact: true});
+                if (response.ok)
+                {
+                    return response.text();
+                }
+                else
+                {
+                    RED.log.error("Error getting device description: " + response.statusText);
+                }
+            })
+            .then(data =>
+            {
+                let desc = xmlConverter.xml2js(data, {compact: true});
                 let devName = desc.root.device.friendlyName._text;
                 let modelName = desc.root.device.modelName._text;
 
@@ -85,7 +97,8 @@ module.exports = function(RED)
                 {
                     RED.log.debug("Ignoring device with malformed descriptor");
                 }
-            }).catch(error =>
+            })
+            .catch(error =>
             {
                 RED.log.error("Error getting device description: " + error);
             });
@@ -121,38 +134,50 @@ module.exports = function(RED)
             });
         }
 
-        sendRequest(service, method, version, args, resultCb, errorCb)
+        sendRequest(service, method, version, args)
         {
-            const req = {method: "post",
-                        uri: "http://" + this.host + ":" + this.port + "/sony/" + service,
-                        json: true,
-                        body: {id: 1,
-                               method: method,
-                               version: version,
-                               params: (args == null) ? [] : [args]}};
-
-            // this.debug(JSON.stringify(req));
-            httpRequest(req)
-            .then(response =>
+            return new Promise((resolve, reject) =>
             {
-                if ("result" in response)
-                {
-                    let respMsg = {service: service,
-                                   method: method,
-                                   version: version,
-                                   payload: (response.result.length == 1) ? response.result[0] : null};
+                const uri = "http://" + this.host + ":" + this.port + "/sony/" + service;
+                const body = {id: 1,
+                              method: method,
+                              version: version,
+                              params: (args == null) ? [] : [args]};
 
-                    // this.debug(JSON.stringify(respMsg));
-                    resultCb(respMsg);
-                }
-                else if ("error" in response)
+                // this.debug(JSON.stringify(body));
+                httpRequest(uri, {method: "post", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)})
+                .then(response =>
                 {
-                    errorCb(response.error[1] + " (" + response.error[0] + ")");
-                }
-            })
-            .catch(error =>
-            {
-                errorCb(error);
+                    if (response.ok)
+                    {
+                        return response.json();
+                    }
+                    else
+                    {
+                        reject(response.statusText);
+                    }
+                })
+                .then(data =>
+                {
+                    if ("result" in data)
+                    {
+                        let respMsg = {service: service,
+                                       method: method,
+                                       version: version,
+                                       payload: (data.result.length == 1) ? data.result[0] : null};
+
+                        // this.debug(JSON.stringify(respMsg));
+                        resolve(respMsg);
+                    }
+                    else if ("error" in data)
+                    {
+                        reject(data.error[1] + " (" + data.error[0] + ")");
+                    }
+                })
+                .catch(error =>
+                {
+                    reject(error);
+                });
             });
         }
 

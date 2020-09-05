@@ -289,13 +289,15 @@ module.exports = function(RED)
         {
             setStatus(STATUS_SENDING);
 
-            node.device.sendRequest(service, method, version, args, respMsg =>
+            node.device.sendRequest(service, method, version, args)
+            .then(respMsg =>
             {
                 sendResponse(context, respMsg);
                 setStatus(STATUS_SUCCESS, STATUS_TEMP_DURATION);
 
                 context.done();
-            }, error =>
+            })
+            .catch(error =>
             {
                 setStatus(STATUS_ERROR, STATUS_TEMP_DURATION);
                 context.error(error);
