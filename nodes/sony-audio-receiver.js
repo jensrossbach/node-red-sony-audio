@@ -39,80 +39,6 @@ module.exports = function(RED)
         node.config = config;
         node.name = config.name;
 
-        function createOuputArray(filterMsgs, eventMsg)
-        {
-            var arr = [];
-
-            if (node.config.outFilters)
-            {
-                for (let i=0; i<filterMsgs.length; ++i)
-                {
-                    arr.push(filterMsgs[i]);
-                }
-            }
-
-            if (node.config.outEvent)
-            {
-                arr.push(eventMsg);
-            }
-
-            return arr;
-        }
-
-        function sendEvent(eventMsg)
-        {
-            var filteredMsgs = [];
-
-            if (node.config.outFilters && (eventMsg.payload != null))
-            {
-                for (let i=0; i<node.config.outputPorts.length; ++i)
-                {
-                    if ("filter" in node.config.outputPorts[i])
-                    {
-                        let filter = {name: ""};
-
-                        if (node.config.outputPorts[i].filter.name == "auto")
-                        {
-                            switch (eventMsg.method)
-                            {
-                                case "notifyPowerStatus":
-                                {
-                                    filter = {name: "powered", explicit: false};
-                                    break;
-                                }
-                                case "notifySWUpdateInfo":
-                                {
-                                    filter = {name: "swupdate", explicit: false};
-                                    break;
-                                }
-                                case "notifyPlayingContentInfo":
-                                {
-                                    filter = {name: "source"};
-                                    break;
-                                }
-                                case "notifyVolumeInformation":
-                                {
-                                    filter = {name: "absoluteVolume"};
-                                    break;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            filter = node.config.outputPorts[i].filter;
-                        }
-
-                        filteredMsgs.push(APIFilter.filterData(eventMsg, filter));
-                    }
-                }
-            }
-
-            if (node.config.outFilters || node.config.outEvent)
-            {
-                node.send(createOuputArray(filteredMsgs, eventMsg));
-            }
-        }
-
         node.device = RED.nodes.getNode(config.device);
         if (node.device && (node.config.outputs > 0))
         {
@@ -188,6 +114,80 @@ module.exports = function(RED)
         else
         {
             node.status(STATUS_UNCONFIGURED);
+        }
+
+        function sendEvent(eventMsg)
+        {
+            var filteredMsgs = [];
+
+            if (node.config.outFilters && (eventMsg.payload != null))
+            {
+                for (let i=0; i<node.config.outputPorts.length; ++i)
+                {
+                    if ("filter" in node.config.outputPorts[i])
+                    {
+                        let filter = {name: ""};
+
+                        if (node.config.outputPorts[i].filter.name == "auto")
+                        {
+                            switch (eventMsg.method)
+                            {
+                                case "notifyPowerStatus":
+                                {
+                                    filter = {name: "powered", explicit: false};
+                                    break;
+                                }
+                                case "notifySWUpdateInfo":
+                                {
+                                    filter = {name: "swupdate", explicit: false};
+                                    break;
+                                }
+                                case "notifyPlayingContentInfo":
+                                {
+                                    filter = {name: "source"};
+                                    break;
+                                }
+                                case "notifyVolumeInformation":
+                                {
+                                    filter = {name: "absoluteVolume"};
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            filter = node.config.outputPorts[i].filter;
+                        }
+
+                        filteredMsgs.push(APIFilter.filterData(eventMsg, filter));
+                    }
+                }
+            }
+
+            if (node.config.outFilters || node.config.outEvent)
+            {
+                node.send(createOuputArray(filteredMsgs, eventMsg));
+            }
+        }
+
+        function createOuputArray(filterMsgs, eventMsg)
+        {
+            var arr = [];
+
+            if (node.config.outFilters)
+            {
+                for (let i=0; i<filterMsgs.length; ++i)
+                {
+                    arr.push(filterMsgs[i]);
+                }
+            }
+
+            if (node.config.outEvent)
+            {
+                arr.push(eventMsg);
+            }
+
+            return arr;
         }
     }
 

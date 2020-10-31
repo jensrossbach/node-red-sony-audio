@@ -22,6 +22,41 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 
+<script type="text/x-red" data-template-name="sony-audio-device">
+    <style>
+        .checkbox-row
+        {
+            padding-top: 10px;
+            padding-bottom: 5px;
+        }
+
+        input[type=checkbox]
+        {
+            vertical-align: top;
+            bottom:         8px;
+        }
+    </style>
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> <span data-i18n="device.label.name"></span></label>
+        <input type="text" id="node-config-input-name" data-i18n="[placeholder]device.label.name">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-host"><i class="fa fa-globe"></i> <span data-i18n="device.label.host"></span></label>
+        <input type="text" id="node-config-input-host" data-i18n="[placeholder]device.label.host">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-port"><i class="fa fa-bookmark"></i> <span data-i18n="device.label.port"></span></label>
+        <input type="text" id="node-config-input-port" data-i18n="[placeholder]device.label.port">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-devices"><i class="fa fa-binoculars"></i> <span data-i18n="device.label.discovery"></span></label>
+        <span>
+            <select id="node-config-input-devices"></select>
+            <button type="button" id="node-config-input-discovery" class="red-ui-button"><i class='fa fa-refresh'></i></button>
+        </span>
+    </div>
+</script>
+
 <script type="text/javascript">
     RED.nodes.registerType("sony-audio-device",
     {
@@ -121,39 +156,4 @@ SOFTWARE.
             deviceDiscovery(false);
         }
     });
-</script>
-
-<script type="text/x-red" data-template-name="sony-audio-device">
-    <style>
-        .checkbox-row
-        {
-            padding-top: 10px;
-            padding-bottom: 5px;
-        }
-
-        input[type=checkbox]
-        {
-            vertical-align: top;
-            bottom:         8px;
-        }
-    </style>
-    <div class="form-row">
-        <label for="node-config-input-name"><i class="fa fa-tag"></i> <span data-i18n="device.label.name"></span></label>
-        <input type="text" id="node-config-input-name" data-i18n="[placeholder]device.label.name">
-    </div>
-    <div class="form-row">
-        <label for="node-config-input-host"><i class="fa fa-globe"></i> <span data-i18n="device.label.host"></span></label>
-        <input type="text" id="node-config-input-host" data-i18n="[placeholder]device.label.host">
-    </div>
-    <div class="form-row">
-        <label for="node-config-input-port"><i class="fa fa-bookmark"></i> <span data-i18n="device.label.port"></span></label>
-        <input type="text" id="node-config-input-port" data-i18n="[placeholder]device.label.port">
-    </div>
-    <div class="form-row">
-        <label for="node-config-input-devices"><i class="fa fa-binoculars"></i> <span data-i18n="device.label.discovery"></span></label>
-        <span>
-            <select id="node-config-input-devices"></select>
-            <button type="button" id="node-config-input-discovery" class="red-ui-button"><i class='fa fa-refresh'></i></button>
-        </span>
-    </div>
 </script>

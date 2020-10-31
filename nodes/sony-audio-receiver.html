@@ -22,6 +22,105 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 
+<script type="text/x-red" data-template-name="sony-audio-receiver">
+    <style>
+        .form-checkbox-row
+        {
+            float:        left;
+            padding-left: 4px;
+        }
+
+        .form-checkbox-label
+        {
+            padding-left: 10px;
+        }
+
+        input[type=checkbox].form-checkbox
+        {
+            vertical-align: text-bottom;
+            float:          left;
+            width:          auto;
+        }
+    </style>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="receiver.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]receiver.label.name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-device"><i class="fa fa-cog"></i> <span data-i18n="receiver.label.device"></span></label>
+        <input type="text" id="node-input-device" data-i18n="[placeholder]receiver.label.device">
+    </div>
+    <div class="form-row">
+        <label style="float: left;"><i class="fa fa-link"></i> <span data-i18n="receiver.label.outputs"></span></label>
+        <div class="form-checkbox-row">
+            <div>
+                <input type="checkbox" class="form-checkbox" id="node-input-outFilters">
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-outFilters" data-i18n="receiver.label.filters"></label>
+            </div>
+            <div>
+                <input type="checkbox" class="form-checkbox" id="node-input-outEvent">
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-outEvent" data-i18n="receiver.label.event"></label>
+            </div>
+        </div>
+    </div>
+    <div class="form-row"></div>
+    <div class="form-row">
+        <label for="node-input-service"><i class="fa fa-wrench"></i> <span data-i18n="receiver.label.service"></span></label>
+        <select id="node-input-service" style="width: auto;">
+            <option value="system" data-i18n="receiver.list.service.system"></option>
+            <option value="audio" data-i18n="receiver.list.service.audio"></option>
+            <option value="avContent" data-i18n="receiver.list.service.avContent"></option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label style="float: left;"><i class="fa fa-calendar-o"></i> <span data-i18n="receiver.label.events"></span></label>
+        <div id="form-row-system" class="form-checkbox-row">
+            <div>
+                <input type="checkbox" class="form-checkbox" id="node-input-notifyPowerStatus">
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyPowerStatus" data-i18n="receiver.label.notifyPowerStatus"></label>
+            </div>
+            <div>
+                <input type="checkbox" class="form-checkbox" id="node-input-notifyStorageStatus">
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyStorageStatus" data-i18n="receiver.label.notifyStorageStatus"></label>
+            </div>
+            <div>
+                <input type="checkbox" class="form-checkbox" id="node-input-notifySettingsUpdate">
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifySettingsUpdate" data-i18n="receiver.label.notifySettingsUpdate"></label>
+            </div>
+            <div>
+                <input type="checkbox" class="form-checkbox" id="node-input-notifySWUpdateInfo">
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifySWUpdateInfo" data-i18n="receiver.label.notifySWUpdateInfo"></label>
+            </div>
+        </div>
+        <div id="form-row-audio" class="form-checkbox-row">
+            <div>
+                <input type="checkbox" class="form-checkbox" id="node-input-notifyVolumeInformation">
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyVolumeInformation" data-i18n="receiver.label.notifyVolumeInformation"></label>
+            </div>
+        </div>
+        <div id="form-row-avcontent" class="form-checkbox-row">
+            <div>
+                <input type="checkbox" class="form-checkbox" id="node-input-notifyExternalTerminalStatus">
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyExternalTerminalStatus" data-i18n="receiver.label.notifyExternalTerminalStatus"></label>
+            </div>
+            <div>
+                <input type="checkbox" class="form-checkbox" id="node-input-notifyAvailablePlaybackFunction">
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyAvailablePlaybackFunction" data-i18n="receiver.label.notifyAvailablePlaybackFunction"></label>
+            </div>
+            <div>
+                <input type="checkbox" class="form-checkbox" id="node-input-notifyPlayingContentInfo">
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyPlayingContentInfo" data-i18n="receiver.label.notifyPlayingContentInfo"></label>
+            </div>
+        </div>
+    </div>
+    <div id="form-row-filterList" class="form-row" style="padding-top: 10px">
+        <label for="node-input-filterList"><i class="fa fa-filter"></i> <span data-i18n="receiver.label.filters"></span></label>
+        <div class="form-row">
+            <ol id="node-input-filterList"></ol>
+        </div>
+    </div>
+</script>
+
 <script type="text/javascript">
     RED.nodes.registerType("sony-audio-receiver",
     {
@@ -264,103 +363,4 @@ SOFTWARE.
             }
         }
     });
-</script>
-
-<script type="text/x-red" data-template-name="sony-audio-receiver">
-    <style>
-        .form-checkbox-row
-        {
-            float:        left;
-            padding-left: 4px;
-        }
-
-        .form-checkbox-label
-        {
-            padding-left: 10px;
-        }
-
-        input[type=checkbox].form-checkbox
-        {
-            vertical-align: text-bottom;
-            float:          left;
-            width:          auto;
-        }
-    </style>
-    <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="receiver.label.name"></span></label>
-        <input type="text" id="node-input-name" data-i18n="[placeholder]receiver.label.name">
-    </div>
-    <div class="form-row">
-        <label for="node-input-device"><i class="fa fa-cog"></i> <span data-i18n="receiver.label.device"></span></label>
-        <input type="text" id="node-input-device" data-i18n="[placeholder]receiver.label.device">
-    </div>
-    <div class="form-row">
-        <label style="float: left;"><i class="fa fa-link"></i> <span data-i18n="receiver.label.outputs"></span></label>
-        <div class="form-checkbox-row">
-            <div>
-                <input type="checkbox" class="form-checkbox" id="node-input-outFilters">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-outFilters" data-i18n="receiver.label.filters"></label>
-            </div>
-            <div>
-                <input type="checkbox" class="form-checkbox" id="node-input-outEvent">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-outEvent" data-i18n="receiver.label.event"></label>
-            </div>
-        </div>
-    </div>
-    <div class="form-row"></div>
-    <div class="form-row">
-        <label for="node-input-service"><i class="fa fa-wrench"></i> <span data-i18n="receiver.label.service"></span></label>
-        <select id="node-input-service" style="width: auto;">
-            <option value="system" data-i18n="receiver.list.service.system"></option>
-            <option value="audio" data-i18n="receiver.list.service.audio"></option>
-            <option value="avContent" data-i18n="receiver.list.service.avContent"></option>
-        </select>
-    </div>
-    <div class="form-row">
-        <label style="float: left;"><i class="fa fa-calendar-o"></i> <span data-i18n="receiver.label.events"></span></label>
-        <div id="form-row-system" class="form-checkbox-row">
-            <div>
-                <input type="checkbox" class="form-checkbox" id="node-input-notifyPowerStatus">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyPowerStatus" data-i18n="receiver.label.notifyPowerStatus"></label>
-            </div>
-            <div>
-                <input type="checkbox" class="form-checkbox" id="node-input-notifyStorageStatus">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyStorageStatus" data-i18n="receiver.label.notifyStorageStatus"></label>
-            </div>
-            <div>
-                <input type="checkbox" class="form-checkbox" id="node-input-notifySettingsUpdate">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifySettingsUpdate" data-i18n="receiver.label.notifySettingsUpdate"></label>
-            </div>
-            <div>
-                <input type="checkbox" class="form-checkbox" id="node-input-notifySWUpdateInfo">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifySWUpdateInfo" data-i18n="receiver.label.notifySWUpdateInfo"></label>
-            </div>
-        </div>
-        <div id="form-row-audio" class="form-checkbox-row">
-            <div>
-                <input type="checkbox" class="form-checkbox" id="node-input-notifyVolumeInformation">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyVolumeInformation" data-i18n="receiver.label.notifyVolumeInformation"></label>
-            </div>
-        </div>
-        <div id="form-row-avcontent" class="form-checkbox-row">
-            <div>
-                <input type="checkbox" class="form-checkbox" id="node-input-notifyExternalTerminalStatus">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyExternalTerminalStatus" data-i18n="receiver.label.notifyExternalTerminalStatus"></label>
-            </div>
-            <div>
-                <input type="checkbox" class="form-checkbox" id="node-input-notifyAvailablePlaybackFunction">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyAvailablePlaybackFunction" data-i18n="receiver.label.notifyAvailablePlaybackFunction"></label>
-            </div>
-            <div>
-                <input type="checkbox" class="form-checkbox" id="node-input-notifyPlayingContentInfo">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyPlayingContentInfo" data-i18n="receiver.label.notifyPlayingContentInfo"></label>
-            </div>
-        </div>
-    </div>
-    <div id="form-row-filterList" class="form-row" style="padding-top: 10px">
-        <label for="node-input-filterList"><i class="fa fa-filter"></i> <span data-i18n="receiver.label.filters"></span></label>
-        <div class="form-row">
-            <ol id="node-input-filterList"></ol>
-        </div>
-    </div>
 </script>

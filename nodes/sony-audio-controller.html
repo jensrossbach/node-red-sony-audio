@@ -22,6 +22,178 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 
+<script type="text/x-red" data-template-name="sony-audio-controller">
+    <style>
+        .form-checkbox-row
+        {
+            float:        left;
+            padding-left: 4px;
+        }
+
+        .form-checkbox-label
+        {
+            padding-left: 10px;
+        }
+
+        input[type=checkbox].form-checkbox
+        {
+            vertical-align: text-bottom;
+            float:          left;
+            width:          auto;
+        }
+    </style>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="controller.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]controller.label.name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-device"><i class="fa fa-cog"></i> <span data-i18n="controller.label.device"></span></label>
+        <input type="text" id="node-input-device" data-i18n="[placeholder]controller.label.device">
+    </div>
+    <div class="form-row">
+        <label style="float: left;"><i class="fa fa-download"></i> <span data-i18n="controller.label.input"></span></label>
+        <div class="form-checkbox-row">
+            <div>
+                <input type="checkbox" class="form-checkbox" id="node-input-enableTopic">
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-enableTopic" data-i18n="controller.label.enableTopic"></label>
+            </div>
+            <div>
+                <input type="checkbox" class="form-checkbox" id="node-input-enableLowLevel">
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-enableLowLevel" data-i18n="controller.label.enableLowLevel"></label>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <label style="float: left;"><i class="fa fa-upload"></i> <span data-i18n="controller.label.outputs"></span></label>
+        <div class="form-checkbox-row">
+            <div>
+                <input type="checkbox" class="form-checkbox" id="node-input-outFilters">
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-outFilters" data-i18n="controller.label.filters"></label>
+            </div>
+            <div>
+                <input type="checkbox" class="form-checkbox" id="node-input-outResponse">
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-outResponse" data-i18n="controller.label.response"></label>
+            </div>
+        </div>
+    </div>
+    <div class="form-row"></div>
+    <div class="form-row">
+        <label for="node-input-command"><i class="fa fa-exchange"></i> <span data-i18n="controller.label.command"></span></label>
+        <select id="node-input-command" style="width: auto;">
+            <optgroup data-i18n="[label]controller.list.service.system">
+                <option value="getPowerStatus" data-i18n="controller.list.command.getPowerStatus"></option>
+                <option value="powerOn" data-i18n="controller.list.command.powerOn"></option>
+                <option value="powerOff" data-i18n="controller.list.command.powerOff"></option>
+                <option value="getSWUpdateInfo" data-i18n="controller.list.command.getSWUpdateInfo"></option>
+            </optgroup>
+            <optgroup data-i18n="[label]controller.list.service.audio">
+                <option value="getVolumeInfo" data-i18n="controller.list.command.getVolumeInfo"></option>
+                <option value="setVolume" data-i18n="controller.list.command.setVolume"></option>
+                <option value="mute" data-i18n="controller.list.command.mute"></option>
+                <option value="unmute" data-i18n="controller.list.command.unmute"></option>
+                <option value="toggleMute" data-i18n="controller.list.command.toggleMute"></option>
+                <option value="getSoundSettings" data-i18n="controller.list.command.getSoundSettings"></option>
+                <option value="setSoundSettings" data-i18n="controller.list.command.setSoundSettings"></option>
+            </optgroup>
+            <optgroup data-i18n="[label]controller.list.service.avContent">
+                <option value="getSource" data-i18n="controller.list.command.getSource"></option>
+                <option value="setSource" data-i18n="controller.list.command.setSource"></option>
+                <option value="getPlaybackSettings" data-i18n="controller.list.command.getPlaybackSettings"></option>
+                <option value="setPlaybackSettings" data-i18n="controller.list.command.setPlaybackSettings"></option>
+                <option value="stop" data-i18n="controller.list.command.stop"></option>
+                <option value="togglePause" data-i18n="controller.list.command.togglePause"></option>
+                <option value="skipPrev" data-i18n="controller.list.command.skipPrev"></option>
+                <option value="skipNext" data-i18n="controller.list.command.skipNext"></option>
+                <option value="scanBackward" data-i18n="controller.list.command.scanBackward"></option>
+                <option value="scanForward" data-i18n="controller.list.command.scanForward"></option>
+            </optgroup>
+        </select>
+    </div>
+    <div id="form-row-swupdate" class="form-row">
+        <label><i class="fa fa-sign-in"></i> <span data-i18n="controller.label.swSource"></span></label>
+        <span>
+            <input id="node-input-networkUpdate" type="checkbox" style="vertical-align: text-bottom; width: auto;">
+            <label for="node-input-networkUpdate" style="width: auto;" data-i18n="controller.label.networkUpdate"></label>
+        </span>
+    </div>
+    <div id="form-row-volume" class="form-row">
+        <label for="node-input-volume"><i class="fa fa-volume-up"></i> <span data-i18n="controller.label.volume"></span></label>
+        <input id="node-input-volume" style="width: 60px; float: left;" value="1">
+        <span style="padding-left: 10px;">
+            <input id="node-input-relativeVolume" type="checkbox" style="vertical-align: text-bottom; width: auto;">
+            <label for="node-input-relativeVolume" style="width: auto;" data-i18n="controller.label.relativeVolume"></label>
+        </span>
+    </div>
+    <div id="form-row-source" class="form-row">
+        <label for="node-input-source"><i class="fa fa-sign-in"></i> <span data-i18n="controller.label.audioSource"></span></label>
+        <select id="node-input-source" style="width: auto;">
+            <option value="extInput:tv" data-i18n="controller.list.source.tv"></option>
+            <option value="extInput:sat-catv" data-i18n="controller.list.source.satcatv"></option>
+            <option value="extInput:hdmi" data-i18n="controller.list.source.hdmi"></option>
+            <option value="extInput:video" data-i18n="controller.list.source.video"></option>
+            <option value="extInput:sacd-cd" data-i18n="controller.list.source.sacdcd"></option>
+            <option value="extInput:bd-dvd" data-i18n="controller.list.source.bddvd"></option>
+            <option value="storage:usb1" data-i18n="controller.list.source.usb"></option>
+            <option value="extInput:line" data-i18n="controller.list.source.line"></option>
+            <option value="extInput:btAudio" data-i18n="controller.list.source.bt"></option>
+            <option value="dlna:music" data-i18n="controller.list.source.dlna"></option>
+            <option value="radio:fm" data-i18n="controller.list.source.fm"></option>
+            <option value="extInput:game" data-i18n="controller.list.source.game"></option>
+            <option value="extInput:source" data-i18n="controller.list.source.source"></option>
+        </select>
+    </div>
+    <div id="form-row-port" class="form-row">
+        <label for="node-input-port"><i class="fa fa-bookmark"></i> <span data-i18n="controller.label.port"></span></label>
+        <input id="node-input-port" style="width: 60px;" value="1">
+    </div>
+    <div id="form-row-zone" class="form-row">
+        <label for="node-input-zone"><i class="fa fa-sign-out"></i> <span data-i18n="controller.label.zone"></span></label>
+        <input id="node-input-zone" style="width: 60px;" value="1">
+        <span style="padding-left: 10px;">
+            <input id="node-input-allzones" type="checkbox" style="vertical-align: text-bottom; width: auto;">
+            <label for="node-input-allzones" style="width: auto;" data-i18n="controller.label.allZones"></label>
+        </span>
+    </div>
+    <div id="form-row-soundSettings" class="form-row" style="padding-top: 10px">
+        <label><i class="fa fa-sliders"></i> <span data-i18n="controller.label.settings"></span></label>
+        <div class="form-row">
+            <ol id="node-input-soundSettingsList"></ol>
+        </div>
+    </div>
+    <div id="form-row-soundTarget" class="form-row">
+        <label for="node-input-soundTarget"><i class="fa fa-sliders"></i> <span data-i18n="controller.label.setting"></span></label>
+        <select id="node-input-soundTarget" style="width: auto;">
+            <option value="all" data-i18n="controller.list.soundTarget.all"></option>
+            <option value="soundField" data-i18n="controller.list.soundTarget.soundField"></option>
+            <option value="clearAudio" data-i18n="controller.list.soundTarget.clearAudio"></option>
+            <option value="nightMode" data-i18n="controller.list.soundTarget.nightMode"></option>
+            <option value="footballMode" data-i18n="controller.list.soundTarget.footballMode"></option>
+            <option value="voice" data-i18n="controller.list.soundTarget.voice"></option>
+        </select>
+    </div>
+    <div id="form-row-modeSettings" class="form-row" style="padding-top: 10px">
+        <label><i class="fa fa-sliders"></i> <span data-i18n="controller.label.modes"></span></label>
+        <div class="form-row">
+            <ol id="node-input-modeSettingsList"></ol>
+        </div>
+    </div>
+    <div id="form-row-modeTarget" class="form-row">
+        <label for="node-input-modeTarget"><i class="fa fa-sliders"></i> <span data-i18n="controller.label.mode"></span></label>
+        <select id="node-input-modeTarget" style="width: auto;">
+            <option value="all" data-i18n="controller.list.modeTarget.all"></option>
+            <option value="playType" data-i18n="controller.list.modeTarget.playType"></option>
+            <option value="repeatType" data-i18n="controller.list.modeTarget.repeatType"></option>
+            <option value="shuffleType" data-i18n="controller.list.modeTarget.shuffleType"></option>
+        </select>
+    </div>
+    <div id="form-row-filterList" class="form-row" style="padding-top: 10px">
+        <label><i class="fa fa-filter"></i> <span data-i18n="controller.label.filters"></span></label>
+        <div class="form-row">
+            <ol id="node-input-filterList"></ol>
+        </div>
+    </div>
+</script>
+
 <script type="text/javascript">
     RED.nodes.registerType("sony-audio-controller",
     {
@@ -694,176 +866,4 @@ SOFTWARE.
             }
         }
     });
-</script>
-
-<script type="text/x-red" data-template-name="sony-audio-controller">
-    <style>
-        .form-checkbox-row
-        {
-            float:        left;
-            padding-left: 4px;
-        }
-
-        .form-checkbox-label
-        {
-            padding-left: 10px;
-        }
-
-        input[type=checkbox].form-checkbox
-        {
-            vertical-align: text-bottom;
-            float:          left;
-            width:          auto;
-        }
-    </style>
-    <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="controller.label.name"></span></label>
-        <input type="text" id="node-input-name" data-i18n="[placeholder]controller.label.name">
-    </div>
-    <div class="form-row">
-        <label for="node-input-device"><i class="fa fa-cog"></i> <span data-i18n="controller.label.device"></span></label>
-        <input type="text" id="node-input-device" data-i18n="[placeholder]controller.label.device">
-    </div>
-    <div class="form-row">
-        <label style="float: left;"><i class="fa fa-download"></i> <span data-i18n="controller.label.input"></span></label>
-        <div class="form-checkbox-row">
-            <div>
-                <input type="checkbox" class="form-checkbox" id="node-input-enableTopic">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-enableTopic" data-i18n="controller.label.enableTopic"></label>
-            </div>
-            <div>
-                <input type="checkbox" class="form-checkbox" id="node-input-enableLowLevel">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-enableLowLevel" data-i18n="controller.label.enableLowLevel"></label>
-            </div>
-        </div>
-    </div>
-    <div class="form-row">
-        <label style="float: left;"><i class="fa fa-upload"></i> <span data-i18n="controller.label.outputs"></span></label>
-        <div class="form-checkbox-row">
-            <div>
-                <input type="checkbox" class="form-checkbox" id="node-input-outFilters">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-outFilters" data-i18n="controller.label.filters"></label>
-            </div>
-            <div>
-                <input type="checkbox" class="form-checkbox" id="node-input-outResponse">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-outResponse" data-i18n="controller.label.response"></label>
-            </div>
-        </div>
-    </div>
-    <div class="form-row"></div>
-    <div class="form-row">
-        <label for="node-input-command"><i class="fa fa-exchange"></i> <span data-i18n="controller.label.command"></span></label>
-        <select id="node-input-command" style="width: auto;">
-            <optgroup data-i18n="[label]controller.list.service.system">
-                <option value="getPowerStatus" data-i18n="controller.list.command.getPowerStatus"></option>
-                <option value="powerOn" data-i18n="controller.list.command.powerOn"></option>
-                <option value="powerOff" data-i18n="controller.list.command.powerOff"></option>
-                <option value="getSWUpdateInfo" data-i18n="controller.list.command.getSWUpdateInfo"></option>
-            </optgroup>
-            <optgroup data-i18n="[label]controller.list.service.audio">
-                <option value="getVolumeInfo" data-i18n="controller.list.command.getVolumeInfo"></option>
-                <option value="setVolume" data-i18n="controller.list.command.setVolume"></option>
-                <option value="mute" data-i18n="controller.list.command.mute"></option>
-                <option value="unmute" data-i18n="controller.list.command.unmute"></option>
-                <option value="toggleMute" data-i18n="controller.list.command.toggleMute"></option>
-                <option value="getSoundSettings" data-i18n="controller.list.command.getSoundSettings"></option>
-                <option value="setSoundSettings" data-i18n="controller.list.command.setSoundSettings"></option>
-            </optgroup>
-            <optgroup data-i18n="[label]controller.list.service.avContent">
-                <option value="getSource" data-i18n="controller.list.command.getSource"></option>
-                <option value="setSource" data-i18n="controller.list.command.setSource"></option>
-                <option value="getPlaybackSettings" data-i18n="controller.list.command.getPlaybackSettings"></option>
-                <option value="setPlaybackSettings" data-i18n="controller.list.command.setPlaybackSettings"></option>
-                <option value="stop" data-i18n="controller.list.command.stop"></option>
-                <option value="togglePause" data-i18n="controller.list.command.togglePause"></option>
-                <option value="skipPrev" data-i18n="controller.list.command.skipPrev"></option>
-                <option value="skipNext" data-i18n="controller.list.command.skipNext"></option>
-                <option value="scanBackward" data-i18n="controller.list.command.scanBackward"></option>
-                <option value="scanForward" data-i18n="controller.list.command.scanForward"></option>
-            </optgroup>
-        </select>
-    </div>
-    <div id="form-row-swupdate" class="form-row">
-        <label><i class="fa fa-sign-in"></i> <span data-i18n="controller.label.swSource"></span></label>
-        <span>
-            <input id="node-input-networkUpdate" type="checkbox" style="vertical-align: text-bottom; width: auto;">
-            <label for="node-input-networkUpdate" style="width: auto;" data-i18n="controller.label.networkUpdate"></label>
-        </span>
-    </div>
-    <div id="form-row-volume" class="form-row">
-        <label for="node-input-volume"><i class="fa fa-volume-up"></i> <span data-i18n="controller.label.volume"></span></label>
-        <input id="node-input-volume" style="width: 60px; float: left;" value="1">
-        <span style="padding-left: 10px;">
-            <input id="node-input-relativeVolume" type="checkbox" style="vertical-align: text-bottom; width: auto;">
-            <label for="node-input-relativeVolume" style="width: auto;" data-i18n="controller.label.relativeVolume"></label>
-        </span>
-    </div>
-    <div id="form-row-source" class="form-row">
-        <label for="node-input-source"><i class="fa fa-sign-in"></i> <span data-i18n="controller.label.audioSource"></span></label>
-        <select id="node-input-source" style="width: auto;">
-            <option value="extInput:tv" data-i18n="controller.list.source.tv"></option>
-            <option value="extInput:sat-catv" data-i18n="controller.list.source.satcatv"></option>
-            <option value="extInput:hdmi" data-i18n="controller.list.source.hdmi"></option>
-            <option value="extInput:video" data-i18n="controller.list.source.video"></option>
-            <option value="extInput:sacd-cd" data-i18n="controller.list.source.sacdcd"></option>
-            <option value="extInput:bd-dvd" data-i18n="controller.list.source.bddvd"></option>
-            <option value="storage:usb1" data-i18n="controller.list.source.usb"></option>
-            <option value="extInput:line" data-i18n="controller.list.source.line"></option>
-            <option value="extInput:btAudio" data-i18n="controller.list.source.bt"></option>
-            <option value="dlna:music" data-i18n="controller.list.source.dlna"></option>
-            <option value="radio:fm" data-i18n="controller.list.source.fm"></option>
-            <option value="extInput:game" data-i18n="controller.list.source.game"></option>
-            <option value="extInput:source" data-i18n="controller.list.source.source"></option>
-        </select>
-    </div>
-    <div id="form-row-port" class="form-row">
-        <label for="node-input-port"><i class="fa fa-bookmark"></i> <span data-i18n="controller.label.port"></span></label>
-        <input id="node-input-port" style="width: 60px;" value="1">
-    </div>
-    <div id="form-row-zone" class="form-row">
-        <label for="node-input-zone"><i class="fa fa-sign-out"></i> <span data-i18n="controller.label.zone"></span></label>
-        <input id="node-input-zone" style="width: 60px;" value="1">
-        <span style="padding-left: 10px;">
-            <input id="node-input-allzones" type="checkbox" style="vertical-align: text-bottom; width: auto;">
-            <label for="node-input-allzones" style="width: auto;" data-i18n="controller.label.allZones"></label>
-        </span>
-    </div>
-    <div id="form-row-soundSettings" class="form-row" style="padding-top: 10px">
-        <label><i class="fa fa-sliders"></i> <span data-i18n="controller.label.settings"></span></label>
-        <div class="form-row">
-            <ol id="node-input-soundSettingsList"></ol>
-        </div>
-    </div>
-    <div id="form-row-soundTarget" class="form-row">
-        <label for="node-input-soundTarget"><i class="fa fa-sliders"></i> <span data-i18n="controller.label.setting"></span></label>
-        <select id="node-input-soundTarget" style="width: auto;">
-            <option value="all" data-i18n="controller.list.soundTarget.all"></option>
-            <option value="soundField" data-i18n="controller.list.soundTarget.soundField"></option>
-            <option value="clearAudio" data-i18n="controller.list.soundTarget.clearAudio"></option>
-            <option value="nightMode" data-i18n="controller.list.soundTarget.nightMode"></option>
-            <option value="footballMode" data-i18n="controller.list.soundTarget.footballMode"></option>
-            <option value="voice" data-i18n="controller.list.soundTarget.voice"></option>
-        </select>
-    </div>
-    <div id="form-row-modeSettings" class="form-row" style="padding-top: 10px">
-        <label><i class="fa fa-sliders"></i> <span data-i18n="controller.label.modes"></span></label>
-        <div class="form-row">
-            <ol id="node-input-modeSettingsList"></ol>
-        </div>
-    </div>
-    <div id="form-row-modeTarget" class="form-row">
-        <label for="node-input-modeTarget"><i class="fa fa-sliders"></i> <span data-i18n="controller.label.mode"></span></label>
-        <select id="node-input-modeTarget" style="width: auto;">
-            <option value="all" data-i18n="controller.list.modeTarget.all"></option>
-            <option value="playType" data-i18n="controller.list.modeTarget.playType"></option>
-            <option value="repeatType" data-i18n="controller.list.modeTarget.repeatType"></option>
-            <option value="shuffleType" data-i18n="controller.list.modeTarget.shuffleType"></option>
-        </select>
-    </div>
-    <div id="form-row-filterList" class="form-row" style="padding-top: 10px">
-        <label><i class="fa fa-filter"></i> <span data-i18n="controller.label.filters"></span></label>
-        <div class="form-row">
-            <ol id="node-input-filterList"></ol>
-        </div>
-    </div>
 </script>

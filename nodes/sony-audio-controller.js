@@ -50,391 +50,6 @@ module.exports = function(RED)
         // backward compatibility
         if (typeof node.config.enableLowLevel == "undefined") { node.config.enableLowLevel = true; }
 
-        function getAPIFromTopic(topic)
-        {
-            const TOPIC_REGEX = /^([a-zA-Z]+)\/([a-zA-Z]+)\/([0-9]+\.[0-9]+)$/;
-
-            var matches = topic.match(TOPIC_REGEX);
-            var api = null;
-
-            if (matches != null)
-            {
-                api = {service: matches[1], method: matches[2], version: matches[3]};
-            }
-
-            return api;
-        }
-
-        function getAPIFromMessage(msg)
-        {
-            var api = null;
-
-            if ((typeof msg.service == "string") &&
-                (typeof msg.method == "string") &&
-                (typeof msg.version == "string"))
-            {
-                api = {service: msg.service, method: msg.method, version: msg.version};
-            }
-
-            return api;
-        }
-
-        function setPowerStatus(context, status)
-        {
-            sendRequest(context,
-                        "system",
-                        "setPowerStatus",
-                        "1.1",
-                        {status: status});
-        }
-
-        function setAudioVolume(context, volume, relative = false, zone = 0)
-        {
-            sendRequest(context,
-                        "audio",
-                        "setAudioVolume",
-                        "1.1",
-                        {output: (zone > 0) ? "extOutput:zone?zone=" + zone : "",
-                         volume: (relative && (volume > 0)) ? "+" + volume : volume.toString()});
-        }
-
-        function setAudioMute(context, mute, zone = 0)
-        {
-            sendRequest(context,
-                        "audio",
-                        "setAudioMute",
-                        "1.1",
-                        {output: (zone > 0) ? "extOutput:zone?zone=" + zone : "",
-                         mute: mute});
-        }
-
-        function setSoundSettings(context, params)
-        {
-            sendRequest(context,
-                        "audio",
-                        "setSoundSettings",
-                        "1.1",
-                        {settings: params});
-        }
-
-        function setPlaybackModeSettings(context, params)
-        {
-            sendRequest(context,
-                        "avContent",
-                        "setPlaybackModeSettings",
-                        "1.0",
-                        {settings: params});
-        }
-
-        function setPlayContent(context, source, port = 0, zone = 0)
-        {
-            var uri = source;
-            if (((source == "extInput:hdmi") || (source == "extInput:line")) && (port > 0))
-            {
-                uri += "?port=" + port;
-            }
-
-            sendRequest(context,
-                        "avContent",
-                        "setPlayContent",
-                        "1.2",
-                        {output: (zone > 0) ? "extOutput:zone?zone=" + zone : "",
-                         uri: uri});
-        }
-
-        function stopPlayingContent(context, zone = 0)
-        {
-            sendRequest(context,
-                        "avContent",
-                        "stopPlayingContent",
-                        "1.1",
-                        {output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
-        }
-
-        function pausePlayingContent(context, zone = 0)
-        {
-            sendRequest(context,
-                        "avContent",
-                        "pausePlayingContent",
-                        "1.1",
-                        {output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
-        }
-
-        function setPlayPreviousContent(context, zone = 0)
-        {
-            sendRequest(context,
-                        "avContent",
-                        "setPlayPreviousContent",
-                        "1.0",
-                        {output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
-        }
-
-        function setPlayNextContent(context, zone = 0)
-        {
-            sendRequest(context,
-                        "avContent",
-                        "setPlayNextContent",
-                        "1.0",
-                        {output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
-        }
-
-        function scanPlayingContent(context, fwd, zone = 0)
-        {
-            sendRequest(context,
-                        "avContent",
-                        "scanPlayingContent",
-                        "1.0",
-                        {direction: fwd ? "fwd" : "bwd",
-                         output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
-        }
-
-        function getPowerStatus(context)
-        {
-            sendRequest(context,
-                        "system",
-                        "getPowerStatus",
-                        "1.1",
-                        null);
-        }
-
-        function getSWUpdateInfo(context, network)
-        {
-            sendRequest(context,
-                        "system",
-                        "getSWUpdateInfo",
-                        "1.0",
-                        {network: network ? "true" : "false"});
-        }
-
-        function getPlayingContentInfo(context, zone = 0)
-        {
-            sendRequest(context,
-                        "avContent",
-                        "getPlayingContentInfo",
-                        "1.2",
-                        {output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
-        }
-
-        function getVolumeInfo(context, zone = 0)
-        {
-            sendRequest(context,
-                        "audio",
-                        "getVolumeInformation",
-                        "1.1",
-                        {output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
-        }
-
-        function getSoundSettings(context, target)
-        {
-            sendRequest(context,
-                        "audio",
-                        "getSoundSettings",
-                        "1.1",
-                        {target: target});
-        }
-
-        function getPlaybackModeSettings(context, target)
-        {
-            sendRequest(context,
-                        "avContent",
-                        "getPlaybackModeSettings",
-                        "1.0",
-                        {target: target});
-        }
-
-        function setStatus(stat = {}, duration = 0)
-        {
-            if (node.timeout != null)
-            {
-                clearTimeout(node.timeout);
-                node.timeout = null;
-            }
-
-            node.status(stat);
-
-            if (duration > 0)
-            {
-                node.timeout = setTimeout(() =>
-                {
-                    node.status({});
-                    node.timeout = null;
-                }, duration);
-            }
-        }
-
-        function createOuputArray(context, filterMsgs, respMsg)
-        {
-            var arr = [];
-
-            if (node.config.outFilters)
-            {
-                for (let i=0; i<filterMsgs.length; ++i)
-                {
-                    if ((filterMsgs[i] != null) &&
-                        (typeof context.command == "string"))
-                    {
-                        filterMsgs[i].command = context.command;
-                    }
-
-                    arr.push(filterMsgs[i]);
-                }
-            }
-
-            if (node.config.outResponse)
-            {
-                arr.push(respMsg);
-            }
-
-            return arr;
-        }
-
-        function sendRequest(context, service, method, version, args)
-        {
-            setStatus(STATUS_SENDING);
-
-            node.device.sendRequest(service, method, version, args)
-            .then(respMsg =>
-            {
-                sendResponse(context, respMsg);
-                setStatus(STATUS_SUCCESS, STATUS_TEMP_DURATION);
-
-                context.done();
-            })
-            .catch(error =>
-            {
-                setStatus(STATUS_ERROR, STATUS_TEMP_DURATION);
-                context.error(error);
-            });
-        }
-
-        function sendResponse(context, respMsg)
-        {
-            var filteredMsgs = [];
-
-            if (node.config.outFilters && (respMsg.payload != null))
-            {
-                for (let i=0; i<node.config.outputPorts.length; ++i)
-                {
-                    if ("filter" in node.config.outputPorts[i])
-                    {
-                        let filter = {name: ""};
-
-                        if ((node.config.outputPorts[i].filter.name == "auto") &&
-                            (typeof context.command == "string"))
-                        {
-                            switch (context.command)
-                            {
-                                case "getPowerStatus":
-                                {
-                                    if (typeof context.suffix == "string")
-                                    {
-                                        switch (context.suffix)
-                                        {
-                                            case "powered":
-                                            {
-                                                filter = {name: "powered", explicit: false};
-                                                break;
-                                            }
-                                            case "poweredExplicit":
-                                            {
-                                                filter = {name: "powered", explicit: true};
-                                                break;
-                                            }
-                                            case "standby":
-                                            {
-                                                filter = {name: "standby", explicit: false};
-                                                break;
-                                            }
-                                            case "standbyExplicit":
-                                            {
-                                                filter = {name: "standby", explicit: true};
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        filter = {name: "powered", explicit: false};
-                                    }
-
-                                    break;
-                                }
-                                case "getSWUpdateInfo":
-                                {
-                                    if (context.suffix === "explicit")
-                                    {
-                                        filter = {name: "swupdate", explicit: true};
-                                    }
-                                    else
-                                    {
-                                        filter = {name: "swupdate", explicit: false};
-                                    }
-
-                                    break;
-                                }
-                                case "getSource":
-                                {
-                                    filter = {name: "source"};
-                                    break;
-                                }
-                                case "getVolumeInfo":
-                                {
-                                    if (typeof context.suffix == "string")
-                                    {
-                                        switch (context.suffix)
-                                        {
-                                            case "absolute":
-                                            {
-                                                filter = {name: "absoluteVolume"};
-                                                break;
-                                            }
-                                            case "relative":
-                                            {
-                                                filter = {name: "relativeVolume"};
-                                                break;
-                                            }
-                                            case "muted":
-                                            {
-                                                filter = {name: "muted"};
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        filter = {name: "absoluteVolume"};
-                                    }
-
-                                    break;
-                                }
-                                case "getSoundSettings":
-                                {
-                                    filter = {name: "soundSetting"};
-                                    break;
-                                }
-                                case "getPlaybackModes":
-                                {
-                                    filter = {name: "playbackMode"};
-                                    break;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            filter = node.config.outputPorts[i].filter;
-                        }
-
-                        filteredMsgs.push(APIFilter.filterData(respMsg, filter));
-                    }
-                }
-            }
-
-            if (node.config.outFilters || node.config.outResponse)
-            {
-                context.send(createOuputArray(context, filteredMsgs, respMsg));
-            }
-        }
-
         if (node.device)
         {
             if ((node.config.outputs == 0) ||
@@ -856,6 +471,391 @@ module.exports = function(RED)
         else
         {
             setStatus(STATUS_UNCONFIGURED);
+        }
+
+        function getAPIFromTopic(topic)
+        {
+            const TOPIC_REGEX = /^([a-zA-Z]+)\/([a-zA-Z]+)\/([0-9]+\.[0-9]+)$/;
+
+            var matches = topic.match(TOPIC_REGEX);
+            var api = null;
+
+            if (matches != null)
+            {
+                api = {service: matches[1], method: matches[2], version: matches[3]};
+            }
+
+            return api;
+        }
+
+        function getAPIFromMessage(msg)
+        {
+            var api = null;
+
+            if ((typeof msg.service == "string") &&
+                (typeof msg.method == "string") &&
+                (typeof msg.version == "string"))
+            {
+                api = {service: msg.service, method: msg.method, version: msg.version};
+            }
+
+            return api;
+        }
+
+        function setPowerStatus(context, status)
+        {
+            sendRequest(context,
+                        "system",
+                        "setPowerStatus",
+                        "1.1",
+                        {status: status});
+        }
+
+        function setAudioVolume(context, volume, relative = false, zone = 0)
+        {
+            sendRequest(context,
+                        "audio",
+                        "setAudioVolume",
+                        "1.1",
+                        {output: (zone > 0) ? "extOutput:zone?zone=" + zone : "",
+                         volume: (relative && (volume > 0)) ? "+" + volume : volume.toString()});
+        }
+
+        function setAudioMute(context, mute, zone = 0)
+        {
+            sendRequest(context,
+                        "audio",
+                        "setAudioMute",
+                        "1.1",
+                        {output: (zone > 0) ? "extOutput:zone?zone=" + zone : "",
+                         mute: mute});
+        }
+
+        function setSoundSettings(context, params)
+        {
+            sendRequest(context,
+                        "audio",
+                        "setSoundSettings",
+                        "1.1",
+                        {settings: params});
+        }
+
+        function setPlaybackModeSettings(context, params)
+        {
+            sendRequest(context,
+                        "avContent",
+                        "setPlaybackModeSettings",
+                        "1.0",
+                        {settings: params});
+        }
+
+        function setPlayContent(context, source, port = 0, zone = 0)
+        {
+            var uri = source;
+            if (((source == "extInput:hdmi") || (source == "extInput:line")) && (port > 0))
+            {
+                uri += "?port=" + port;
+            }
+
+            sendRequest(context,
+                        "avContent",
+                        "setPlayContent",
+                        "1.2",
+                        {output: (zone > 0) ? "extOutput:zone?zone=" + zone : "",
+                         uri: uri});
+        }
+
+        function stopPlayingContent(context, zone = 0)
+        {
+            sendRequest(context,
+                        "avContent",
+                        "stopPlayingContent",
+                        "1.1",
+                        {output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
+        }
+
+        function pausePlayingContent(context, zone = 0)
+        {
+            sendRequest(context,
+                        "avContent",
+                        "pausePlayingContent",
+                        "1.1",
+                        {output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
+        }
+
+        function setPlayPreviousContent(context, zone = 0)
+        {
+            sendRequest(context,
+                        "avContent",
+                        "setPlayPreviousContent",
+                        "1.0",
+                        {output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
+        }
+
+        function setPlayNextContent(context, zone = 0)
+        {
+            sendRequest(context,
+                        "avContent",
+                        "setPlayNextContent",
+                        "1.0",
+                        {output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
+        }
+
+        function scanPlayingContent(context, fwd, zone = 0)
+        {
+            sendRequest(context,
+                        "avContent",
+                        "scanPlayingContent",
+                        "1.0",
+                        {direction: fwd ? "fwd" : "bwd",
+                         output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
+        }
+
+        function getPowerStatus(context)
+        {
+            sendRequest(context,
+                        "system",
+                        "getPowerStatus",
+                        "1.1",
+                        null);
+        }
+
+        function getSWUpdateInfo(context, network)
+        {
+            sendRequest(context,
+                        "system",
+                        "getSWUpdateInfo",
+                        "1.0",
+                        {network: network ? "true" : "false"});
+        }
+
+        function getPlayingContentInfo(context, zone = 0)
+        {
+            sendRequest(context,
+                        "avContent",
+                        "getPlayingContentInfo",
+                        "1.2",
+                        {output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
+        }
+
+        function getVolumeInfo(context, zone = 0)
+        {
+            sendRequest(context,
+                        "audio",
+                        "getVolumeInformation",
+                        "1.1",
+                        {output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
+        }
+
+        function getSoundSettings(context, target)
+        {
+            sendRequest(context,
+                        "audio",
+                        "getSoundSettings",
+                        "1.1",
+                        {target: target});
+        }
+
+        function getPlaybackModeSettings(context, target)
+        {
+            sendRequest(context,
+                        "avContent",
+                        "getPlaybackModeSettings",
+                        "1.0",
+                        {target: target});
+        }
+
+        function setStatus(stat = {}, duration = 0)
+        {
+            if (node.timeout != null)
+            {
+                clearTimeout(node.timeout);
+                node.timeout = null;
+            }
+
+            node.status(stat);
+
+            if (duration > 0)
+            {
+                node.timeout = setTimeout(() =>
+                {
+                    node.status({});
+                    node.timeout = null;
+                }, duration);
+            }
+        }
+
+        function createOuputArray(context, filterMsgs, respMsg)
+        {
+            var arr = [];
+
+            if (node.config.outFilters)
+            {
+                for (let i=0; i<filterMsgs.length; ++i)
+                {
+                    if ((filterMsgs[i] != null) &&
+                        (typeof context.command == "string"))
+                    {
+                        filterMsgs[i].command = context.command;
+                    }
+
+                    arr.push(filterMsgs[i]);
+                }
+            }
+
+            if (node.config.outResponse)
+            {
+                arr.push(respMsg);
+            }
+
+            return arr;
+        }
+
+        function sendRequest(context, service, method, version, args)
+        {
+            setStatus(STATUS_SENDING);
+
+            node.device.sendRequest(service, method, version, args)
+            .then(respMsg =>
+            {
+                sendResponse(context, respMsg);
+                setStatus(STATUS_SUCCESS, STATUS_TEMP_DURATION);
+
+                context.done();
+            })
+            .catch(error =>
+            {
+                setStatus(STATUS_ERROR, STATUS_TEMP_DURATION);
+                context.error(error);
+            });
+        }
+
+        function sendResponse(context, respMsg)
+        {
+            var filteredMsgs = [];
+
+            if (node.config.outFilters && (respMsg.payload != null))
+            {
+                for (let i=0; i<node.config.outputPorts.length; ++i)
+                {
+                    if ("filter" in node.config.outputPorts[i])
+                    {
+                        let filter = {name: ""};
+
+                        if ((node.config.outputPorts[i].filter.name == "auto") &&
+                            (typeof context.command == "string"))
+                        {
+                            switch (context.command)
+                            {
+                                case "getPowerStatus":
+                                {
+                                    if (typeof context.suffix == "string")
+                                    {
+                                        switch (context.suffix)
+                                        {
+                                            case "powered":
+                                            {
+                                                filter = {name: "powered", explicit: false};
+                                                break;
+                                            }
+                                            case "poweredExplicit":
+                                            {
+                                                filter = {name: "powered", explicit: true};
+                                                break;
+                                            }
+                                            case "standby":
+                                            {
+                                                filter = {name: "standby", explicit: false};
+                                                break;
+                                            }
+                                            case "standbyExplicit":
+                                            {
+                                                filter = {name: "standby", explicit: true};
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        filter = {name: "powered", explicit: false};
+                                    }
+
+                                    break;
+                                }
+                                case "getSWUpdateInfo":
+                                {
+                                    if (context.suffix === "explicit")
+                                    {
+                                        filter = {name: "swupdate", explicit: true};
+                                    }
+                                    else
+                                    {
+                                        filter = {name: "swupdate", explicit: false};
+                                    }
+
+                                    break;
+                                }
+                                case "getSource":
+                                {
+                                    filter = {name: "source"};
+                                    break;
+                                }
+                                case "getVolumeInfo":
+                                {
+                                    if (typeof context.suffix == "string")
+                                    {
+                                        switch (context.suffix)
+                                        {
+                                            case "absolute":
+                                            {
+                                                filter = {name: "absoluteVolume"};
+                                                break;
+                                            }
+                                            case "relative":
+                                            {
+                                                filter = {name: "relativeVolume"};
+                                                break;
+                                            }
+                                            case "muted":
+                                            {
+                                                filter = {name: "muted"};
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        filter = {name: "absoluteVolume"};
+                                    }
+
+                                    break;
+                                }
+                                case "getSoundSettings":
+                                {
+                                    filter = {name: "soundSetting"};
+                                    break;
+                                }
+                                case "getPlaybackModes":
+                                {
+                                    filter = {name: "playbackMode"};
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            filter = node.config.outputPorts[i].filter;
+                        }
+
+                        filteredMsgs.push(APIFilter.filterData(respMsg, filter));
+                    }
+                }
+            }
+
+            if (node.config.outFilters || node.config.outResponse)
+            {
+                context.send(createOuputArray(context, filteredMsgs, respMsg));
+            }
         }
     }
 
