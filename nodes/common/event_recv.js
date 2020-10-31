@@ -33,7 +33,7 @@ const STATUS_CONNECTED    = {fill: "blue",  shape: "dot", text: "receiver.status
 const STATUS_READY        = {fill: "green", shape: "dot", text: "receiver.status.ready"          };
 const STATUS_ERROR        = {fill: "red",   shape: "dot", text: "receiver.status.connectionError"};
 
-const Events = require("../libs/sony-event-constants.js");
+const Events = require("./event_constants.js");
 
 const MAP_NOTIFICATIONS = {notifyPowerStatus:               Events.EVENT_SYSTEM_NOTIFY_POWER_STATUS,
                            notifyStorageStatus:             Events.EVENT_SYSTEM_NOTIFY_STORAGE_STATUS,

@@ -30,7 +30,7 @@ module.exports = function(RED)
     const httpRequest = require("node-fetch");
     const xmlConverter = require("xml-js");
 
-    const EventReceiver = require("../libs/sony-event-recv.js");
+    const EventReceiver = require("./common/event_recv.js");
     const SSDPClient = require("node-ssdp").Client;
     const ssdpClient = new SSDPClient({explicitSocketBind: true});
 

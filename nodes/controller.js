@@ -32,7 +32,7 @@ module.exports = function(RED)
     const STATUS_SUCCESS       = {fill: "green",  shape: "dot", text: "controller.status.success"            };
     const STATUS_ERROR         = {fill: "red",    shape: "dot", text: "controller.status.error"              };
 
-    const APIFilter = require("../libs/sony-api-filter");
+    const APIFilter = require("./common/api_filter.js");
 
 
     function SonyAudioControllerNode(config)
