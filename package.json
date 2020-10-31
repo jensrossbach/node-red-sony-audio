@@ -34,9 +34,9 @@
     "scripts": {},
     "node-red": {
         "nodes": {
-            "sony-audio-device": "nodes/sony-audio-device.js",
-            "sony-audio-controller": "nodes/sony-audio-controller.js",
-            "sony-audio-receiver": "nodes/sony-audio-receiver.js"
+            "sony-audio-device": "nodes/device.js",
+            "sony-audio-controller": "nodes/controller.js",
+            "sony-audio-receiver": "nodes/receiver.js"
         }
     }
 }
