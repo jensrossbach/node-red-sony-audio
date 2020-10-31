@@ -36,7 +36,7 @@ SOFTWARE.
     <p>
         Node for controlling a Sony audio device via the Audio Control API.
     </p>
-    <h3>Inputs</h3>
+    <h3>Input</h3>
     <p>
         Overrides the command and/or the corresponding settings of
         the node's command configuration.
@@ -48,14 +48,13 @@ SOFTWARE.
         <dd>the overridden command settings</dd>
     </dl>
     <p>
-        If <i>Enable Override</i> in the <i>Topic</i> section of the configuration
-        page is activated, the command can alternatively be specified in the
-        <code>msg.topic</code>.
+        If <i>Enable Topic Override</i> is activated, the command can alternatively
+        be specified in the <code>msg.topic</code>.
     </p>
     <p>
-        If all of the following attributes are present, sends a raw /
-        low-level request to the Audio Control API ignoring the node's
-        command configuration.
+        If <i>Enable Low-Level Override</i> is activated and all of the following
+        attributes are present, sends a raw / low-level request to the Audio Control
+        API ignoring the node's command configuration.
     </p>
     <dl class="message-properties">
         <dt class="optional">service<span class="property-type">string</span></dt>
@@ -68,10 +67,9 @@ SOFTWARE.
         <dd>the arguments of the request</dd>
     </dl>
     <p>
-        If <i>Enable Override</i> in the <i>Topic</i> section of the configuration
-        page is activated, the API service, API method and API version can
-        alternatively be specified in the <code>msg.topic</code> in the form
-        <i>service</i>/<i>method</i>/<i>version</i>.
+        If <i>Enable Topic Override</i> is activated, the API service, API method
+        and API version can alternatively be specified in the <code>msg.topic</code>
+        in the form <i>service</i>/<i>method</i>/<i>version</i>.
     </p>
     <h3>Outputs</h3>
     <p>
@@ -139,6 +137,11 @@ SOFTWARE.
         <dd>Optionally specify a name for the node.</dd>
         <dt>Device</dt>
         <dd>Select / configure the Sony audio device.</dd>
+        <dt>Input</dt>
+        <dd>
+            Select if the configured command can be overridden by specific message
+            properties (see section <i>Input</i> for details).
+        </dd>
         <dt>Outputs</dt>
         <dd>Select the outputs to be provided by the node.</dd>
         <dt>Command</dt>

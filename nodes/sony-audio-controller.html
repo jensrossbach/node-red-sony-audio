@@ -78,6 +78,10 @@ SOFTWARE.
             {
                 value: false
             },
+            enableLowLevel:
+            {
+                value: true
+            },
             command:
             {
                 value: "powerOn"
@@ -511,6 +515,7 @@ SOFTWARE.
             // backward compatibility
             if (node.command == "setPlaybackModes") { commandSelect.val("setPlaybackSettings"); }
             if (node.command == "getPlaybackModes") { commandSelect.val("getPlaybackSettings"); }
+            if (typeof node.enableLowLevel == "undefined") { $("#node-input-enableLowLevel").prop("checked", true); }
 
             commandSelect.change();
             if (node.zone == 0)
@@ -720,7 +725,20 @@ SOFTWARE.
         <input type="text" id="node-input-device" data-i18n="[placeholder]controller.label.device">
     </div>
     <div class="form-row">
-        <label style="float: left;"><i class="fa fa-link"></i> <span data-i18n="controller.label.outputs"></span></label>
+        <label style="float: left;"><i class="fa fa-download"></i> <span data-i18n="controller.label.input"></span></label>
+        <div class="form-checkbox-row">
+            <div>
+                <input type="checkbox" class="form-checkbox" id="node-input-enableTopic">
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-enableTopic" data-i18n="controller.label.enableTopic"></label>
+            </div>
+            <div>
+                <input type="checkbox" class="form-checkbox" id="node-input-enableLowLevel">
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-enableLowLevel" data-i18n="controller.label.enableLowLevel"></label>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <label style="float: left;"><i class="fa fa-upload"></i> <span data-i18n="controller.label.outputs"></span></label>
         <div class="form-checkbox-row">
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-outFilters">
@@ -729,15 +747,6 @@ SOFTWARE.
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-outResponse">
                 <label class="form-checkbox-label" style="width: auto;" for="node-input-outResponse" data-i18n="controller.label.response"></label>
-            </div>
-        </div>
-    </div>
-    <div class="form-row">
-        <label style="float: left;"><i class="fa fa-tasks"></i> <span data-i18n="controller.label.topic"></span></label>
-        <div class="form-checkbox-row">
-            <div>
-                <input type="checkbox" class="form-checkbox" id="node-input-enableTopic">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-enableTopic" data-i18n="controller.label.enableOverride"></label>
             </div>
         </div>
     </div>
@@ -775,7 +784,7 @@ SOFTWARE.
         </select>
     </div>
     <div id="form-row-swupdate" class="form-row">
-        <label for="node-input-source"><i class="fa fa-sign-in"></i> <span data-i18n="controller.label.swSource"></span></label>
+        <label><i class="fa fa-sign-in"></i> <span data-i18n="controller.label.swSource"></span></label>
         <span>
             <input id="node-input-networkUpdate" type="checkbox" style="vertical-align: text-bottom; width: auto;">
             <label for="node-input-networkUpdate" style="width: auto;" data-i18n="controller.label.networkUpdate"></label>
@@ -820,7 +829,7 @@ SOFTWARE.
         </span>
     </div>
     <div id="form-row-soundSettings" class="form-row" style="padding-top: 10px">
-        <label for="node-input-filterList"><i class="fa fa-sliders"></i> <span data-i18n="controller.label.settings"></span></label>
+        <label><i class="fa fa-sliders"></i> <span data-i18n="controller.label.settings"></span></label>
         <div class="form-row">
             <ol id="node-input-soundSettingsList"></ol>
         </div>
@@ -837,7 +846,7 @@ SOFTWARE.
         </select>
     </div>
     <div id="form-row-modeSettings" class="form-row" style="padding-top: 10px">
-        <label for="node-input-filterList"><i class="fa fa-sliders"></i> <span data-i18n="controller.label.modes"></span></label>
+        <label><i class="fa fa-sliders"></i> <span data-i18n="controller.label.modes"></span></label>
         <div class="form-row">
             <ol id="node-input-modeSettingsList"></ol>
         </div>
@@ -852,7 +861,7 @@ SOFTWARE.
         </select>
     </div>
     <div id="form-row-filterList" class="form-row" style="padding-top: 10px">
-        <label for="node-input-filterList"><i class="fa fa-filter"></i> <span data-i18n="controller.label.filters"></span></label>
+        <label><i class="fa fa-filter"></i> <span data-i18n="controller.label.filters"></span></label>
         <div class="form-row">
             <ol id="node-input-filterList"></ol>
         </div>

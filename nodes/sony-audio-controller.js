@@ -47,6 +47,9 @@ module.exports = function(RED)
 
         node.timeout = null;
 
+        // backward compatibility
+        if (typeof node.config.enableLowLevel == "undefined") { node.config.enableLowLevel = true; }
+
         function getAPIFromTopic(topic)
         {
             const TOPIC_REGEX = /^([a-zA-Z]+)\/([a-zA-Z]+)\/([0-9]+\.[0-9]+)$/;
@@ -491,7 +494,7 @@ module.exports = function(RED)
                     }
                 }
 
-                if (!api)
+                if (!api && node.config.enableLowLevel)
                 {
                     api = getAPIFromMessage(msg);
                 }

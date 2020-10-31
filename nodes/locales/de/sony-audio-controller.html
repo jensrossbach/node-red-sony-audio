@@ -34,12 +34,12 @@ SOFTWARE.
         }
     </style>
     <p>
-        Node zum Steuern eines Sony Audio-Geräts über die Audio Control API.
+        Knoten zum Steuern eines Sony Audio-Geräts über die Audio Control API.
     </p>
-    <h3>Eingaben</h3>
+    <h3>Eingabe</h3>
     <p>
         Überschreibt das Kommando und/oder die dazugehörigen Einstellungen
-        der Kommando-Konfiguration der Node.
+        der Kommando-Konfiguration des Knotens.
     </p>
     <dl class="message-properties">
         <dt class="optional">command<span class="property-type">string</span></dt>
@@ -48,14 +48,14 @@ SOFTWARE.
         <dd>die überschriebenen Kommando-Einstellungen</dd>
     </dl>
     <p>
-        Wenn <i>Überschreiben aktivieren</i> im Abschnitt <i>Topic</i> der Konfiguration
-        aktiviert ist, kann das Kommando alternativ über <code>msg.topic</code> angegeben
-        werden.
+        Wenn <i>Topic-Eingabe aktivieren</i> ausgewählt ist, kann das Kommando
+        alternativ über <code>msg.topic</code> angegeben werden.
     </p>
     <p>
-        Wenn alle der folgenden Rohdaten-Attribute vorhanden sind, wird eine direkte
-        Anfrage an die Audio Control API geschickt und die Kommando-Konfiguration der
-        Node ignoriert.
+        Wenn <i>Low-Level-Eingabe aktivieren</i> ausgewählt ist und alle der
+        folgenden Rohdaten-Attribute vorhanden sind, wird eine direkte Anfrage
+        an die Audio Control API geschickt und die Kommando-Konfiguration des
+        Knotens ignoriert.
     </p>
     <dl class="message-properties">
         <dt class="optional">service<span class="property-type">string</span></dt>
@@ -68,14 +68,13 @@ SOFTWARE.
         <dd>die Argumente der Anfrage</dd>
     </dl>
     <p>
-        Wenn <i>Überschreiben aktivieren</i> im Abschnitt <i>Topic</i> der Konfiguration
-        aktiviert ist, können der API-Dienst, die API-Methode und die API-Version
-        alternativ über <code>msg.topic</code> in der Form <i>Dienst</i>/<i>Methode</i>/<i>Version</i>
-        angegeben werden.
+        Wenn <i>Topic-Eingabe aktivieren</i> ausgewählt ist, können der API-Dienst,
+        die API-Methode und die API-Version alternativ über <code>msg.topic</code>
+        in der Form <i>Dienst</i>/<i>Methode</i>/<i>Version</i> angegeben werden.
     </p>
     <h3>Ausgaben</h3>
     <p>
-        Die Node stellt eine variable Anzahl Ausgaben zur Verfügung, die über die
+        Der Knoten stellt eine variable Anzahl Ausgaben zur Verfügung, die über die
         Konfigurationsseite ausgewählt werden können. Standardmäßig ist nur der
         <i>Filter</i>-Ausgang aktiviert.
     </p>
@@ -88,7 +87,7 @@ SOFTWARE.
             <dl class="message-properties">
                 <dt>payload<span class="property-type">boolean | number | string | object</span></dt>
                 <dd>
-                    Enthält die gefilterten Ergebnisse der Node-Aktion. Nachrichten
+                    Enthält die gefilterten Ergebnisse der Knoten-Aktion. Nachrichten
                     werden nur dann an diese Ports geschickt, wenn die Filter auf
                     die Daten angewendet werden können.
                 </dd>
@@ -113,7 +112,7 @@ SOFTWARE.
     </ol>
     <h3>Details</h3>
     <p>
-        Diese Node sendet Anfragen an ein Sony Audio-Gerät und stellt die
+        Dieser Knoten sendet Anfragen an ein Sony Audio-Gerät und stellt die
         zurückgeschickte Antwort zur Verfügung. Die Details der Anfrage können
         über die Konfigurationsseite eingestellt werden. Alle Einstellungen bis
         auf die Filter können zusätzlich programmatisch überschrieben werden,
@@ -126,7 +125,7 @@ SOFTWARE.
         (nur in Englisch).
     </p>
     <p>
-        Die Node unterstützt auch einen direkten Modus für Anfragen, die nicht über
+        Der Knoten unterstützt auch einen direkten Modus für Anfragen, die nicht über
         die verfügbaren Kommandos abgedeckt sind. Mithilfe von speziellen Attributen
         (siehe Eingaben-Beschreibung oben) kann eine beliebige Anfrage, sofern sie
         von der Sony Audio Control API unterstützt wird, an das Gerät gesendet werden.
@@ -139,9 +138,15 @@ SOFTWARE.
     <h3>Konfiguration</h3>
     <dl>
         <dt>Name</dt>
-        <dd>Name für die Node (optional).</dd>
+        <dd>Name für den Knoten (optional).</dd>
         <dt>Gerät</dt>
         <dd>Auswahl/Konfiguration des Sony Audio-Geräts.</dd>
+        <dt>Eingabe</dt>
+        <dd>
+            Stellt ein, ob das konfigurierte Kommando über bestimmte Eigenschaften
+            der Nachricht überschrieben werden kann (siehe Abschnitt <i>Eingabe</i>
+            für weitere Informationen).
+        </dd>
         <dt>Ausgaben</dt>
         <dd>Ausgabe-Ports, die sichtbar sein sollen.</dd>
         <dt>Kommando</dt>
