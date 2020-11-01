@@ -3,6 +3,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.4] - 2020-11-01
+### Changed
+- Internal code optimizations.
+- Optimizations for help pages.
+
+### Fixed
+- Allow chaining of nodes via response outputs.
+  - New option _Enable Low-Level Override_ can be used to prevent interpretation of low-level information in subsequent nodes.
+  - Fixed wrong interpretation of null payload as object
+
 ## [1.6.3] - 2020-09-05
 ### Changed
 - Internal code optimizations.
