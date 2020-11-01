@@ -27,6 +27,28 @@ SOFTWARE.
         Informiert über Benachrichtigungen von einem Sony Audio-Gerät mittels
         der Sony Audio Control API.
     </p>
+    <h3>Details</h3>
+    <p>
+        Dieser Knoten wartet auf Benachrichtigungen und gibt diese bei Eintreffen aus.
+    </p>
+    <p>
+        Siehe Sony <a href="https://developer.sony.com/develop/audio-control-api/api-references/api-overview-2">Audio Control API</a>
+        Referenz für weitere Details über die Schnittstelle, deren Dienste, Methoden
+        und Argumente.
+    </p>
+    <h3>Konfiguration</h3>
+    <p>
+        Zunächst muss der Benachrichtigungsdienst ausgewählt werden. Abhängig
+        von der Auswahl werden die vom Dienst zur Verfügung gestellten
+        Benachrichtigungen anzeigt, von denen die gewünschten selektiert
+        werden können.
+    </p>
+    <p>
+        Filter können benutzt werden, um die Benachrichtigungen vom Gerät nach
+        bestimmten Kriterien zu filtern. Es können beliebig viele Filter hinzugefügt,
+        bearbeitet oder gelöscht werden. Die Zahl an der rechten Seite gibt den
+        Ausgabeport an, zu dem die gefilterte Benachrichtigung geschickt wird.
+    <p>
     <h3>Ausgaben</h3>
     <p>
         Der Knoten stellt eine variable Anzahl Ausgaben zur Verfügung, die über die
@@ -65,25 +87,4 @@ SOFTWARE.
             </dl>
         </li>
     </ol>
-    <h3>Details</h3>
-    <p>
-        Dieser Knoten wartet auf Benachrichtigungen und gibt diese bei Eintreffen aus.
-    </p>
-    <p>
-        Zunächst muss der Benachrichtigungsdienst ausgewählt werden. Abhängig
-        von der Auswahl werden die vom Dienst zur Verfügung gestellten
-        Benachrichtigungen anzeigt, von denen die gewünschten selektiert
-        werden können.
-    </p>
-    <p>
-        Filter können benutzt werden, um die Benachrichtigungen vom Gerät nach
-        bestimmten Kriterien zu filtern. Es können beliebig viele Filter hinzugefügt,
-        bearbeitet oder gelöscht werden. Die Zahl an der rechten Seite gibt den
-        Ausgabeport an, zu dem die gefilterte Benachrichtigung geschickt wird.
-    <p>
-    <p>
-        Siehe Sony <a href="https://developer.sony.com/develop/audio-control-api/api-references/api-overview-2">Audio Control API</a>
-        Referenz für weitere Details über die Schnittstelle, deren Dienste, Methoden
-        und Argumente.
-    </p>
 </script>

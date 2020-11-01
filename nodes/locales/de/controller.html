@@ -36,80 +36,6 @@ SOFTWARE.
     <p>
         Knoten zum Steuern eines Sony Audio-Geräts über die Audio Control API.
     </p>
-    <h3>Eingabe</h3>
-    <p>
-        Überschreibt das Kommando und/oder die dazugehörigen Einstellungen
-        der Kommando-Konfiguration des Knotens.
-    </p>
-    <dl class="message-properties">
-        <dt class="optional">command<span class="property-type">string</span></dt>
-        <dd>das überschriebene Kommando</dd>
-        <dt class="optional">payload<span class="property-type">object</span></dt>
-        <dd>die überschriebenen Kommando-Einstellungen</dd>
-    </dl>
-    <p>
-        Wenn <i>Topic-Eingabe aktivieren</i> ausgewählt ist, kann das Kommando
-        alternativ über <code>msg.topic</code> angegeben werden.
-    </p>
-    <p>
-        Wenn <i>Low-Level-Eingabe aktivieren</i> ausgewählt ist und alle der
-        folgenden Rohdaten-Attribute vorhanden sind, wird eine direkte Anfrage
-        an die Audio Control API geschickt und die Kommando-Konfiguration des
-        Knotens ignoriert.
-    </p>
-    <dl class="message-properties">
-        <dt class="optional">service<span class="property-type">string</span></dt>
-        <dd>der API-Dienst der Anfrage</dd>
-        <dt class="optional">method<span class="property-type">string</span></dt>
-        <dd>die API-Methode der Anfrage</dd>
-        <dt class="optional">version<span class="property-type">string</span></dt>
-        <dd>die API-Version der Anfrage</dd>
-        <dt class="optional">payload<span class="property-type">object</span></dt>
-        <dd>die Argumente der Anfrage</dd>
-    </dl>
-    <p>
-        Wenn <i>Topic-Eingabe aktivieren</i> ausgewählt ist, können der API-Dienst,
-        die API-Methode und die API-Version alternativ über <code>msg.topic</code>
-        in der Form <i>Dienst</i>/<i>Methode</i>/<i>Version</i> angegeben werden.
-    </p>
-    <h3>Ausgaben</h3>
-    <p>
-        Der Knoten stellt eine variable Anzahl Ausgaben zur Verfügung, die über die
-        Konfigurationsseite ausgewählt werden können. Standardmäßig ist nur der
-        <i>Filter</i>-Ausgang aktiviert.
-    </p>
-    <ol class="node-ports">
-        <li>Filter
-            <p>
-                Jeder konfigurierte Filter stellt einen eigenen Ausgabe-Port
-                zur Verfügung, an den dessen gefilterte Daten geschickt werden.
-            </p>
-            <dl class="message-properties">
-                <dt>payload<span class="property-type">boolean | number | string | object</span></dt>
-                <dd>
-                    Enthält die gefilterten Ergebnisse der Knoten-Aktion. Nachrichten
-                    werden nur dann an diese Ports geschickt, wenn die Filter auf
-                    die Daten angewendet werden können.
-                </dd>
-            </dl>
-        </li>
-        <li>Antwort
-            <p>
-                Enthält die Rohdaten-Antwort so wie sie von der Audio Control
-                API gesendet wurde, sofern die Aktion erfolgreich war.
-            </p>
-            <dl class="message-properties">
-                <dt>service<span class="property-type">string</span></dt>
-                <dd>der API-Dienst der Anfrage</dd>
-                <dt>method<span class="property-type">string</span></dt>
-                <dd>die API-Methode der Anfrage</dd>
-                <dt>version<span class="property-type">string</span></dt>
-                <dd>die API-Version der Anfrage</dd>
-                <dt>payload<span class="property-type">object</span></dt>
-                <dd>die Argumente der Anfrage</dd>
-            </dl>
-        </li>
-    </ol>
     <h3>Details</h3>
     <p>
         Dieser Knoten sendet Anfragen an ein Sony Audio-Gerät und stellt die
@@ -214,4 +140,78 @@ SOFTWARE.
             den Ausgabeport an, zu dem die gefilterte Antwort geschickt wird.
         </dd>
     </dl>
+    <h3>Eingabe</h3>
+    <p>
+        Überschreibt das Kommando und/oder die dazugehörigen Einstellungen
+        der Kommando-Konfiguration des Knotens.
+    </p>
+    <dl class="message-properties">
+        <dt class="optional">command<span class="property-type">string</span></dt>
+        <dd>das überschriebene Kommando</dd>
+        <dt class="optional">payload<span class="property-type">object</span></dt>
+        <dd>die überschriebenen Kommando-Einstellungen</dd>
+    </dl>
+    <p>
+        Wenn <i>Topic-Eingabe aktivieren</i> ausgewählt ist, kann das Kommando
+        alternativ über <code>msg.topic</code> angegeben werden.
+    </p>
+    <p>
+        Wenn <i>Low-Level-Eingabe aktivieren</i> ausgewählt ist und alle der
+        folgenden Rohdaten-Attribute vorhanden sind, wird eine direkte Anfrage
+        an die Audio Control API geschickt und die Kommando-Konfiguration des
+        Knotens ignoriert.
+    </p>
+    <dl class="message-properties">
+        <dt class="optional">service<span class="property-type">string</span></dt>
+        <dd>der API-Dienst der Anfrage</dd>
+        <dt class="optional">method<span class="property-type">string</span></dt>
+        <dd>die API-Methode der Anfrage</dd>
+        <dt class="optional">version<span class="property-type">string</span></dt>
+        <dd>die API-Version der Anfrage</dd>
+        <dt class="optional">payload<span class="property-type">object</span></dt>
+        <dd>die Argumente der Anfrage</dd>
+    </dl>
+    <p>
+        Wenn <i>Topic-Eingabe aktivieren</i> ausgewählt ist, können der API-Dienst,
+        die API-Methode und die API-Version alternativ über <code>msg.topic</code>
+        in der Form <i>Dienst</i>/<i>Methode</i>/<i>Version</i> angegeben werden.
+    </p>
+    <h3>Ausgaben</h3>
+    <p>
+        Der Knoten stellt eine variable Anzahl Ausgaben zur Verfügung, die über die
+        Konfigurationsseite ausgewählt werden können. Standardmäßig ist nur der
+        <i>Filter</i>-Ausgang aktiviert.
+    </p>
+    <ol class="node-ports">
+        <li>Filter
+            <p>
+                Jeder konfigurierte Filter stellt einen eigenen Ausgabe-Port
+                zur Verfügung, an den dessen gefilterte Daten geschickt werden.
+            </p>
+            <dl class="message-properties">
+                <dt>payload<span class="property-type">boolean | number | string | object</span></dt>
+                <dd>
+                    Enthält die gefilterten Ergebnisse der Knoten-Aktion. Nachrichten
+                    werden nur dann an diese Ports geschickt, wenn die Filter auf
+                    die Daten angewendet werden können.
+                </dd>
+            </dl>
+        </li>
+        <li>Antwort
+            <p>
+                Enthält die Rohdaten-Antwort so wie sie von der Audio Control
+                API gesendet wurde, sofern die Aktion erfolgreich war.
+            </p>
+            <dl class="message-properties">
+                <dt>service<span class="property-type">string</span></dt>
+                <dd>der API-Dienst der Anfrage</dd>
+                <dt>method<span class="property-type">string</span></dt>
+                <dd>die API-Methode der Anfrage</dd>
+                <dt>version<span class="property-type">string</span></dt>
+                <dd>die API-Version der Anfrage</dd>
+                <dt>payload<span class="property-type">object</span></dt>
+                <dd>die Argumente der Anfrage</dd>
+            </dl>
+        </li>
+    </ol>
 </script>

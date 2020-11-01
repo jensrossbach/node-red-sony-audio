@@ -36,79 +36,6 @@ SOFTWARE.
     <p>
         Node for controlling a Sony audio device via the Audio Control API.
     </p>
-    <h3>Input</h3>
-    <p>
-        Overrides the command and/or the corresponding settings of
-        the node's command configuration.
-    </p>
-    <dl class="message-properties">
-        <dt class="optional">command<span class="property-type">string</span></dt>
-        <dd>the overridden command</dd>
-        <dt class="optional">payload<span class="property-type">object</span></dt>
-        <dd>the overridden command settings</dd>
-    </dl>
-    <p>
-        If <i>Enable Topic Override</i> is activated, the command can alternatively
-        be specified in the <code>msg.topic</code>.
-    </p>
-    <p>
-        If <i>Enable Low-Level Override</i> is activated and all of the following
-        attributes are present, sends a raw / low-level request to the Audio Control
-        API ignoring the node's command configuration.
-    </p>
-    <dl class="message-properties">
-        <dt class="optional">service<span class="property-type">string</span></dt>
-        <dd>the API service of the request</dd>
-        <dt class="optional">method<span class="property-type">string</span></dt>
-        <dd>the API method of the request</dd>
-        <dt class="optional">version<span class="property-type">string</span></dt>
-        <dd>the API version of the request</dd>
-        <dt class="optional">payload<span class="property-type">object</span></dt>
-        <dd>the arguments of the request</dd>
-    </dl>
-    <p>
-        If <i>Enable Topic Override</i> is activated, the API service, API method
-        and API version can alternatively be specified in the <code>msg.topic</code>
-        in the form <i>service</i>/<i>method</i>/<i>version</i>.
-    </p>
-    <h3>Outputs</h3>
-    <p>
-        The node provides a variable number of outputs which can be selected via
-        the configuration page. By default, only the <i>Filter</i> outputs are
-        active.
-    </p>
-    <ol class="node-ports">
-        <li>Filters
-            <p>
-                Each configured filter provides a dedicated output port to
-                which its filtered data is sent.
-            </p>
-            <dl class="message-properties">
-                <dt>payload<span class="property-type">boolean | number | string | object</span></dt>
-                <dd>
-                    Contains the filtered results of the node's operation.
-                    Messages are only sent on these ports if the result is
-                    applicable to any of the filters.
-                </dd>
-            </dl>
-        </li>
-        <li>Response
-            <p>
-                Contains the raw / low-level response as sent by the Audio
-                Control API in case the node's operation succeeded.
-            </p>
-            <dl class="message-properties">
-                <dt>service<span class="property-type">string</span></dt>
-                <dd>the API service of the request</dd>
-                <dt>method<span class="property-type">string</span></dt>
-                <dd>the API method of the request</dd>
-                <dt>version<span class="property-type">string</span></dt>
-                <dd>the API version of the request</dd>
-                <dt>payload<span class="property-type">object</span></dt>
-                <dd>the result data of the request</dd>
-            </dl>
-        </li>
-    </ol>
     <h3>Details</h3>
     <p>
         This node sends requests to a Sony audio device and provides the returned
@@ -208,4 +135,77 @@ SOFTWARE.
             result of the filter will be sent.
         </dd>
     </dl>
+    <h3>Input</h3>
+    <p>
+        Overrides the command and/or the corresponding settings of
+        the node's command configuration.
+    </p>
+    <dl class="message-properties">
+        <dt class="optional">command<span class="property-type">string</span></dt>
+        <dd>the overridden command</dd>
+        <dt class="optional">payload<span class="property-type">object</span></dt>
+        <dd>the overridden command settings</dd>
+    </dl>
+    <p>
+        If <i>Enable Topic Override</i> is activated, the command can alternatively
+        be specified in the <code>msg.topic</code>.
+    </p>
+    <p>
+        If <i>Enable Low-Level Override</i> is activated and all of the following
+        attributes are present, sends a raw / low-level request to the Audio Control
+        API ignoring the node's command configuration.
+    </p>
+    <dl class="message-properties">
+        <dt class="optional">service<span class="property-type">string</span></dt>
+        <dd>the API service of the request</dd>
+        <dt class="optional">method<span class="property-type">string</span></dt>
+        <dd>the API method of the request</dd>
+        <dt class="optional">version<span class="property-type">string</span></dt>
+        <dd>the API version of the request</dd>
+        <dt class="optional">payload<span class="property-type">object</span></dt>
+        <dd>the arguments of the request</dd>
+    </dl>
+    <p>
+        If <i>Enable Topic Override</i> is activated, the API service, API method
+        and API version can alternatively be specified in the <code>msg.topic</code>
+        in the form <i>service</i>/<i>method</i>/<i>version</i>.
+    </p>
+    <h3>Outputs</h3>
+    <p>
+        The node provides a variable number of outputs which can be selected via
+        the configuration page. By default, only the <i>Filter</i> outputs are
+        active.
+    </p>
+    <ol class="node-ports">
+        <li>Filters
+            <p>
+                Each configured filter provides a dedicated output port to
+                which its filtered data is sent.
+            </p>
+            <dl class="message-properties">
+                <dt>payload<span class="property-type">boolean | number | string | object</span></dt>
+                <dd>
+                    Contains the filtered results of the node's operation.
+                    Messages are only sent on these ports if the result is
+                    applicable to any of the filters.
+                </dd>
+            </dl>
+        </li>
+        <li>Response
+            <p>
+                Contains the raw / low-level response as sent by the Audio
+                Control API in case the node's operation succeeded.
+            </p>
+            <dl class="message-properties">
+                <dt>service<span class="property-type">string</span></dt>
+                <dd>the API service of the request</dd>
+                <dt>method<span class="property-type">string</span></dt>
+                <dd>the API method of the request</dd>
+                <dt>version<span class="property-type">string</span></dt>
+                <dd>the API version of the request</dd>
+                <dt>payload<span class="property-type">object</span></dt>
+                <dd>the result data of the request</dd>
+            </dl>
+        </li>
+    </ol>
 </script>
