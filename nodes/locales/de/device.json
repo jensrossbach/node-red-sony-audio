@@ -1,9 +1,46 @@
 {
+    "common":
+    {
+        "label":
+        {
+            "filterPort": "Filter",
+            "name":       "Name",
+            "device":     "Gerät",
+            "outputs":    "Ausgaben",
+            "filters":    "Filter",
+            "explicit":   "Explizit"
+        },
+        "list":
+        {
+            "service":
+            {
+                "system":    "System",
+                "audio":     "Audio",
+                "avContent": "A/V Inhalte"
+            },
+            "filter":
+            {
+                "auto":           "Auto",
+                "powered":        "Eingeschaltet",
+                "standby":        "Bereitschaft",
+                "swupdate":       "Software-Aktualisierung",
+                "source":         "Quelle",
+                "absoluteVolume": "Absolute Lautstärke",
+                "relativeVolume": "Relative Lautstärke",
+                "muted":          "Stumm",
+                "soundSetting":   "Klangeinstellungen",
+                "playbackMode":   "Abspieleinstellungen"
+            }
+        },
+        "status":
+        {
+            "unconfigured": "nicht konfiguriert"
+        }
+    },
     "device":
     {
         "label":
         {
-            "name":         "Name",
             "host":         "Host",
             "port":         "Port",
             "discovery":    "Suche",

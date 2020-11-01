@@ -43,12 +43,12 @@ SOFTWARE.
         }
     </style>
     <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="controller.label.name"></span></label>
-        <input type="text" id="node-input-name" data-i18n="[placeholder]controller.label.name">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red-contrib-sony-audio/sony-audio-device:common.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]node-red-contrib-sony-audio/sony-audio-device:common.label.name">
     </div>
     <div class="form-row">
-        <label for="node-input-device"><i class="fa fa-cog"></i> <span data-i18n="controller.label.device"></span></label>
-        <input type="text" id="node-input-device" data-i18n="[placeholder]controller.label.device">
+        <label for="node-input-device"><i class="fa fa-cog"></i> <span data-i18n="node-red-contrib-sony-audio/sony-audio-device:common.label.device"></span></label>
+        <input type="text" id="node-input-device" data-i18n="[placeholder]node-red-contrib-sony-audio/sony-audio-device:common.label.device">
     </div>
     <div class="form-row">
         <label style="float: left;"><i class="fa fa-download"></i> <span data-i18n="controller.label.input"></span></label>
@@ -64,11 +64,11 @@ SOFTWARE.
         </div>
     </div>
     <div class="form-row">
-        <label style="float: left;"><i class="fa fa-upload"></i> <span data-i18n="controller.label.outputs"></span></label>
+        <label style="float: left;"><i class="fa fa-upload"></i> <span data-i18n="node-red-contrib-sony-audio/sony-audio-device:common.label.outputs"></span></label>
         <div class="form-checkbox-row">
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-outFilters">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-outFilters" data-i18n="controller.label.filters"></label>
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-outFilters" data-i18n="node-red-contrib-sony-audio/sony-audio-device:common.label.filters"></label>
             </div>
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-outResponse">
@@ -80,13 +80,13 @@ SOFTWARE.
     <div class="form-row">
         <label for="node-input-command"><i class="fa fa-exchange"></i> <span data-i18n="controller.label.command"></span></label>
         <select id="node-input-command" style="width: auto;">
-            <optgroup data-i18n="[label]controller.list.service.system">
+            <optgroup data-i18n="[label]node-red-contrib-sony-audio/sony-audio-device:common.list.service.system">
                 <option value="getPowerStatus" data-i18n="controller.list.command.getPowerStatus"></option>
                 <option value="powerOn" data-i18n="controller.list.command.powerOn"></option>
                 <option value="powerOff" data-i18n="controller.list.command.powerOff"></option>
                 <option value="getSWUpdateInfo" data-i18n="controller.list.command.getSWUpdateInfo"></option>
             </optgroup>
-            <optgroup data-i18n="[label]controller.list.service.audio">
+            <optgroup data-i18n="[label]node-red-contrib-sony-audio/sony-audio-device:common.list.service.audio">
                 <option value="getVolumeInfo" data-i18n="controller.list.command.getVolumeInfo"></option>
                 <option value="setVolume" data-i18n="controller.list.command.setVolume"></option>
                 <option value="mute" data-i18n="controller.list.command.mute"></option>
@@ -95,7 +95,7 @@ SOFTWARE.
                 <option value="getSoundSettings" data-i18n="controller.list.command.getSoundSettings"></option>
                 <option value="setSoundSettings" data-i18n="controller.list.command.setSoundSettings"></option>
             </optgroup>
-            <optgroup data-i18n="[label]controller.list.service.avContent">
+            <optgroup data-i18n="[label]node-red-contrib-sony-audio/sony-audio-device:common.list.service.avContent">
                 <option value="getSource" data-i18n="controller.list.command.getSource"></option>
                 <option value="setSource" data-i18n="controller.list.command.setSource"></option>
                 <option value="getPlaybackSettings" data-i18n="controller.list.command.getPlaybackSettings"></option>
@@ -187,7 +187,7 @@ SOFTWARE.
         </select>
     </div>
     <div id="form-row-filterList" class="form-row" style="padding-top: 10px">
-        <label><i class="fa fa-filter"></i> <span data-i18n="controller.label.filters"></span></label>
+        <label><i class="fa fa-filter"></i> <span data-i18n="node-red-contrib-sony-audio/sony-audio-device:common.label.filters"></span></label>
         <div class="form-row">
             <ol id="node-input-filterList"></ol>
         </div>
@@ -301,89 +301,76 @@ SOFTWARE.
         },
         oneditprepare: function()
         {
-            var node = this;
-            var commandSelect = $("#node-input-command");
-            var sourceSelect = $("#node-input-source");
-            var relativeVol = $("#node-input-relativeVolume");
-            var allZones = $("#node-input-allzones");
-            var outFiltersSelect = $("#node-input-outFilters");
+            let node = this;
+            let commandSelect = $("#node-input-command");
+            let sourceSelect = $("#node-input-source");
+            let relativeVol = $("#node-input-relativeVolume");
+            let allZones = $("#node-input-allzones");
+            let outFiltersSelect = $("#node-input-outFilters");
 
-            var volSpinner = $("#node-input-volume").spinner(
+            const validateVolume = function(event, ui)
+            {
+                let value = parseInt(this.value, 10);
+                let min = $(this).spinner("option", "min");
+                let max = $(this).spinner("option", "max");
+
+                if (isNaN(value) || (value < min))
+                {
+                    $(this).spinner("value", min);
+                }
+                else if (value > max)
+                {
+                    $(this).spinner("value", max);
+                }
+
+                if ((min < 0) && (value == 0))
+                {
+                    $(this).spinner("value", 1);
+                }
+            };
+
+            const validateZonePort = function(event, ui)
+            {
+                let value = parseInt(this.value, 10);
+                let min = $(this).spinner("option", "min");
+                let max = $(this).spinner("option", "max");
+
+                if (isNaN(value) || (value < min))
+                {
+                    $(this).spinner("value", min);
+                }
+                else if (value > max)
+                {
+                    $(this).spinner("value", max);
+                }
+            };
+
+            let volSpinner = $("#node-input-volume").spinner(
             {
                 min: 0,
                 max: 99,
                 step: 1,
                 numberFormat: "n",
-                change: function(event, ui)
-                {
-                    var value = parseInt(this.value, 10);
-                    var min = $(this).spinner("option", "min");
-                    var max = $(this).spinner("option", "max");
-
-                    if (isNaN(value) ||
-                        (value < min))
-                    {
-                        $(this).spinner("value", min);
-                    }
-                    else if (value > max)
-                    {
-                        $(this).spinner("value", max);
-                    }
-
-                    if ((min < 0) && (value == 0))
-                    {
-                        $(this).spinner("value", 1);
-                    }
-                }
+                change: validateVolume
             });
 
-            var portSpinner = $("#node-input-port").spinner(
+            let portSpinner = $("#node-input-port").spinner(
             {
                 min: 1,
                 max: 9,
                 step: 1,
-                change: function(event, ui)
-                {
-                    var value = parseInt(this.value, 10);
-                    var min = $(this).spinner("option", "min");
-                    var max = $(this).spinner("option", "max");
-
-                    if (isNaN(value) ||
-                        (value < min))
-                    {
-                        $(this).spinner("value", min);
-                    }
-                    else if (value > max)
-                    {
-                        $(this).spinner("value", max);
-                    }
-                }
+                change: validateZonePort
             });
 
-            var zoneSpinner = $("#node-input-zone").spinner(
+            let zoneSpinner = $("#node-input-zone").spinner(
             {
                 min: 1,
                 max: 9,
                 step: 1,
-                change: function(event, ui)
-                {
-                    var value = parseInt(this.value, 10);
-                    var min = $(this).spinner("option", "min");
-                    var max = $(this).spinner("option", "max");
-
-                    if (isNaN(value) ||
-                        (value < min))
-                    {
-                        $(this).spinner("value", min);
-                    }
-                    else if (value > max)
-                    {
-                        $(this).spinner("value", max);
-                    }
-                }
+                change: validateZonePort
             });
 
-            var soundSettingsList = $("#node-input-soundSettingsList").css("min-height", "200px").editableList(
+            let soundSettingsList = $("#node-input-soundSettingsList").css("min-height", "200px").editableList(
             {
                 removable: true,
                 addItem: function(item, index, soundSetting)
@@ -394,16 +381,16 @@ SOFTWARE.
                         soundSetting.value = "off";
                     }
 
-                    var soundTarget = $("<select/>", {class: "node-input-soundTarget"}).appendTo(item);
+                    let soundTarget = $("<select/>", {class: "node-input-soundTarget"}).appendTo(item);
                     soundTarget.append($("<option></option>").val("soundField").text(node._("controller.list.soundTarget.soundField")));
                     soundTarget.append($("<option></option>").val("clearAudio").text(node._("controller.list.soundTarget.clearAudio")));
                     soundTarget.append($("<option></option>").val("nightMode").text(node._("controller.list.soundTarget.nightMode")));
                     soundTarget.append($("<option></option>").val("footballMode").text(node._("controller.list.soundTarget.footballMode")));
                     soundTarget.append($("<option></option>").val("voice").text(node._("controller.list.soundTarget.voice")));
 
-                    var soundFieldContainer = $("<span/>", {id: "item-elem-soundField-" + index,
+                    let soundFieldContainer = $("<span/>", {id: "item-elem-soundField-" + index,
                                                             style: "padding-left: 10px;"}).appendTo(item);
-                    var soundField = $("<select/>", {class: "node-input-soundField",
+                    let soundField = $("<select/>", {class: "node-input-soundField",
                                                      style: "width: auto;"}).appendTo(soundFieldContainer);
                     soundField.append($("<option></option>").val("off").text(node._("controller.list.soundField.off")));
                     soundField.append($("<option></option>").val("standard").text(node._("controller.list.soundField.standard")));
@@ -413,17 +400,17 @@ SOFTWARE.
                     soundField.append($("<option></option>").val("sports").text(node._("controller.list.soundField.sports")));
                     soundField.append($("<option></option>").val("game").text(node._("controller.list.soundField.game")));
 
-                    var voiceTypeContainer = $("<span/>", {id: "item-elem-voiceType-" + index,
+                    let voiceTypeContainer = $("<span/>", {id: "item-elem-voiceType-" + index,
                                                            style: "padding-left: 10px;"}).appendTo(item);
-                    var voiceType = $("<select/>", {class: "node-input-voiceType",
+                    let voiceType = $("<select/>", {class: "node-input-voiceType",
                                                     style: "width: auto;"}).appendTo(voiceTypeContainer);
                     voiceType.append($("<option></option>").val("type1").text(node._("controller.list.voiceType.type1")));
                     voiceType.append($("<option></option>").val("type2").text(node._("controller.list.voiceType.type2")));
                     voiceType.append($("<option></option>").val("type3").text(node._("controller.list.voiceType.type3")));
 
-                    var switchedOnContainer = $("<span/>", {id: "item-elem-switchedOn-" + index,
+                    let switchedOnContainer = $("<span/>", {id: "item-elem-switchedOn-" + index,
                                                             style: "padding-left: 10px;"}).appendTo(item);
-                    var switchedOn = $("<input/>", {id: "node-input-switchedOn-" + index,
+                    let switchedOn = $("<input/>", {id: "node-input-switchedOn-" + index,
                                                     class: "node-input-switchedOn",
                                                     type: "checkbox",
                                                     style: "vertical-align: text-bottom; width: auto;"}).appendTo(switchedOnContainer);
@@ -470,7 +457,7 @@ SOFTWARE.
                 }
             });
 
-            var modeSettingsList = $("#node-input-modeSettingsList").css("min-height", "200px").editableList(
+            let modeSettingsList = $("#node-input-modeSettingsList").css("min-height", "200px").editableList(
             {
                 removable: true,
                 addItem: function(item, index, modeSetting)
@@ -481,14 +468,14 @@ SOFTWARE.
                         modeSetting.value = "normal";
                     }
 
-                    var modeType = $("<select/>", {class: "node-input-modeTarget"}).appendTo(item);
+                    let modeType = $("<select/>", {class: "node-input-modeTarget"}).appendTo(item);
                     modeType.append($("<option></option>").val("playType").text(node._("controller.list.modeTarget.playType")));
                     modeType.append($("<option></option>").val("repeatType").text(node._("controller.list.modeTarget.repeatType")));
                     modeType.append($("<option></option>").val("shuffleType").text(node._("controller.list.modeTarget.shuffleType")));
 
-                    var playTypeContainer = $("<span/>", {id: "item-elem-playType-" + index,
+                    let playTypeContainer = $("<span/>", {id: "item-elem-playType-" + index,
                                                             style: "padding-left: 10px;"}).appendTo(item);
-                    var playType = $("<select/>", {class: "node-input-playType",
+                    let playType = $("<select/>", {class: "node-input-playType",
                                                    style: "width: auto;"}).appendTo(playTypeContainer);
                     playType.append($("<option></option>").val("normal").text(node._("controller.list.playType.normal")));
                     playType.append($("<option></option>").val("repeatAll").text(node._("controller.list.playType.repeatAll")));
@@ -496,9 +483,9 @@ SOFTWARE.
                     playType.append($("<option></option>").val("repeatTrack").text(node._("controller.list.playType.repeatTrack")));
                     playType.append($("<option></option>").val("shuffleAll").text(node._("controller.list.playType.shuffleAll")));
 
-                    var repeatTypeContainer = $("<span/>", {id: "item-elem-repeatType-" + index,
+                    let repeatTypeContainer = $("<span/>", {id: "item-elem-repeatType-" + index,
                                                             style: "padding-left: 10px;"}).appendTo(item);
-                    var repeatType = $("<select/>", {class: "node-input-repeatType",
+                    let repeatType = $("<select/>", {class: "node-input-repeatType",
                                                     style: "width: auto;"}).appendTo(repeatTypeContainer);
                     repeatType.append($("<option></option>").val("off").text(node._("controller.list.repeatType.off")));
                     repeatType.append($("<option></option>").val("all").text(node._("controller.list.repeatType.all")));
@@ -506,9 +493,9 @@ SOFTWARE.
                     repeatType.append($("<option></option>").val("track").text(node._("controller.list.repeatType.track")));
                     repeatType.append($("<option></option>").val("chapter").text(node._("controller.list.repeatType.chapter")));
 
-                    var shuffleTypeContainer = $("<span/>", {id: "item-elem-shuffleType-" + index,
+                    let shuffleTypeContainer = $("<span/>", {id: "item-elem-shuffleType-" + index,
                                                              style: "padding-left: 10px;"}).appendTo(item);
-                    var shuffleType = $("<select/>", {class: "node-input-shuffleType",
+                    let shuffleType = $("<select/>", {class: "node-input-shuffleType",
                                                       style: "width: auto;"}).appendTo(shuffleTypeContainer);
                     shuffleType.append($("<option></option>").val("off").text(node._("controller.list.shuffleType.off")));
                     shuffleType.append($("<option></option>").val("folder").text(node._("controller.list.shuffleType.folder")));
@@ -605,7 +592,7 @@ SOFTWARE.
                 $("#form-row-modeSettings").hide();
                 $("#form-row-modeTarget").hide();
 
-                var value = $(this).val();
+                let value = $(this).val();
                 switch (value)
                 {
                     case "getSWUpdateInfo":
@@ -697,7 +684,7 @@ SOFTWARE.
                 zoneSpinner.spinner("option", "min", "0");
             }
 
-            var filterList = $("#node-input-filterList").css("min-height", "200px").editableList(
+            let filterList = $("#node-input-filterList").css("min-height", "200px").editableList(
             {
                 removable: true,
                 sortable: true,
@@ -708,36 +695,36 @@ SOFTWARE.
                         filter.name = "auto";
                     }
 
-                    var filterName = $("<select/>", {class: "node-input-filterName",
+                    let filterName = $("<select/>", {class: "node-input-filterName",
                                                      style: "width: auto;"}).appendTo(item);
-                    filterName.append($("<option></option>").val("auto").text(node._("controller.list.filter.auto")));
-                    filterName.append($("<option></option>").val("powered").text(node._("controller.list.filter.powered")));
-                    filterName.append($("<option></option>").val("standby").text(node._("controller.list.filter.standby")));
-                    filterName.append($("<option></option>").val("swupdate").text(node._("controller.list.filter.swupdate")));
-                    filterName.append($("<option></option>").val("source").text(node._("controller.list.filter.source")));
-                    filterName.append($("<option></option>").val("absoluteVolume").text(node._("controller.list.filter.absoluteVolume")));
-                    filterName.append($("<option></option>").val("relativeVolume").text(node._("controller.list.filter.relativeVolume")));
-                    filterName.append($("<option></option>").val("muted").text(node._("controller.list.filter.muted")));
-                    filterName.append($("<option></option>").val("soundSetting").text(node._("controller.list.filter.soundSetting")));
-                    filterName.append($("<option></option>").val("playbackMode").text(node._("controller.list.filter.playbackMode")));
+                    filterName.append($("<option></option>").val("auto").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.auto")));
+                    filterName.append($("<option></option>").val("powered").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.powered")));
+                    filterName.append($("<option></option>").val("standby").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.standby")));
+                    filterName.append($("<option></option>").val("swupdate").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.swupdate")));
+                    filterName.append($("<option></option>").val("source").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.source")));
+                    filterName.append($("<option></option>").val("absoluteVolume").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.absoluteVolume")));
+                    filterName.append($("<option></option>").val("relativeVolume").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.relativeVolume")));
+                    filterName.append($("<option></option>").val("muted").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.muted")));
+                    filterName.append($("<option></option>").val("soundSetting").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.soundSetting")));
+                    filterName.append($("<option></option>").val("playbackMode").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.playbackMode")));
 
-                    var explicitContainer = $("<span/>", {id: "item-elemExplicit-" + index,
+                    let explicitContainer = $("<span/>", {id: "item-elemExplicit-" + index,
                                                           style: "padding-left: 10px;"}).appendTo(item);
-                    var explicit = $("<input/>", {id: "node-input-filterExplicit-" + index,
+                    let explicit = $("<input/>", {id: "node-input-filterExplicit-" + index,
                                                   class: "node-input-filterExplicit",
                                                   type: "checkbox",
                                                   style: "vertical-align: text-bottom; width: auto;"}).appendTo(explicitContainer);
                     $("<label/>", {for: "node-input-filterExplicit-" + index,
-                                   style: "padding-left: 4px;"}).text(node._("controller.label.explicit")).appendTo(explicitContainer);
+                                   style: "padding-left: 4px;"}).text(node._("node-red-contrib-sony-audio/sony-audio-device:common.label.explicit")).appendTo(explicitContainer);
 
-                    var idx = $("<span/>", {style: "float: right; margin-top: 6px;"}).appendTo(item);
+                    let idx = $("<span/>", {style: "float: right; margin-top: 6px;"}).appendTo(item);
                     idx.append(" &#8594; <span class=\"node-input-filterIndex\">" + (index + 1) + "</span> ");
 
                     filterName.change(function()
                     {
                         explicitContainer.hide();
 
-                        var value = filterName.val();
+                        let value = filterName.val();
                         if ((value == "powered") || (value == "standby") || (value == "swupdate"))
                         {
                             explicitContainer.show();
@@ -754,7 +741,7 @@ SOFTWARE.
                 },
                 removeItem: function(filter)
                 {
-                    var filterList = $("#node-input-filterList").editableList("items");
+                    let filterList = $("#node-input-filterList").editableList("items");
                     filterList.each(function(index)
                     {
                         $(this).find(".node-input-filterIndex").html(index + 1);
@@ -762,7 +749,7 @@ SOFTWARE.
                 },
                 sortItems: function(filter)
                 {
-                    var filterList = $("#node-input-filterList").editableList("items");
+                    let filterList = $("#node-input-filterList").editableList("items");
                     filterList.each(function(index)
                     {
                         $(this).find(".node-input-filterIndex").html(index + 1);
@@ -794,14 +781,14 @@ SOFTWARE.
         },
         oneditsave: function()
         {
-            var node = this;
-            var soundSettingsList = $("#node-input-soundSettingsList").editableList("items");
-            var modeSettingsList = $("#node-input-modeSettingsList").editableList("items");
+            let node = this;
+            let soundSettingsList = $("#node-input-soundSettingsList").editableList("items");
+            let modeSettingsList = $("#node-input-modeSettingsList").editableList("items");
 
             node.soundSettings = [];
             soundSettingsList.each(function(index)
             {
-                var setting = {target: $(this).find(".node-input-soundTarget").val()};
+                let setting = {target: $(this).find(".node-input-soundTarget").val()};
                 if (setting.target == "soundField")
                 {
                     setting.value = $(this).find(".node-input-soundField").val();
@@ -821,7 +808,7 @@ SOFTWARE.
             node.modeSettings = [];
             modeSettingsList.each(function(index)
             {
-                var setting = {target: $(this).find(".node-input-modeTarget").val()};
+                let setting = {target: $(this).find(".node-input-modeTarget").val()};
                 if (setting.target == "playType")
                 {
                     setting.value = $(this).find(".node-input-playType").val();
@@ -847,14 +834,14 @@ SOFTWARE.
 
                 filterList.each(function(index)
                 {
-                    var filter = {name: $(this).find(".node-input-filterName").val()};
+                    let filter = {name: $(this).find(".node-input-filterName").val()};
 
                     if ((filter.name == "powered") || (filter.name == "standby") || (filter.name == "swupdate"))
                     {
                         filter.explicit = $(this).find(".node-input-filterExplicit").prop("checked");
                     }
 
-                    node.outputPorts.push({label: node._("controller.label.filterPort") + ": " + filter.name, filter: filter});
+                    node.outputPorts.push({label: node._("node-red-contrib-sony-audio/sony-audio-device:common.label.filterPort") + ": " + filter.name, filter: filter});
                     node.outputs++;
                 });
             }

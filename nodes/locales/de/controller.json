@@ -4,12 +4,8 @@
         "label":
         {
             "inputPort":      "auslösen/überschreiben",
-            "filterPort":     "filter",
             "responsePort":   "Antwort",
-            "name":           "Name",
-            "device":         "Gerät",
             "input":          "Eingabe",
-            "outputs":        "Ausgaben",
             "response":       "Antwort",
             "enableTopic":    "Topic-Eingabe aktivieren",
             "enableLowLevel": "Low-Level-Eingabe aktivieren",
@@ -26,18 +22,10 @@
             "port":           "Anschluss",
             "zone":           "Zone",
             "allZones":       "Alle Zonen",
-            "switchedOn":     "Eingeschaltet",
-            "filters":        "Filter",
-            "explicit":       "Explizit"
+            "switchedOn":     "Eingeschaltet"
         },
         "list":
         {
-            "service":
-            {
-                "system":    "System",
-                "audio":     "Audio",
-                "avContent": "A/V Inhalte"
-            },
             "command":
             {
                 "getPowerStatus":      "Power-Status abfragen",
@@ -130,24 +118,10 @@
             {
                 "off":    "Aus",
                 "folder": "Ordner"
-            },
-            "filter":
-            {
-                "auto":           "Auto",
-                "powered":        "Eingeschaltet",
-                "standby":        "Bereitschaft",
-                "swupdate":       "Software-Aktualisierung",
-                "source":         "Quelle",
-                "absoluteVolume": "Absolute Lautstärke",
-                "relativeVolume": "Relative Lautstärke",
-                "muted":          "Stumm",
-                "soundSetting":   "Klangeinstellungen",
-                "playbackMode":   "Abspieleinstellungen"
             }
         },
         "status":
         {
-            "unconfigured":        "nicht konfiguriert",
             "configurationErrors": "fehlerhafte Konfiguration",
             "sending":             "sende",
             "success":             "erfolgreich",

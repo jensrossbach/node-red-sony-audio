@@ -229,7 +229,7 @@ class EventReceiver extends EventEmitter
 
 function switchNotifications(id, disable, enable)
 {
-    var params = {};
+    let params = {};
 
     if (disable != null)
     {

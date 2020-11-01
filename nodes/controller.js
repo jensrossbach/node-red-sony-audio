@@ -26,18 +26,18 @@ module.exports = function(RED)
 {
     const STATUS_TEMP_DURATION = 5000;
 
-    const STATUS_UNCONFIGURED  = {fill: "yellow", shape: "dot", text: "controller.status.unconfigured"       };
-    const STATUS_MISCONFIGURED = {fill: "yellow", shape: "dot", text: "controller.status.configurationErrors"};
-    const STATUS_SENDING       = {fill: "grey",   shape: "dot", text: "controller.status.sending"            };
-    const STATUS_SUCCESS       = {fill: "green",  shape: "dot", text: "controller.status.success"            };
-    const STATUS_ERROR         = {fill: "red",    shape: "dot", text: "controller.status.error"              };
+    const STATUS_UNCONFIGURED  = {fill: "yellow", shape: "dot", text: "node-red-contrib-sony-audio/sony-audio-device:common.status.unconfigured"};
+    const STATUS_MISCONFIGURED = {fill: "yellow", shape: "dot", text: "controller.status.configurationErrors"                                   };
+    const STATUS_SENDING       = {fill: "grey",   shape: "dot", text: "controller.status.sending"                                               };
+    const STATUS_SUCCESS       = {fill: "green",  shape: "dot", text: "controller.status.success"                                               };
+    const STATUS_ERROR         = {fill: "red",    shape: "dot", text: "controller.status.error"                                                 };
 
     const APIFilter = require("./common/api_filter.js");
 
 
     function SonyAudioControllerNode(config)
     {
-        var node = this;
+        let node = this;
 
         RED.nodes.createNode(node, config);
 
@@ -52,8 +52,7 @@ module.exports = function(RED)
 
         if (node.device)
         {
-            if ((node.config.outputs == 0) ||
-                ((node.config.command == "setSoundSettings") &&
+            if (((node.config.command == "setSoundSettings") &&
                  (node.config.soundSettings.length == 0)) ||
                 (((node.config.command == "setPlaybackSettings") ||
                   (node.config.command == "setPlaybackModes")) &&  // backward compatibility
@@ -68,7 +67,7 @@ module.exports = function(RED)
 
             node.on("input", function(msg, send, done)
             {
-                var context = {msg: msg};
+                let context = {msg: msg};
 
                 if (send)
                 {
@@ -91,14 +90,14 @@ module.exports = function(RED)
                     context.done = function() {};
                     context.error = function()
                     {
-                        var args = [...arguments];
+                        let args = [...arguments];
                         args.push(msg);
                         node.error.apply(node, args);
                     };
                 }
 
-                var api = null;
-                var cmd = null;
+                let api = null;
+                let cmd = null;
                 if (node.config.enableTopic && msg.topic && (typeof msg.topic == "string"))
                 {
                     api = getAPIFromTopic(msg.topic);
@@ -154,7 +153,7 @@ module.exports = function(RED)
                                         relativeVolume: node.config.relativeVolume,
                                         zone: node.config.zone};
 
-                            if (typeof msg.payload == "object")
+                            if (msg.payload && (typeof msg.payload == "object"))
                             {
                                 if (typeof msg.payload.volume == "object")
                                 {
@@ -206,7 +205,8 @@ module.exports = function(RED)
                         {
                             let args = {zone: node.config.zone};
 
-                            if ((typeof msg.payload == "object") &&
+                            if (msg.payload &&
+                                (typeof msg.payload == "object") &&
                                 (typeof msg.payload.zone == "number"))
                             {
                                 args.zone = msg.payload.zone;
@@ -219,7 +219,8 @@ module.exports = function(RED)
                         {
                             let args = {zone: node.config.zone};
 
-                            if ((typeof msg.payload == "object") &&
+                            if (msg.payload &&
+                                (typeof msg.payload == "object") &&
                                 (typeof msg.payload.zone == "number"))
                             {
                                 args.zone = msg.payload.zone;
@@ -232,7 +233,8 @@ module.exports = function(RED)
                         {
                             let args = {zone: node.config.zone};
 
-                            if ((typeof msg.payload == "object") &&
+                            if (msg.payload &&
+                                (typeof msg.payload == "object") &&
                                 (typeof msg.payload.zone == "number"))
                             {
                                 args.zone = msg.payload.zone;
@@ -245,7 +247,8 @@ module.exports = function(RED)
                         {
                             let args = {soundSettings: node.config.soundSettings};
 
-                            if ((typeof msg.payload == "object") &&
+                            if (msg.payload &&
+                                (typeof msg.payload == "object") &&
                                 Array.isArray(msg.payload.settings))
                             {
                                 args.soundSettings = msg.payload.settings;
@@ -260,7 +263,7 @@ module.exports = function(RED)
                                         port: node.config.port,
                                         zone: node.config.zone};
 
-                            if (typeof msg.payload == "object")
+                            if (msg.payload && (typeof msg.payload == "object"))
                             {
                                 if (typeof msg.payload.source == "object")
                                 {
@@ -290,7 +293,8 @@ module.exports = function(RED)
                         {
                             let args = {modeSettings: node.config.modeSettings};
 
-                            if ((typeof msg.payload == "object") &&
+                            if (msg.payload &&
+                                (typeof msg.payload == "object") &&
                                 Array.isArray(msg.payload.settings))
                             {
                                 args.modeSettings = msg.payload.settings;
@@ -303,7 +307,8 @@ module.exports = function(RED)
                         {
                             let args = {zone: node.config.zone};
 
-                            if ((typeof msg.payload == "object") &&
+                            if (msg.payload &&
+                                (typeof msg.payload == "object") &&
                                 (typeof msg.payload.zone == "number"))
                             {
                                 args.zone = msg.payload.zone;
@@ -316,7 +321,8 @@ module.exports = function(RED)
                         {
                             let args = {zone: node.config.zone};
 
-                            if ((typeof msg.payload == "object") &&
+                            if (msg.payload &&
+                                (typeof msg.payload == "object") &&
                                 (typeof msg.payload.zone == "number"))
                             {
                                 args.zone = msg.payload.zone;
@@ -329,7 +335,8 @@ module.exports = function(RED)
                         {
                             let args = {zone: node.config.zone};
 
-                            if ((typeof msg.payload == "object") &&
+                            if (msg.payload &&
+                                (typeof msg.payload == "object") &&
                                 (typeof msg.payload.zone == "number"))
                             {
                                 args.zone = msg.payload.zone;
@@ -342,7 +349,8 @@ module.exports = function(RED)
                         {
                             let args = {zone: node.config.zone};
 
-                            if ((typeof msg.payload == "object") &&
+                            if (msg.payload &&
+                                (typeof msg.payload == "object") &&
                                 (typeof msg.payload.zone == "number"))
                             {
                                 args.zone = msg.payload.zone;
@@ -355,7 +363,8 @@ module.exports = function(RED)
                         {
                             let args = {zone: node.config.zone};
 
-                            if ((typeof msg.payload == "object") &&
+                            if (msg.payload &&
+                                (typeof msg.payload == "object") &&
                                 (typeof msg.payload.zone == "number"))
                             {
                                 args.zone = msg.payload.zone;
@@ -368,7 +377,8 @@ module.exports = function(RED)
                         {
                             let args = {zone: node.config.zone};
 
-                            if ((typeof msg.payload == "object") &&
+                            if (msg.payload &&
+                                (typeof msg.payload == "object") &&
                                 (typeof msg.payload.zone == "number"))
                             {
                                 args.zone = msg.payload.zone;
@@ -386,7 +396,8 @@ module.exports = function(RED)
                         {
                             let args = {network: node.config.networkUpdate};
 
-                            if ((typeof msg.payload == "object") &&
+                            if (msg.payload &&
+                                (typeof msg.payload == "object") &&
                                 (typeof msg.payload.network == "boolean"))
                             {
                                 args.network = msg.payload.network;
@@ -399,7 +410,8 @@ module.exports = function(RED)
                         {
                             let args = {zone: node.config.zone};
 
-                            if ((typeof msg.payload == "object") &&
+                            if (msg.payload &&
+                                (typeof msg.payload == "object") &&
                                 (typeof msg.payload.zone == "number"))
                             {
                                 args.zone = msg.payload.zone;
@@ -412,7 +424,8 @@ module.exports = function(RED)
                         {
                             let args = {zone: node.config.zone};
 
-                            if ((typeof msg.payload == "object") &&
+                            if (msg.payload &&
+                                (typeof msg.payload == "object") &&
                                 (typeof msg.payload.zone == "number"))
                             {
                                 args.zone = msg.payload.zone;
@@ -425,7 +438,8 @@ module.exports = function(RED)
                         {
                             let args = {target: (node.config.soundTarget == "all") ? "" : node.config.soundTarget};
 
-                            if ((typeof msg.payload == "object") &&
+                            if (msg.payload &&
+                                (typeof msg.payload == "object") &&
                                 (typeof msg.payload.target == "string"))
                             {
                                 args.target = (msg.payload.target == "all") ? "" : msg.payload.target;
@@ -439,7 +453,8 @@ module.exports = function(RED)
                         {
                             let args = {target: (node.config.modeTarget == "all") ? "" : node.config.modeTarget};
 
-                            if ((typeof msg.payload == "object") &&
+                            if (msg.payload &&
+                                (typeof msg.payload == "object") &&
                                 (typeof msg.payload.target == "string"))
                             {
                                 args.target = (msg.payload.target == "all") ? "" : msg.payload.target;
@@ -475,12 +490,10 @@ module.exports = function(RED)
 
         function getAPIFromTopic(topic)
         {
-            const TOPIC_REGEX = /^([a-zA-Z]+)\/([a-zA-Z]+)\/([0-9]+\.[0-9]+)$/;
+            let matches = topic.match(/^([a-zA-Z]+)\/([a-zA-Z]+)\/([0-9]+\.[0-9]+)$/);
+            let api = null;
 
-            var matches = topic.match(TOPIC_REGEX);
-            var api = null;
-
-            if (matches != null)
+            if (matches)
             {
                 api = {service: matches[1], method: matches[2], version: matches[3]};
             }
@@ -490,7 +503,7 @@ module.exports = function(RED)
 
         function getAPIFromMessage(msg)
         {
-            var api = null;
+            let api = null;
 
             if ((typeof msg.service == "string") &&
                 (typeof msg.method == "string") &&
@@ -551,7 +564,7 @@ module.exports = function(RED)
 
         function setPlayContent(context, source, port = 0, zone = 0)
         {
-            var uri = source;
+            let uri = source;
             if (((source == "extInput:hdmi") || (source == "extInput:line")) && (port > 0))
             {
                 uri += "?port=" + port;
@@ -687,7 +700,7 @@ module.exports = function(RED)
 
         function createOuputArray(context, filterMsgs, respMsg)
         {
-            var arr = [];
+            let arr = [];
 
             if (node.config.outFilters)
             {
@@ -732,7 +745,7 @@ module.exports = function(RED)
 
         function sendResponse(context, respMsg)
         {
-            var filteredMsgs = [];
+            let filteredMsgs = [];
 
             if (node.config.outFilters && (respMsg.payload != null))
             {

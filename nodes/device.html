@@ -37,8 +37,8 @@ SOFTWARE.
         }
     </style>
     <div class="form-row">
-        <label for="node-config-input-name"><i class="fa fa-tag"></i> <span data-i18n="device.label.name"></span></label>
-        <input type="text" id="node-config-input-name" data-i18n="[placeholder]device.label.name">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> <span data-i18n="common.label.name"></span></label>
+        <input type="text" id="node-config-input-name" data-i18n="[placeholder]common.label.name">
     </div>
     <div class="form-row">
         <label for="node-config-input-host"><i class="fa fa-globe"></i> <span data-i18n="device.label.host"></span></label>
@@ -87,7 +87,7 @@ SOFTWARE.
         },
         oneditprepare: function()
         {
-            var node = this;
+            let node = this;
 
             function deviceDiscovery(msearch)
             {
@@ -142,10 +142,10 @@ SOFTWARE.
 
             $("#node-config-input-devices").change(function()
             {
-                var self = $(this).find("option:selected");
+                let self = $(this).find("option:selected");
                 if (self.val() != "none")
                 {
-                    var address = JSON.parse(self.val());
+                    let address = JSON.parse(self.val());
 
                     $("#node-config-input-name").val(self.text());
                     $("#node-config-input-host").val(address.host);

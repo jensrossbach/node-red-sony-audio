@@ -34,7 +34,7 @@ module.exports = function(RED)
     const SSDPClient = require("node-ssdp").Client;
     const ssdpClient = new SSDPClient({explicitSocketBind: true});
 
-    var deviceList = [];
+    let deviceList = [];
 
 
     RED.httpAdmin.get("/sony_audio_devices", RED.auth.needsPermission("sony-audio.read"), function(req, res)
@@ -263,7 +263,7 @@ module.exports = function(RED)
 
     function calculateEventMask(subscribers, service)
     {
-        var ret = 0;
+        let ret = 0;
 
         Object.values(subscribers).forEach(subscriber =>
         {

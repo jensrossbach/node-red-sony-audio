@@ -43,19 +43,19 @@ SOFTWARE.
         }
     </style>
     <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="receiver.label.name"></span></label>
-        <input type="text" id="node-input-name" data-i18n="[placeholder]receiver.label.name">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red-contrib-sony-audio/sony-audio-device:common.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]node-red-contrib-sony-audio/sony-audio-device:common.label.name">
     </div>
     <div class="form-row">
-        <label for="node-input-device"><i class="fa fa-cog"></i> <span data-i18n="receiver.label.device"></span></label>
-        <input type="text" id="node-input-device" data-i18n="[placeholder]receiver.label.device">
+        <label for="node-input-device"><i class="fa fa-cog"></i> <span data-i18n="node-red-contrib-sony-audio/sony-audio-device:common.label.device"></span></label>
+        <input type="text" id="node-input-device" data-i18n="[placeholder]node-red-contrib-sony-audio/sony-audio-device:common.label.device">
     </div>
     <div class="form-row">
-        <label style="float: left;"><i class="fa fa-link"></i> <span data-i18n="receiver.label.outputs"></span></label>
+        <label style="float: left;"><i class="fa fa-link"></i> <span data-i18n="node-red-contrib-sony-audio/sony-audio-device:common.label.outputs"></span></label>
         <div class="form-checkbox-row">
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-outFilters">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-outFilters" data-i18n="receiver.label.filters"></label>
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-outFilters" data-i18n="node-red-contrib-sony-audio/sony-audio-device:common.label.filters"></label>
             </div>
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-outEvent">
@@ -67,9 +67,9 @@ SOFTWARE.
     <div class="form-row">
         <label for="node-input-service"><i class="fa fa-wrench"></i> <span data-i18n="receiver.label.service"></span></label>
         <select id="node-input-service" style="width: auto;">
-            <option value="system" data-i18n="receiver.list.service.system"></option>
-            <option value="audio" data-i18n="receiver.list.service.audio"></option>
-            <option value="avContent" data-i18n="receiver.list.service.avContent"></option>
+            <option value="system" data-i18n="node-red-contrib-sony-audio/sony-audio-device:common.list.service.system"></option>
+            <option value="audio" data-i18n="node-red-contrib-sony-audio/sony-audio-device:common.list.service.audio"></option>
+            <option value="avContent" data-i18n="node-red-contrib-sony-audio/sony-audio-device:common.list.service.avContent"></option>
         </select>
     </div>
     <div class="form-row">
@@ -114,7 +114,7 @@ SOFTWARE.
         </div>
     </div>
     <div id="form-row-filterList" class="form-row" style="padding-top: 10px">
-        <label for="node-input-filterList"><i class="fa fa-filter"></i> <span data-i18n="receiver.label.filters"></span></label>
+        <label for="node-input-filterList"><i class="fa fa-filter"></i> <span data-i18n="node-red-contrib-sony-audio/sony-audio-device:common.label.filters"></span></label>
         <div class="form-row">
             <ol id="node-input-filterList"></ol>
         </div>
@@ -207,9 +207,9 @@ SOFTWARE.
         },
         oneditprepare: function()
         {
-            var node = this;
-            var serviceSelect = $("#node-input-service");
-            var outFiltersSelect = $("#node-input-outFilters");
+            let node = this;
+            let serviceSelect = $("#node-input-service");
+            let outFiltersSelect = $("#node-input-outFilters");
 
             serviceSelect.change(function()
             {
@@ -239,7 +239,7 @@ SOFTWARE.
 
             serviceSelect.change();
 
-            var filterList = $("#node-input-filterList").css("min-height", "200px").editableList(
+            let filterList = $("#node-input-filterList").css("min-height", "200px").editableList(
             {
                 removable: true,
                 sortable: true,
@@ -250,33 +250,33 @@ SOFTWARE.
                         filter.name = "auto";
                     }
 
-                    var filterName = $("<select/>", {class: "node-input-filterName",
+                    let filterName = $("<select/>", {class: "node-input-filterName",
                                                      style: "width: auto;"}).appendTo(item);
-                    filterName.append($("<option></option>").val("auto").text(node._("receiver.list.filter.auto")));
-                    filterName.append($("<option></option>").val("powered").text(node._("receiver.list.filter.powered")));
-                    filterName.append($("<option></option>").val("standby").text(node._("receiver.list.filter.standby")));
-                    filterName.append($("<option></option>").val("swupdate").text(node._("receiver.list.filter.swupdate")));
-                    filterName.append($("<option></option>").val("source").text(node._("receiver.list.filter.source")));
-                    filterName.append($("<option></option>").val("absoluteVolume").text(node._("receiver.list.filter.absoluteVolume")));
-                    filterName.append($("<option></option>").val("muted").text(node._("receiver.list.filter.muted")));
+                    filterName.append($("<option></option>").val("auto").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.auto")));
+                    filterName.append($("<option></option>").val("powered").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.powered")));
+                    filterName.append($("<option></option>").val("standby").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.standby")));
+                    filterName.append($("<option></option>").val("swupdate").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.swupdate")));
+                    filterName.append($("<option></option>").val("source").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.source")));
+                    filterName.append($("<option></option>").val("absoluteVolume").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.absoluteVolume")));
+                    filterName.append($("<option></option>").val("muted").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.muted")));
 
-                    var explicitContainer = $("<span/>", {id: "item-elem-explicit-" + index,
+                    let explicitContainer = $("<span/>", {id: "item-elem-explicit-" + index,
                                                           style: "padding-left: 10px;"}).appendTo(item);
-                    var explicit = $("<input/>", {id: "node-input-filterExplicit-" + index,
+                    let explicit = $("<input/>", {id: "node-input-filterExplicit-" + index,
                                                   class: "node-input-filterExplicit",
                                                   type: "checkbox",
                                                   style: "vertical-align: text-bottom; width: auto;"}).appendTo(explicitContainer);
                     $("<label/>", {for: "node-input-filterExplicit-" + index,
-                                   style: "padding-left: 4px;"}).text(node._("receiver.label.explicit")).appendTo(explicitContainer);
+                                   style: "padding-left: 4px;"}).text(node._("node-red-contrib-sony-audio/sony-audio-device:common.label.explicit")).appendTo(explicitContainer);
 
-                    var idx = $("<span/>", {style: "float: right; margin-top: 6px;"}).appendTo(item);
+                    let idx = $("<span/>", {style: "float: right; margin-top: 6px;"}).appendTo(item);
                     idx.append(" &#8594; <span class=\"node-input-filterIndex\">" + (index + 1) + "</span> ");
 
                     filterName.change(function()
                     {
                         explicitContainer.hide();
 
-                        var value = filterName.val();
+                        let value = filterName.val();
                         if ((value == "powered") || (value == "standby") || (value == "swupdate"))
                         {
                             explicitContainer.show();
@@ -293,7 +293,7 @@ SOFTWARE.
                 },
                 removeItem: function(filter)
                 {
-                    var filterList = $("#node-input-filterList").editableList("items");
+                    let filterList = $("#node-input-filterList").editableList("items");
                     filterList.each(function(index)
                     {
                         $(this).find(".node-input-filterIndex").html(index + 1);
@@ -301,7 +301,7 @@ SOFTWARE.
                 },
                 sortItems: function(filter)
                 {
-                    var filterList = $("#node-input-filterList").editableList("items");
+                    let filterList = $("#node-input-filterList").editableList("items");
                     filterList.each(function(index)
                     {
                         $(this).find(".node-input-filterIndex").html(index + 1);
@@ -333,7 +333,7 @@ SOFTWARE.
         },
         oneditsave: function()
         {
-            var node = this;
+            let node = this;
 
             node.outputPorts = [];
             node.outputs = 0;
@@ -344,14 +344,14 @@ SOFTWARE.
 
                 filterList.each(function(index)
                 {
-                    var filter = {name: $(this).find(".node-input-filterName").val()};
+                    let filter = {name: $(this).find(".node-input-filterName").val()};
 
                     if ((filter.name == "powered") || (filter.name == "standby") || (filter.name == "swupdate"))
                     {
                         filter.explicit = $(this).find(".node-input-filterExplicit").prop("checked");
                     }
 
-                    node.outputPorts.push({label: node._("receiver.label.filterPort") + ": " + filter.name, filter: filter});
+                    node.outputPorts.push({label: node._("node-red-contrib-sony-audio/sony-audio-device:common.label.filterPort") + ": " + filter.name, filter: filter});
                     node.outputs++;
                 });
             }

@@ -4,12 +4,9 @@
         "label":
         {
             "inputPort":      "trigger/overrides",
-            "filterPort":     "filter",
             "responsePort":   "response",
             "name":           "Name",
-            "device":         "Device",
             "input":          "Input",
-            "outputs":        "Outputs",
             "response":       "Response",
             "enableTopic":    "Enable Topic Override",
             "enableLowLevel": "Enable Low-Level Override",
@@ -26,18 +23,10 @@
             "port":           "Port",
             "zone":           "Zone",
             "allZones":       "All Zones",
-            "switchedOn":     "Switched On",
-            "filters":        "Filters",
-            "explicit":       "Explicit"
+            "switchedOn":     "Switched On"
         },
         "list":
         {
-            "service":
-            {
-                "system":    "System",
-                "audio":     "Audio",
-                "avContent": "A/V Content"
-            },
             "command":
             {
                 "getPowerStatus":      "Get Power Status",
@@ -130,24 +119,10 @@
             {
                 "off":    "Off",
                 "folder": "Folder"
-            },
-            "filter":
-            {
-                "auto":           "Auto",
-                "powered":        "Powered",
-                "standby":        "Standby",
-                "swupdate":       "Software Update",
-                "source":         "Source",
-                "absoluteVolume": "Absolute Volume",
-                "relativeVolume": "Relative Volume",
-                "muted":          "Muted",
-                "soundSetting":   "Sound Setting",
-                "playbackMode":   "Playback Setting"
             }
         },
         "status":
         {
-            "unconfigured":        "unconfigured",
             "configurationErrors": "configuration errors",
             "sending":             "sending",
             "success":             "success",

@@ -3,12 +3,7 @@
     {
         "label":
         {
-            "filterPort":                      "filter",
             "eventPort":                       "event",
-            "name":                            "Name",
-            "device":                          "Device",
-            "outputs":                         "Outputs",
-            "filters":                         "Filters",
             "event":                           "Event",
             "events":                          "Events",
             "service":                         "Service",
@@ -19,31 +14,10 @@
             "notifyVolumeInformation":         "Volume Information",
             "notifyExternalTerminalStatus":    "External Terminal Status",
             "notifyAvailablePlaybackFunction": "Available Playback Function",
-            "notifyPlayingContentInfo":        "Playing Content Information",
-            "explicit":                        "Explicit"
-        },
-        "list":
-        {
-            "service":
-            {
-                "system":    "System",
-                "audio":     "Audio",
-                "avContent": "A/V Content"
-            },
-            "filter":
-            {
-                "auto":           "Auto",
-                "powered":        "Powered",
-                "standby":        "Standby",
-                "swupdate":       "Software Update",
-                "source":         "Source",
-                "absoluteVolume": "Absolute Volume",
-                "muted":          "Muted"
-            }
+            "notifyPlayingContentInfo":        "Playing Content Information"
         },
         "status":
         {
-            "unconfigured":    "unconfigured",
             "notConnected":    "not connected",
             "connecting":      "connecting",
             "connected":       "connected",

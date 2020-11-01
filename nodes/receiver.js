@@ -24,8 +24,8 @@
 
 module.exports = function(RED)
 {
-    const STATUS_UNCONFIGURED = {fill: "yellow", shape: "dot", text: "receiver.status.unconfigured"};
-    const STATUS_CONNECTING   = {fill: "grey",   shape: "dot", text: "receiver.status.connecting"  };
+    const STATUS_UNCONFIGURED = {fill: "yellow", shape: "dot", text: "node-red-contrib-sony-audio/sony-audio-device:common.status.unconfigured"};
+    const STATUS_CONNECTING   = {fill: "grey",   shape: "dot", text: "receiver.status.connecting"                                              };
 
     const APIFilter = require("./common/api_filter.js");
     const Events = require("./common/event_constants.js");
@@ -33,7 +33,7 @@ module.exports = function(RED)
 
     function SonyAudioReceiverNode(config)
     {
-        var node = this;
+        let node = this;
         RED.nodes.createNode(node, config);
 
         node.config = config;
@@ -118,7 +118,7 @@ module.exports = function(RED)
 
         function sendEvent(eventMsg)
         {
-            var filteredMsgs = [];
+            let filteredMsgs = [];
 
             if (node.config.outFilters && (eventMsg.payload != null))
             {
@@ -172,7 +172,7 @@ module.exports = function(RED)
 
         function createOuputArray(filterMsgs, eventMsg)
         {
-            var arr = [];
+            let arr = [];
 
             if (node.config.outFilters)
             {

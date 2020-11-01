@@ -1,9 +1,46 @@
 {
+    "common":
+    {
+        "label":
+        {
+            "filterPort": "filter",
+            "name":       "Name",
+            "device":     "Device",
+            "outputs":    "Outputs",
+            "filters":    "Filters",
+            "explicit":   "Explicit"
+        },
+        "list":
+        {
+            "service":
+            {
+                "system":    "System",
+                "audio":     "Audio",
+                "avContent": "A/V Content"
+            },
+            "filter":
+            {
+                "auto":           "Auto",
+                "powered":        "Powered",
+                "standby":        "Standby",
+                "swupdate":       "Software Update",
+                "source":         "Source",
+                "absoluteVolume": "Absolute Volume",
+                "relativeVolume": "Relative Volume",
+                "muted":          "Muted",
+                "soundSetting":   "Sound Setting",
+                "playbackMode":   "Playback Setting"
+            }
+        },
+        "status":
+        {
+            "unconfigured": "unconfigured"
+        }
+    },
     "device":
     {
         "label":
         {
-            "name":         "Name",
             "host":         "Host",
             "port":         "Port",
             "discovery":    "Discovery",

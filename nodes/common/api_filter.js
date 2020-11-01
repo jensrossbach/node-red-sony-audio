@@ -31,8 +31,8 @@ module.exports =
 
         function filterVolumeInfo(data, getFilteredData)
         {
-            var ret = null;
-            var payload = null;
+            let ret = null;
+            let payload = null;
 
             if (data.method == "getVolumeInformation")
             {
@@ -80,7 +80,7 @@ module.exports =
             return ret;
         }
 
-        var outputMsg = null;
+        let outputMsg = null;
 
         switch (filter.name)
         {
@@ -169,7 +169,7 @@ module.exports =
             {
                 outputMsg = filterVolumeInfo(data, (payload, zone) =>
                 {
-                    var ret = null;
+                    let ret = null;
 
                     if (payload.volume >= 0)
                     {
@@ -185,7 +185,7 @@ module.exports =
             {
                 outputMsg = filterVolumeInfo(data, (payload, zone) =>
                 {
-                    var ret = null;
+                    let ret = null;
 
                     if (payload.step != 0)
                     {
@@ -201,7 +201,7 @@ module.exports =
             {
                 outputMsg = filterVolumeInfo(data, (payload, zone) =>
                 {
-                    var ret = null;
+                    let ret = null;
 
                     if (payload.mute !== "toggle")
                     {
