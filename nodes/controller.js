@@ -49,6 +49,7 @@ module.exports = function(RED)
 
         // backward compatibility
         if (typeof node.config.enableLowLevel == "undefined") { node.config.enableLowLevel = true; }
+        if (typeof node.config.preset == "undefined") { node.config.preset = 0; }
 
         if (node.device)
         {
@@ -261,11 +262,12 @@ module.exports = function(RED)
                         {
                             let args = {source: node.config.source,
                                         port: node.config.port,
+                                        preset: node.config.preset,
                                         zone: node.config.zone};
 
                             if (msg.payload && (typeof msg.payload == "object"))
                             {
-                                if (typeof msg.payload.source == "object")
+                                if (msg.payload.source && (typeof msg.payload.source == "object"))
                                 {
                                     if ((typeof msg.payload.source.scheme == "string") &&
                                         (typeof msg.payload.source.resource == "string"))
@@ -277,6 +279,11 @@ module.exports = function(RED)
                                     {
                                         args.port = msg.payload.source.port;
                                     }
+
+                                    if (typeof msg.payload.source.preset == "number")
+                                    {
+                                        args.preset = msg.payload.source.preset;
+                                    }
                                 }
 
                                 if (typeof msg.payload.zone == "number")
@@ -285,7 +292,7 @@ module.exports = function(RED)
                                 }
                             }
 
-                            setPlayContent(context, args.source, args.port, args.zone);
+                            setPlayContent(context, args.source, args.port, args.preset, args.zone);
                             break;
                         }
                         case "setPlaybackModes":  // backward compatibility
@@ -562,12 +569,20 @@ module.exports = function(RED)
                         {settings: params});
         }
 
-        function setPlayContent(context, source, port = 0, zone = 0)
+        function setPlayContent(context, source, port = 0, preset = -1, zone = 0)
         {
             let uri = source;
-            if (((source == "extInput:hdmi") || (source == "extInput:line")) && (port > 0))
+            if (((source == "extInput:hdmi") ||
+                 (source == "extInput:video") ||
+                 (source == "extInput:line")) &&
+                (port > 0))
             {
                 uri += "?port=" + port;
+            }
+            else if ((source == "radio:fm") &&
+                     (preset >= 0))
+            {
+                uri += "?contentId=" + preset;
             }
 
             sendRequest(context,

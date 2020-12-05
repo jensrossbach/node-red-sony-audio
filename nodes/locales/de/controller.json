@@ -20,6 +20,7 @@
             "mode":           "Einstellung",
             "modes":          "Einstellungen",
             "port":           "Anschluss",
+            "preset":         "Speicher",
             "zone":           "Zone",
             "allZones":       "Alle Zonen",
             "switchedOn":     "Eingeschaltet"

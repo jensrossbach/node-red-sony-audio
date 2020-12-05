@@ -146,6 +146,10 @@ SOFTWARE.
         <label for="node-input-port"><i class="fa fa-bookmark"></i> <span data-i18n="controller.label.port"></span></label>
         <input id="node-input-port" style="width: 60px;" value="1">
     </div>
+    <div id="form-row-preset" class="form-row">
+        <label for="node-input-preset"><i class="fa fa-bookmark"></i> <span data-i18n="controller.label.preset"></span></label>
+        <input id="node-input-preset" style="width: 60px;" value="0">
+    </div>
     <div id="form-row-zone" class="form-row">
         <label for="node-input-zone"><i class="fa fa-sign-out"></i> <span data-i18n="controller.label.zone"></span></label>
         <input id="node-input-zone" style="width: 60px;" value="1">
@@ -278,6 +282,10 @@ SOFTWARE.
             {
                 value: 1
             },
+            preset:
+            {
+                value: 0
+            },
             zone:
             {
                 value: 0
@@ -310,7 +318,7 @@ SOFTWARE.
 
             const validateVolume = function(event, ui)
             {
-                let value = parseInt(this.value, 10);
+                let value = parseInt($(this).spinner("value"), 10);
                 let min = $(this).spinner("option", "min");
                 let max = $(this).spinner("option", "max");
 
@@ -329,9 +337,9 @@ SOFTWARE.
                 }
             };
 
-            const validateZonePort = function(event, ui)
+            const validateZonePortPreset = function(event, ui)
             {
-                let value = parseInt(this.value, 10);
+                let value = parseInt($(this).spinner("value"), 10);
                 let min = $(this).spinner("option", "min");
                 let max = $(this).spinner("option", "max");
 
@@ -357,17 +365,25 @@ SOFTWARE.
             let portSpinner = $("#node-input-port").spinner(
             {
                 min: 1,
-                max: 9,
+                max: 99,
                 step: 1,
-                change: validateZonePort
+                change: validateZonePortPreset
+            });
+
+            let presetSpinner = $("#node-input-preset").spinner(
+            {
+                min: 0,
+                max: 99,
+                step: 1,
+                change: validateZonePortPreset
             });
 
             let zoneSpinner = $("#node-input-zone").spinner(
             {
                 min: 1,
-                max: 9,
+                max: 99,
                 step: 1,
-                change: validateZonePort
+                change: validateZonePortPreset
             });
 
             let soundSettingsList = $("#node-input-soundSettingsList").css("min-height", "200px").editableList(
@@ -587,6 +603,7 @@ SOFTWARE.
                 $("#form-row-source").hide();
                 $("#form-row-zone").hide();
                 $("#form-row-port").hide();
+                $("#form-row-preset").hide();
                 $("#form-row-soundSettings").hide();
                 $("#form-row-soundTarget").hide();
                 $("#form-row-modeSettings").hide();
@@ -606,9 +623,14 @@ SOFTWARE.
                         $("#form-row-zone").show();
 
                         if ((sourceSelect.val() == "extInput:hdmi") ||
+                            (sourceSelect.val() == "extInput:video") ||
                             (sourceSelect.val() == "extInput:line"))
                         {
                             $("#form-row-port").show();
+                        }
+                        else if (sourceSelect.val() == "radio:fm")
+                        {
+                            $("#form-row-preset").show();
                         }
 
                         break;
@@ -661,6 +683,7 @@ SOFTWARE.
             sourceSelect.change(function()
             {
                 if (($(this).val() == "extInput:hdmi") ||
+                    ($(this).val() == "extInput:video") ||
                     ($(this).val() == "extInput:line"))
                 {
                     $("#form-row-port").show();
@@ -669,12 +692,22 @@ SOFTWARE.
                 {
                     $("#form-row-port").hide();
                 }
+
+                if ($(this).val() == "radio:fm")
+                {
+                    $("#form-row-preset").show();
+                }
+                else
+                {
+                    $("#form-row-preset").hide();
+                }
             });
 
             // backward compatibility
             if (node.command == "setPlaybackModes") { commandSelect.val("setPlaybackSettings"); }
             if (node.command == "getPlaybackModes") { commandSelect.val("getPlaybackSettings"); }
             if (typeof node.enableLowLevel == "undefined") { $("#node-input-enableLowLevel").prop("checked", true); }
+            if (typeof node.preset == "undefined") { $("#node-input-preset").val(0); }
 
             commandSelect.change();
             if (node.zone == 0)

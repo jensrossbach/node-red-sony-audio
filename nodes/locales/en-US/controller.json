@@ -21,6 +21,7 @@
             "mode":           "Setting",
             "modes":          "Settings",
             "port":           "Port",
+            "preset":         "Preset",
             "zone":           "Zone",
             "allZones":       "All Zones",
             "switchedOn":     "Switched On"
