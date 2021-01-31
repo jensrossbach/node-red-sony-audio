@@ -9,7 +9,7 @@ A collection of Node-RED nodes to control Sony audio devices via the Sony Audio 
 
 With these nodes you can connect to your Sony audio devices and send control commands (like powering on/off, change volume etc.), retrieve information (like the current volume, the current value of a sound setting etc.) or get notified of certain events (like a change of the power state, a change of the mute state etc.).
 
-If you would like to propose a new feature or any kind of improvement or if you want to report a bug, don't hesitate to create an issue in the [issue tracker](https://github.com/jensrossbach/node-red-contrib-sony-audio/issues) of the repository on GitHub.
+If you encountered a bug, would like to propose a new feature or simply want to share your opinion about the software, please have a look at the [contribution guide](https://github.com/jensrossbach/node-red-contrib-sony-audio/blob/master/CONTRIBUTING.md) on the GitHub repository to learn more about how to contribute to this project. If you need help or have questions, please check out the [instructions for getting support](https://github.com/jensrossbach/node-red-contrib-sony-audio/blob/master/SUPPORT.md).
 
 ## Documentation
 This package is the successor of the [node-red-contrib-sony-audio-control](https://github.com/jensrossbach/node-red-contrib-sony-audio-control) node collection. It contains new powerful flow nodes providing the same and more functionality and flexibility as the old package.
