@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.0] - 2021-03-13
+### Added
+- Added support for speaker settings (**NOTE**: experimental feature, uses undocumented API, not tested!).
+
+### Fixed
+- Fixed port number input appearing for non-applicable commands.
+
 ## [1.6.5] - 2020-12-05
 ### Fixed
 - Fixed setSource command for video input and FM radio source (added possibility to specify port and preset).
@@ -15,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Allow chaining of nodes via response outputs.
   - New option _Enable Low-Level Override_ can be used to prevent interpretation of low-level information in subsequent nodes.
-  - Fixed wrong interpretation of null payload as object
+  - Fixed wrong interpretation of null payload as object.
 
 ## [1.6.3] - 2020-09-05
 ### Changed
