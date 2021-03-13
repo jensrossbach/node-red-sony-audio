@@ -21,7 +21,7 @@ The detailed documentation which explains the configuration of the nodes and uti
 **&rarr; [Documentation Wiki](https://github.com/jensrossbach/node-red-contrib-sony-audio/wiki)**
 
 ## License
-Copyright (c) 2020 Jens-Uwe Rossbach
+Copyright (c) 2021 Jens-Uwe Rossbach
 
 This code is licensed under the MIT License.
 
@@ -48,7 +48,7 @@ SOFTWARE.
 The trademark "SONY" and any other product names, service names or logos of SONY used, quoted and/or referenced in this Web Site are trademarks or registered trademarks of Sony Corporation or any of its affiliates.
 
 ### License Audio Control API
-Copyright (c) 2020 Sony Corporation. All rights reserved.
+Copyright (c) 2021 Sony Corporation. All rights reserved.
 
 The 'Audio Control API' is licensed to the user by Sony Video & Sound products Inc. under the license terms of the [Creative Commons Attribution-NoDerivatives 4.0 International Public License](https://creativecommons.org/licenses/by-nd/4.0/legalcode).
 
