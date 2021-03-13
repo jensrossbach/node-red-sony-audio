@@ -41,6 +41,8 @@
                 "toggleMute":          "Toggle Mute",
                 "getSoundSettings":    "Get Sound Settings",
                 "setSoundSettings":    "Set Sound Settings",
+                "getSpeakerSettings":  "Get Speaker Settings",
+                "setSpeakerSettings":  "Set Speaker Settings",
                 "getSource":           "Get Source",
                 "setSource":           "Set Source",
                 "getPlaybackSettings": "Get Playback Settings",
@@ -92,6 +94,36 @@
                 "type1": "Type 1",
                 "type2": "Type 2",
                 "type3": "Type 3"
+            },
+            "speakerTarget":
+            {
+                "all":                   "All",
+                "inCeilingSpeakerMode":  "In-Ceiling Speaker",
+                "speakerSelection":      "Speakers",
+                "frontLLevel":           "Front Left",
+                "frontRLevel":           "Front Right",
+                "centerLevel":           "Center",
+                "surroundLLevel":        "Surround Left",
+                "surroundRLevel":        "Surround Right",
+                "surroundcBackLevel":    "Surround Back Center",
+                "surroundBackLLevel":    "Surround Back Left",
+                "surroundBackRLevel":    "Surround Back Right",
+                "heightLLevel":          "Height Left",
+                "heightRLevel":          "Height Right",
+                "subwooferLevel":        "Subwoofer"
+            },
+            "inCeilingSpeakerMode":
+            {
+                "off":           "Off",
+                "front":         "Front",
+                "front_center":  "Front and Center"
+            },
+            "speakerSelection":
+            {
+                "off":         "Off",
+                "speakerA":    "Speaker A",
+                "speakerB":    "Speaker B",
+                "speakerA_B":  "Speaker A and B"
             },
             "modeTarget":
             {

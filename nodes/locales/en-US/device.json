@@ -29,6 +29,7 @@
                 "relativeVolume": "Relative Volume",
                 "muted":          "Muted",
                 "soundSetting":   "Sound Setting",
+                "speakerSetting": "Speaker Setting",
                 "playbackMode":   "Playback Setting"
             }
         },

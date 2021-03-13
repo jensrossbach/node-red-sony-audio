@@ -94,6 +94,8 @@ SOFTWARE.
                 <option value="toggleMute" data-i18n="controller.list.command.toggleMute"></option>
                 <option value="getSoundSettings" data-i18n="controller.list.command.getSoundSettings"></option>
                 <option value="setSoundSettings" data-i18n="controller.list.command.setSoundSettings"></option>
+                <option value="getSpeakerSettings" data-i18n="controller.list.command.getSpeakerSettings"></option>
+                <option value="setSpeakerSettings" data-i18n="controller.list.command.setSpeakerSettings"></option>
             </optgroup>
             <optgroup data-i18n="[label]node-red-contrib-sony-audio/sony-audio-device:common.list.service.avContent">
                 <option value="getSource" data-i18n="controller.list.command.getSource"></option>
@@ -173,6 +175,31 @@ SOFTWARE.
             <option value="nightMode" data-i18n="controller.list.soundTarget.nightMode"></option>
             <option value="footballMode" data-i18n="controller.list.soundTarget.footballMode"></option>
             <option value="voice" data-i18n="controller.list.soundTarget.voice"></option>
+        </select>
+    </div>
+    <div id="form-row-speakerSettings" class="form-row" style="padding-top: 10px">
+        <label><i class="fa fa-sliders"></i> <span data-i18n="controller.label.settings"></span></label>
+        <div class="form-row">
+            <ol id="node-input-speakerSettingsList"></ol>
+        </div>
+    </div>
+    <div id="form-row-speakerTarget" class="form-row">
+        <label for="node-input-speakerTarget"><i class="fa fa-sliders"></i> <span data-i18n="controller.label.setting"></span></label>
+        <select id="node-input-speakerTarget" style="width: auto;">
+            <option value="all" data-i18n="controller.list.speakerTarget.all"></option>
+            <option value="inCeilingSpeakerMode" data-i18n="controller.list.speakerTarget.inCeilingSpeakerMode"></option>
+            <option value="speakerSelection" data-i18n="controller.list.speakerTarget.speakerSelection"></option>
+            <option value="frontLLevel" data-i18n="controller.list.speakerTarget.frontLLevel"></option>
+            <option value="frontRLevel" data-i18n="controller.list.speakerTarget.frontRLevel"></option>
+            <option value="centerLevel" data-i18n="controller.list.speakerTarget.centerLevel"></option>
+            <option value="surroundLLevel" data-i18n="controller.list.speakerTarget.surroundLLevel"></option>
+            <option value="surroundRLevel" data-i18n="controller.list.speakerTarget.surroundRLevel"></option>
+            <option value="surroundcBackLevel" data-i18n="controller.list.speakerTarget.surroundcBackLevel"></option>
+            <option value="surroundBackLLevel" data-i18n="controller.list.speakerTarget.surroundBackLLevel"></option>
+            <option value="surroundBackRLevel" data-i18n="controller.list.speakerTarget.surroundBackRLevel"></option>
+            <option value="heightLLevel" data-i18n="controller.list.speakerTarget.heightLLevel"></option>
+            <option value="heightRLevel" data-i18n="controller.list.speakerTarget.heightRLevel"></option>
+            <option value="subwooferLevel" data-i18n="controller.list.speakerTarget.subwooferLevel"></option>
         </select>
     </div>
     <div id="form-row-modeSettings" class="form-row" style="padding-top: 10px">
@@ -298,6 +325,14 @@ SOFTWARE.
             {
                 value: "soundField"
             },
+            speakerSettings:
+            {
+                value: [{target: "inCeilingSpeakerMode", value: "off"}]
+            },
+            speakerTarget:
+            {
+                value: "inCeilingSpeakerMode"
+            },
             modeSettings:
             {
                 value: [{target: "playType", value: "normal"}]
@@ -315,6 +350,14 @@ SOFTWARE.
             let relativeVol = $("#node-input-relativeVolume");
             let allZones = $("#node-input-allzones");
             let outFiltersSelect = $("#node-input-outFilters");
+
+            // backward compatibility
+            if (node.command == "setPlaybackModes") { commandSelect.val("setPlaybackSettings"); }
+            if (node.command == "getPlaybackModes") { commandSelect.val("getPlaybackSettings"); }
+            if (typeof node.enableLowLevel == "undefined") { $("#node-input-enableLowLevel").prop("checked", true); }
+            if (typeof node.preset == "undefined") { $("#node-input-preset").val(0); }
+            if (typeof node.speakerSettings == "undefined") { node.speakerSettings = [{target: "inCeilingSpeakerMode", value: "off"}]; }
+            if (typeof node.speakerTarget == "undefined") { $("#node-input-speakerTarget").val("inCeilingSpeakerMode"); }
 
             const validateVolume = function(event, ui)
             {
@@ -473,6 +516,119 @@ SOFTWARE.
                 }
             });
 
+            let speakerSettingsList = $("#node-input-speakerSettingsList").css("min-height", "200px").editableList(
+            {
+                removable: true,
+                addItem: function(item, index, speakerSetting)
+                {
+                    if (!("target" in speakerSetting))
+                    {
+                        speakerSetting.target = "inCeilingSpeakerMode";
+                        speakerSetting.value = "off";
+                    }
+
+                    const speakerLevelSpinner =
+                    {
+                        min: -10,
+                        max: 10,
+                        step: 0.5,
+                        change: function(event, ui)
+                        {
+                            var value = parseFloat($(this).spinner("value"));
+                            var min = $(this).spinner("option", "min");
+                            var max = $(this).spinner("option", "max");
+                            if (isNaN(value) ||
+                                (value < min))
+                            {
+                                $(this).spinner("value", min);
+                            }
+                            else if (value > max)
+                            {
+                                $(this).spinner("value", max);
+                            }
+                            else if ((value % 0.5) != 0)
+                            {
+                                $(this).spinner("value", value - (value % 0.5));
+                            }
+                        }
+                    };
+
+                    let speakerTarget = $("<select/>", {class: "node-input-speakerTarget"}).appendTo(item);
+                    speakerTarget.append($("<option></option>").val("inCeilingSpeakerMode").text(node._("controller.list.speakerTarget.inCeilingSpeakerMode")));
+                    speakerTarget.append($("<option></option>").val("speakerSelection").text(node._("controller.list.speakerTarget.speakerSelection")));
+                    speakerTarget.append($("<option></option>").val("frontLLevel").text(node._("controller.list.speakerTarget.frontLLevel")));
+                    speakerTarget.append($("<option></option>").val("frontRLevel").text(node._("controller.list.speakerTarget.frontRLevel")));
+                    speakerTarget.append($("<option></option>").val("centerLevel").text(node._("controller.list.speakerTarget.centerLevel")));
+                    speakerTarget.append($("<option></option>").val("surroundLLevel").text(node._("controller.list.speakerTarget.surroundLLevel")));
+                    speakerTarget.append($("<option></option>").val("surroundRLevel").text(node._("controller.list.speakerTarget.surroundRLevel")));
+                    speakerTarget.append($("<option></option>").val("surroundcBackLevel").text(node._("controller.list.speakerTarget.surroundcBackLevel")));
+                    speakerTarget.append($("<option></option>").val("surroundBackLLevel").text(node._("controller.list.speakerTarget.surroundBackLLevel")));
+                    speakerTarget.append($("<option></option>").val("surroundBackRLevel").text(node._("controller.list.speakerTarget.surroundBackRLevel")));
+                    speakerTarget.append($("<option></option>").val("heightLLevel").text(node._("controller.list.speakerTarget.heightLLevel")));
+                    speakerTarget.append($("<option></option>").val("heightRLevel").text(node._("controller.list.speakerTarget.heightRLevel")));
+                    speakerTarget.append($("<option></option>").val("subwooferLevel").text(node._("controller.list.speakerTarget.subwooferLevel")));
+
+                    let inCeilingSpeakerModeContainer = $("<span/>", {style: "padding-left: 10px;"}).appendTo(item);
+                    let inCeilingSpeakerMode = $("<select/>", {class: "node-input-inCeilingSpeakerMode",
+                                                               style: "width: auto;"}).appendTo(inCeilingSpeakerModeContainer);
+                    inCeilingSpeakerMode.append($("<option></option>").val("off").text(node._("controller.list.inCeilingSpeakerMode.off")));
+                    inCeilingSpeakerMode.append($("<option></option>").val("front").text(node._("controller.list.inCeilingSpeakerMode.front")));
+                    inCeilingSpeakerMode.append($("<option></option>").val("front&center").text(node._("controller.list.inCeilingSpeakerMode.front_center")));
+
+                    let speakerSelectionContainer = $("<span/>", {style: "padding-left: 10px;"}).appendTo(item);
+                    let speakerSelection = $("<select/>", {class: "node-input-speakerSelection",
+                                                           style: "width: auto;"}).appendTo(speakerSelectionContainer);
+                    speakerSelection.append($("<option></option>").val("off").text(node._("controller.list.speakerSelection.off")));
+                    speakerSelection.append($("<option></option>").val("speakerA").text(node._("controller.list.speakerSelection.speakerA")));
+                    speakerSelection.append($("<option></option>").val("speakerB").text(node._("controller.list.speakerSelection.speakerB")));
+                    speakerSelection.append($("<option></option>").val("speakerA_B").text(node._("controller.list.speakerSelection.speakerA_B")));
+
+                    let speakerLevelContainer = $("<span/>", {style: "padding-left: 10px;"}).appendTo(item);
+                    let speakerLevel = $("<input/>", {class: "node-input-speakerLevel", style: "width: 50px;"})
+                                        .appendTo(speakerLevelContainer)
+                                        .spinner(speakerLevelSpinner)
+                                        .spinner("value", 0);
+
+                    speakerTarget.change(function()
+                    {
+                        value = speakerTarget.val();
+
+                        inCeilingSpeakerModeContainer.hide();
+                        speakerSelectionContainer.hide();
+                        speakerLevelContainer.hide();
+
+                        if (value == "inCeilingSpeakerMode")
+                        {
+                            inCeilingSpeakerModeContainer.show();
+                        }
+                        else if (value == "speakerSelection")
+                        {
+                            speakerSelectionContainer.show();
+                        }
+                        else
+                        {
+                            speakerLevelContainer.show();
+                        }
+                    });
+
+                    if (speakerSetting.target == "inCeilingSpeakerMode")
+                    {
+                        inCeilingSpeakerMode.val(speakerSetting.value);
+                    }
+                    else if (speakerSetting.target == "speakerSelection")
+                    {
+                        speakerSelection.val(speakerSetting.value);
+                    }
+                    else
+                    {
+                        speakerLevel.spinner("value", speakerSetting.value);
+                    }
+
+                    speakerTarget.val(speakerSetting.target);
+                    speakerTarget.change();
+                }
+            });
+
             let modeSettingsList = $("#node-input-modeSettingsList").css("min-height", "200px").editableList(
             {
                 removable: true,
@@ -484,10 +640,10 @@ SOFTWARE.
                         modeSetting.value = "normal";
                     }
 
-                    let modeType = $("<select/>", {class: "node-input-modeTarget"}).appendTo(item);
-                    modeType.append($("<option></option>").val("playType").text(node._("controller.list.modeTarget.playType")));
-                    modeType.append($("<option></option>").val("repeatType").text(node._("controller.list.modeTarget.repeatType")));
-                    modeType.append($("<option></option>").val("shuffleType").text(node._("controller.list.modeTarget.shuffleType")));
+                    let modeTarget = $("<select/>", {class: "node-input-modeTarget"}).appendTo(item);
+                    modeTarget.append($("<option></option>").val("playType").text(node._("controller.list.modeTarget.playType")));
+                    modeTarget.append($("<option></option>").val("repeatType").text(node._("controller.list.modeTarget.repeatType")));
+                    modeTarget.append($("<option></option>").val("shuffleType").text(node._("controller.list.modeTarget.shuffleType")));
 
                     let playTypeContainer = $("<span/>", {id: "item-elem-playType-" + index,
                                                             style: "padding-left: 10px;"}).appendTo(item);
@@ -516,9 +672,9 @@ SOFTWARE.
                     shuffleType.append($("<option></option>").val("off").text(node._("controller.list.shuffleType.off")));
                     shuffleType.append($("<option></option>").val("folder").text(node._("controller.list.shuffleType.folder")));
 
-                    modeType.change(function()
+                    modeTarget.change(function()
                     {
-                        value = modeType.val();
+                        value = modeTarget.val();
 
                         playTypeContainer.hide();
                         repeatTypeContainer.hide();
@@ -551,19 +707,83 @@ SOFTWARE.
                         shuffleType.val(modeSetting.value);
                     }
 
-                    modeType.val(modeSetting.target);
-                    modeType.change();
+                    modeTarget.val(modeSetting.target);
+                    modeTarget.change();
                 }
             });
 
-            node.soundSettings.forEach(setting =>
+            let filterList = $("#node-input-filterList").css("min-height", "200px").editableList(
             {
-                soundSettingsList.editableList("addItem", setting);
-            });
+                removable: true,
+                sortable: true,
+                addItem: function(item, index, filter)
+                {
+                    if (!("name" in filter))
+                    {
+                        filter.name = "auto";
+                    }
 
-            node.modeSettings.forEach(setting =>
-            {
-                modeSettingsList.editableList("addItem", setting);
+                    let filterName = $("<select/>", {class: "node-input-filterName",
+                                                     style: "width: auto;"}).appendTo(item);
+                    filterName.append($("<option></option>").val("auto").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.auto")));
+                    filterName.append($("<option></option>").val("powered").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.powered")));
+                    filterName.append($("<option></option>").val("standby").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.standby")));
+                    filterName.append($("<option></option>").val("swupdate").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.swupdate")));
+                    filterName.append($("<option></option>").val("source").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.source")));
+                    filterName.append($("<option></option>").val("absoluteVolume").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.absoluteVolume")));
+                    filterName.append($("<option></option>").val("relativeVolume").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.relativeVolume")));
+                    filterName.append($("<option></option>").val("muted").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.muted")));
+                    filterName.append($("<option></option>").val("soundSetting").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.soundSetting")));
+                    filterName.append($("<option></option>").val("speakerSetting").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.speakerSetting")));
+                    filterName.append($("<option></option>").val("playbackMode").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.playbackMode")));
+
+                    let explicitContainer = $("<span/>", {id: "item-elemExplicit-" + index,
+                                                          style: "padding-left: 10px;"}).appendTo(item);
+                    let explicit = $("<input/>", {id: "node-input-filterExplicit-" + index,
+                                                  class: "node-input-filterExplicit",
+                                                  type: "checkbox",
+                                                  style: "vertical-align: text-bottom; width: auto;"}).appendTo(explicitContainer);
+                    $("<label/>", {for: "node-input-filterExplicit-" + index,
+                                   style: "padding-left: 4px;"}).text(node._("node-red-contrib-sony-audio/sony-audio-device:common.label.explicit")).appendTo(explicitContainer);
+
+                    let idx = $("<span/>", {style: "float: right; margin-top: 6px;"}).appendTo(item);
+                    idx.append(" &#8594; <span class=\"node-input-filterIndex\">" + (index + 1) + "</span> ");
+
+                    filterName.change(function()
+                    {
+                        explicitContainer.hide();
+
+                        let value = filterName.val();
+                        if ((value == "powered") || (value == "standby") || (value == "swupdate"))
+                        {
+                            explicitContainer.show();
+                        }
+                    });
+
+                    if ("explicit" in filter)
+                    {
+                        explicit.prop("checked", filter.explicit);
+                    }
+
+                    filterName.val(filter.name);
+                    filterName.change();
+                },
+                removeItem: function(filter)
+                {
+                    let filterList = $("#node-input-filterList").editableList("items");
+                    filterList.each(function(index)
+                    {
+                        $(this).find(".node-input-filterIndex").html(index + 1);
+                    });
+                },
+                sortItems: function(filter)
+                {
+                    let filterList = $("#node-input-filterList").editableList("items");
+                    filterList.each(function(index)
+                    {
+                        $(this).find(".node-input-filterIndex").html(index + 1);
+                    });
+                }
             });
 
             relativeVol.change(function()
@@ -606,6 +826,8 @@ SOFTWARE.
                 $("#form-row-preset").hide();
                 $("#form-row-soundSettings").hide();
                 $("#form-row-soundTarget").hide();
+                $("#form-row-speakerSettings").hide();
+                $("#form-row-speakerTarget").hide();
                 $("#form-row-modeSettings").hide();
                 $("#form-row-modeTarget").hide();
 
@@ -667,6 +889,16 @@ SOFTWARE.
                         $("#form-row-soundTarget").show();
                         break;
                     }
+                    case "setSpeakerSettings":
+                    {
+                        $("#form-row-speakerSettings").show();
+                        break;
+                    }
+                    case "getSpeakerSettings":
+                    {
+                        $("#form-row-speakerTarget").show();
+                        break;
+                    }
                     case "setPlaybackSettings":
                     {
                         $("#form-row-modeSettings").show();
@@ -682,119 +914,27 @@ SOFTWARE.
 
             sourceSelect.change(function()
             {
-                if (($(this).val() == "extInput:hdmi") ||
-                    ($(this).val() == "extInput:video") ||
-                    ($(this).val() == "extInput:line"))
+                if (commandSelect.val() == "setSource")
                 {
-                    $("#form-row-port").show();
-                }
-                else
-                {
-                    $("#form-row-port").hide();
-                }
-
-                if ($(this).val() == "radio:fm")
-                {
-                    $("#form-row-preset").show();
-                }
-                else
-                {
-                    $("#form-row-preset").hide();
-                }
-            });
-
-            // backward compatibility
-            if (node.command == "setPlaybackModes") { commandSelect.val("setPlaybackSettings"); }
-            if (node.command == "getPlaybackModes") { commandSelect.val("getPlaybackSettings"); }
-            if (typeof node.enableLowLevel == "undefined") { $("#node-input-enableLowLevel").prop("checked", true); }
-            if (typeof node.preset == "undefined") { $("#node-input-preset").val(0); }
-
-            commandSelect.change();
-            if (node.zone == 0)
-            {
-                allZones.prop("checked", true);
-                zoneSpinner.spinner("disable");
-                zoneSpinner.spinner("option", "min", "0");
-            }
-
-            let filterList = $("#node-input-filterList").css("min-height", "200px").editableList(
-            {
-                removable: true,
-                sortable: true,
-                addItem: function(item, index, filter)
-                {
-                    if (!("name" in filter))
+                    if (($(this).val() == "extInput:hdmi") ||
+                        ($(this).val() == "extInput:video") ||
+                        ($(this).val() == "extInput:line"))
                     {
-                        filter.name = "auto";
+                        $("#form-row-port").show();
+                    }
+                    else
+                    {
+                        $("#form-row-port").hide();
                     }
 
-                    let filterName = $("<select/>", {class: "node-input-filterName",
-                                                     style: "width: auto;"}).appendTo(item);
-                    filterName.append($("<option></option>").val("auto").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.auto")));
-                    filterName.append($("<option></option>").val("powered").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.powered")));
-                    filterName.append($("<option></option>").val("standby").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.standby")));
-                    filterName.append($("<option></option>").val("swupdate").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.swupdate")));
-                    filterName.append($("<option></option>").val("source").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.source")));
-                    filterName.append($("<option></option>").val("absoluteVolume").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.absoluteVolume")));
-                    filterName.append($("<option></option>").val("relativeVolume").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.relativeVolume")));
-                    filterName.append($("<option></option>").val("muted").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.muted")));
-                    filterName.append($("<option></option>").val("soundSetting").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.soundSetting")));
-                    filterName.append($("<option></option>").val("playbackMode").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.playbackMode")));
-
-                    let explicitContainer = $("<span/>", {id: "item-elemExplicit-" + index,
-                                                          style: "padding-left: 10px;"}).appendTo(item);
-                    let explicit = $("<input/>", {id: "node-input-filterExplicit-" + index,
-                                                  class: "node-input-filterExplicit",
-                                                  type: "checkbox",
-                                                  style: "vertical-align: text-bottom; width: auto;"}).appendTo(explicitContainer);
-                    $("<label/>", {for: "node-input-filterExplicit-" + index,
-                                   style: "padding-left: 4px;"}).text(node._("node-red-contrib-sony-audio/sony-audio-device:common.label.explicit")).appendTo(explicitContainer);
-
-                    let idx = $("<span/>", {style: "float: right; margin-top: 6px;"}).appendTo(item);
-                    idx.append(" &#8594; <span class=\"node-input-filterIndex\">" + (index + 1) + "</span> ");
-
-                    filterName.change(function()
+                    if ($(this).val() == "radio:fm")
                     {
-                        explicitContainer.hide();
-
-                        let value = filterName.val();
-                        if ((value == "powered") || (value == "standby") || (value == "swupdate"))
-                        {
-                            explicitContainer.show();
-                        }
-                    });
-
-                    if ("explicit" in filter)
-                    {
-                        explicit.prop("checked", filter.explicit);
+                        $("#form-row-preset").show();
                     }
-
-                    filterName.val(filter.name);
-                    filterName.change();
-                },
-                removeItem: function(filter)
-                {
-                    let filterList = $("#node-input-filterList").editableList("items");
-                    filterList.each(function(index)
+                    else
                     {
-                        $(this).find(".node-input-filterIndex").html(index + 1);
-                    });
-                },
-                sortItems: function(filter)
-                {
-                    let filterList = $("#node-input-filterList").editableList("items");
-                    filterList.each(function(index)
-                    {
-                        $(this).find(".node-input-filterIndex").html(index + 1);
-                    });
-                }
-            });
-
-            node.outputPorts.forEach(port =>
-            {
-                if ("filter" in port)
-                {
-                    filterList.editableList("addItem", port.filter);
+                        $("#form-row-preset").hide();
+                    }
                 }
             });
 
@@ -810,12 +950,44 @@ SOFTWARE.
                 }
             });
 
+            if (node.zone == 0)
+            {
+                allZones.prop("checked", true);
+                zoneSpinner.spinner("disable");
+                zoneSpinner.spinner("option", "min", "0");
+            }
+
+            node.soundSettings.forEach(setting =>
+            {
+                soundSettingsList.editableList("addItem", setting);
+            });
+
+            node.speakerSettings.forEach(setting =>
+            {
+                speakerSettingsList.editableList("addItem", setting);
+            });
+
+            node.modeSettings.forEach(setting =>
+            {
+                modeSettingsList.editableList("addItem", setting);
+            });
+
+            node.outputPorts.forEach(port =>
+            {
+                if ("filter" in port)
+                {
+                    filterList.editableList("addItem", port.filter);
+                }
+            });
+
             outFiltersSelect.change();
+            commandSelect.change();
         },
         oneditsave: function()
         {
             let node = this;
             let soundSettingsList = $("#node-input-soundSettingsList").editableList("items");
+            let speakerSettingsList = $("#node-input-speakerSettingsList").editableList("items");
             let modeSettingsList = $("#node-input-modeSettingsList").editableList("items");
 
             node.soundSettings = [];
@@ -836,6 +1008,27 @@ SOFTWARE.
                 }
 
                 node.soundSettings.push(setting);
+            });
+
+            node.speakerSettings = [];
+            speakerSettingsList.each(function(index)
+            {
+                let setting = {target: $(this).find(".node-input-speakerTarget").val()};
+                if (setting.target == "inCeilingSpeakerMode")
+                {
+                    setting.value = $(this).find(".node-input-inCeilingSpeakerMode").val();
+                }
+                else if (setting.target == "speakerSelection")
+                {
+                    setting.value = $(this).find(".node-input-speakerSelection").val();
+                }
+                else
+                {
+                    setting.value = $(this).find(".node-input-speakerLevel").spinner("value");
+                }
+                console.log("setting: " + JSON.stringify(setting));
+
+                node.speakerSettings.push(setting);
             });
 
             node.modeSettings = [];

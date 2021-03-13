@@ -55,6 +55,8 @@ module.exports = function(RED)
         {
             if (((node.config.command == "setSoundSettings") &&
                  (node.config.soundSettings.length == 0)) ||
+                ((node.config.command == "setSpeakerSettings") &&
+                 (node.config.speakerSettings.length == 0)) ||
                 (((node.config.command == "setPlaybackSettings") ||
                   (node.config.command == "setPlaybackModes")) &&  // backward compatibility
                  (node.config.modeSettings.length == 0)))
@@ -258,6 +260,20 @@ module.exports = function(RED)
                             setSoundSettings(context, args.soundSettings);
                             break;
                         }
+                        case "setSpeakerSettings":
+                        {
+                            let args = {speakerSettings: node.config.speakerSettings};
+
+                            if (msg.payload &&
+                                (typeof msg.payload == "object") &&
+                                Array.isArray(msg.payload.settings))
+                            {
+                                args.speakerSettings = msg.payload.settings;
+                            }
+
+                            setSpeakerSettings(context, args.speakerSettings);
+                            break;
+                        }
                         case "setSource":
                         {
                             let args = {source: node.config.source,
@@ -455,6 +471,20 @@ module.exports = function(RED)
                             getSoundSettings(context, args.target);
                             break;
                         }
+                        case "getSpeakerSettings":
+                        {
+                            let args = {target: (node.config.speakerTarget == "all") ? "" : node.config.speakerTarget};
+
+                            if (msg.payload &&
+                                (typeof msg.payload == "object") &&
+                                (typeof msg.payload.target == "string"))
+                            {
+                                args.target = (msg.payload.target == "all") ? "" : msg.payload.target;
+                            }
+
+                            getSpeakerSettings(context, args.target);
+                            break;
+                        }
                         case "getPlaybackModes":  // backward compatibility
                         case "getPlaybackSettings":
                         {
@@ -558,6 +588,15 @@ module.exports = function(RED)
                         "setSoundSettings",
                         "1.1",
                         {settings: params});
+        }
+
+        function setSpeakerSettings(context, params)
+        {
+            sendRequest(context,
+                        "audio",
+                        "setSpeakerSettings",
+                        "1.0",
+                        {settings: convertSpeakerSettings(params)});
         }
 
         function setPlaybackModeSettings(context, params)
@@ -684,6 +723,15 @@ module.exports = function(RED)
                         {target: target});
         }
 
+        function getSpeakerSettings(context, target)
+        {
+            sendRequest(context,
+                        "audio",
+                        "getSpeakerSettings",
+                        "1.0",
+                        {target: target});
+        }
+
         function getPlaybackModeSettings(context, target)
         {
             sendRequest(context,
@@ -691,6 +739,45 @@ module.exports = function(RED)
                         "getPlaybackModeSettings",
                         "1.0",
                         {target: target});
+        }
+
+        function convertSpeakerSettings(settings)
+        {
+            const ret = [];
+
+            for (let from of settings)
+            {
+                const to = {};
+                to.target = from.target;
+                switch (from.target)
+                {
+                    case "inCeilingSpeakerMode":
+                    case "speakerSelection":
+                    {
+                        to.value = from.value;
+                        break;
+                    }
+                    case "frontLLevel":
+                    case "frontRLevel":
+                    case "centerLevel":
+                    case "surroundLLevel":
+                    case "surroundRLevel":
+                    case "surroundcBackLevel":
+                    case "surroundBackLLevel":
+                    case "surroundBackRLevel":
+                    case "heightLLevel":
+                    case "heightRLevel":
+                    case "subwooferLevel":
+                    {
+                        to.value = from.value.toString();
+                        break;
+                    }
+                }
+
+                ret.push(to);
+            }
+
+            return ret;
         }
 
         function setStatus(stat = {}, duration = 0)
@@ -861,6 +948,11 @@ module.exports = function(RED)
                                 case "getSoundSettings":
                                 {
                                     filter = {name: "soundSetting"};
+                                    break;
+                                }
+                                case "getSpeakerSettings":
+                                {
+                                    filter = {name: "speakerSetting"};
                                     break;
                                 }
                                 case "getPlaybackModes":

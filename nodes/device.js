@@ -144,7 +144,7 @@ module.exports = function(RED)
                               version: version,
                               params: (args == null) ? [] : [args]};
 
-                // this.debug(JSON.stringify(body));
+                this.trace(JSON.stringify(body));
                 httpRequest(uri, {method: "post", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)})
                 .then(response =>
                 {

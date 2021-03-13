@@ -40,6 +40,8 @@
                 "toggleMute":          "Stumm umschalten",
                 "getSoundSettings":    "Klangeinstellungen abfragen",
                 "setSoundSettings":    "Klangeinstellungen setzen",
+                "getSpeakerSettings":  "Lautsprechereinstellungen abfragen",
+                "setSpeakerSettings":  "Lautsprechereinstellungen setzen",
                 "getSource":           "Quelle abfragen",
                 "setSource":           "Quelle setzen",
                 "getPlaybackSettings": "Abspieleinstellungen abfragen",
@@ -91,6 +93,36 @@
                 "type1": "Typ 1",
                 "type2": "Typ 2",
                 "type3": "Typ 3"
+            },
+            "speakerTarget":
+            {
+                "all":                   "Alle",
+                "inCeilingSpeakerMode":  "Deckenlautsprecher",
+                "speakerSelection":      "Lautsprecher",
+                "frontLLevel":           "Vorne Links",
+                "frontRLevel":           "Vorne Rechts",
+                "centerLevel":           "Mitte",
+                "surroundLLevel":        "Surround Links",
+                "surroundRLevel":        "Surround Rechts",
+                "surroundcBackLevel":    "Surround Hinten Mitte",
+                "surroundBackLLevel":    "Surround Hinten Links",
+                "surroundBackRLevel":    "Surround Hinten Rechts",
+                "heightLLevel":          "Höhe Links",
+                "heightRLevel":          "Höhe Rechts",
+                "subwooferLevel":        "Subwoofer"
+            },
+            "inCeilingSpeakerMode":
+            {
+                "off":           "Aus",
+                "front":         "Vorne",
+                "front_center":  "Vorne und Mitte"
+            },
+            "speakerSelection":
+            {
+                "off":         "Aus",
+                "speakerA":    "Lautsprecher A",
+                "speakerB":    "Lautsprecher B",
+                "speakerA_B":  "Lautsprecher A and B"
             },
             "modeTarget":
             {

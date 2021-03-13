@@ -29,6 +29,7 @@
                 "relativeVolume": "Relative Lautstärke",
                 "muted":          "Stumm",
                 "soundSetting":   "Klangeinstellungen",
+                "speakerSetting": "Lautsprechereinstellungen",
                 "playbackMode":   "Abspieleinstellungen"
             }
         },
