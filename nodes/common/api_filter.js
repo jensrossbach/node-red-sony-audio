@@ -260,7 +260,7 @@ module.exports =
             {
                 if (data.method == "getSpeakerSettings")
                 {
-                    let out = [];
+                    let out = {};
                     for (let j=0; j<data.payload.length; ++j)
                     {
                         let payload = data.payload[j];
@@ -268,38 +268,23 @@ module.exports =
                         if (("target" in payload) &&
                             ("currentValue" in payload))
                         {
-                            switch (payload.target)
+                            if (payload.type === "doubleNumberTarget")
                             {
-                                case "inCeilingSpeakerMode":
-                                case "speakerSelection":
-                                {
-                                    out.push(payload.currentValue);
-                                    break;
-                                }
-                                case "frontLLevel":
-                                case "frontRLevel":
-                                case "centerLevel":
-                                case "surroundLLevel":
-                                case "surroundRLevel":
-                                case "surroundcBackLevel":
-                                case "surroundBackLLevel":
-                                case "surroundBackRLevel":
-                                case "heightLLevel":
-                                case "heightRLevel":
-                                case "subwooferLevel":
-                                {
-                                    out.push(parseFloat(payload.currentValue));
-                                    break;
-                                }
+                                out[payload.target] = parseFloat(payload.currentValue);
+                            }
+                            else
+                            {
+                                out[payload.target] = payload.currentValue;
                             }
                         }
                     }
 
-                    if (out.length == 1)
+                    let keys = Object.keys(out);
+                    if (keys.length == 1)
                     {
-                        outputMsg = {payload: out[0]};
+                        outputMsg = {payload: out[keys[0]]};
                     }
-                    else if (out.length > 1)
+                    else if (keys.length > 1)
                     {
                         outputMsg = {payload: out};
                     }
