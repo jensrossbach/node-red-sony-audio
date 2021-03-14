@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.1] - 2021-03-14
+### Changed
+- Changed output format for speaker settings filter in case of multiple results: instead of a value array, payload is now an object with properties for each result.
+
 ## [1.7.0] - 2021-03-13
 ### Added
 - Added support for speaker settings (**NOTE**: experimental feature, uses undocumented API, not tested!).
