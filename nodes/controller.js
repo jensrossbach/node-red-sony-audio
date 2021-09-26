@@ -152,9 +152,9 @@ module.exports = function(RED)
                         }
                         case "setVolume":
                         {
-                            let args = {volume: node.config.volume,
+                            let args = {volume: parseInt(node.config.volume),
                                         relativeVolume: node.config.relativeVolume,
-                                        zone: node.config.zone};
+                                        zone: parseInt(node.config.zone)};
 
                             if (msg.payload && (typeof msg.payload == "object"))
                             {
@@ -206,7 +206,7 @@ module.exports = function(RED)
                         }
                         case "mute":
                         {
-                            let args = {zone: node.config.zone};
+                            let args = {zone: parseInt(node.config.zone)};
 
                             if (msg.payload &&
                                 (typeof msg.payload == "object") &&
@@ -220,7 +220,7 @@ module.exports = function(RED)
                         }
                         case "unmute":
                         {
-                            let args = {zone: node.config.zone};
+                            let args = {zone: parseInt(node.config.zone)};
 
                             if (msg.payload &&
                                 (typeof msg.payload == "object") &&
@@ -234,7 +234,7 @@ module.exports = function(RED)
                         }
                         case "toggleMute":
                         {
-                            let args = {zone: node.config.zone};
+                            let args = {zone: parseInt(node.config.zone)};
 
                             if (msg.payload &&
                                 (typeof msg.payload == "object") &&
@@ -277,9 +277,9 @@ module.exports = function(RED)
                         case "setSource":
                         {
                             let args = {source: node.config.source,
-                                        port: node.config.port,
-                                        preset: node.config.preset,
-                                        zone: node.config.zone};
+                                        port: parseInt(node.config.port),
+                                        preset: parseInt(node.config.preset),
+                                        zone: parseInt(node.config.zone)};
 
                             if (msg.payload && (typeof msg.payload == "object"))
                             {
@@ -328,7 +328,7 @@ module.exports = function(RED)
                         }
                         case "stop":
                         {
-                            let args = {zone: node.config.zone};
+                            let args = {zone: parseInt(node.config.zone)};
 
                             if (msg.payload &&
                                 (typeof msg.payload == "object") &&
@@ -342,7 +342,7 @@ module.exports = function(RED)
                         }
                         case "togglePause":
                         {
-                            let args = {zone: node.config.zone};
+                            let args = {zone: parseInt(node.config.zone)};
 
                             if (msg.payload &&
                                 (typeof msg.payload == "object") &&
@@ -356,7 +356,7 @@ module.exports = function(RED)
                         }
                         case "skipPrev":
                         {
-                            let args = {zone: node.config.zone};
+                            let args = {zone: parseInt(node.config.zone)};
 
                             if (msg.payload &&
                                 (typeof msg.payload == "object") &&
@@ -370,7 +370,7 @@ module.exports = function(RED)
                         }
                         case "skipNext":
                         {
-                            let args = {zone: node.config.zone};
+                            let args = {zone: parseInt(node.config.zone)};
 
                             if (msg.payload &&
                                 (typeof msg.payload == "object") &&
@@ -384,7 +384,7 @@ module.exports = function(RED)
                         }
                         case "scanBackward":
                         {
-                            let args = {zone: node.config.zone};
+                            let args = {zone: parseInt(node.config.zone)};
 
                             if (msg.payload &&
                                 (typeof msg.payload == "object") &&
@@ -398,7 +398,7 @@ module.exports = function(RED)
                         }
                         case "scanForward":
                         {
-                            let args = {zone: node.config.zone};
+                            let args = {zone: parseInt(node.config.zone)};
 
                             if (msg.payload &&
                                 (typeof msg.payload == "object") &&
@@ -431,7 +431,7 @@ module.exports = function(RED)
                         }
                         case "getSource":
                         {
-                            let args = {zone: node.config.zone};
+                            let args = {zone: parseInt(node.config.zone)};
 
                             if (msg.payload &&
                                 (typeof msg.payload == "object") &&
@@ -445,7 +445,7 @@ module.exports = function(RED)
                         }
                         case "getVolumeInfo":
                         {
-                            let args = {zone: node.config.zone};
+                            let args = {zone: parseInt(node.config.zone)};
 
                             if (msg.payload &&
                                 (typeof msg.payload == "object") &&
