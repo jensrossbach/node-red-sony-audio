@@ -42,10 +42,13 @@
     {
         "label":
         {
-            "host":         "Host",
-            "port":         "Port",
-            "discovery":    "Suche",
-            "selectDevice": "[GERÄT WÄHLEN]"
+            "host":             "Host",
+            "port":             "Port",
+            "discovery":        "Suche",
+            "selectDevice":     "[GERÄT WÄHLEN]",
+            "extendedRecovery": "Erweiterte Wiederherstellung nach Verbindungsverlust",
+            "numRetries":       "Versuche",
+            "retryDelay":       "Wartezeit"
         },
         "status":
         {

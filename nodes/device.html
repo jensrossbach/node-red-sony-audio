@@ -33,7 +33,7 @@ SOFTWARE.
     </div>
     <div class="form-row">
         <label for="node-config-input-port"><i class="fa fa-bookmark"></i> <span data-i18n="device.label.port"></span></label>
-        <input type="text" id="node-config-input-port" data-i18n="[placeholder]device.label.port">
+        <input id="node-config-input-port" data-i18n="[placeholder]device.label.port" style="width: 60px !important;" value="10000">
     </div>
     <div class="form-row">
         <label for="node-config-input-devices"><i class="fa fa-binoculars"></i> <span data-i18n="device.label.discovery"></span></label>
@@ -41,6 +41,18 @@ SOFTWARE.
             <select id="node-config-input-devices"></select>
             <button type="button" id="node-config-input-discovery" class="red-ui-button"><i class='fa fa-refresh'></i></button>
         </span>
+    </div>
+    <div class="form-row" style="padding-top: 10px">
+        <input id="node-config-input-extendedRecovery" type="checkbox" style="margin-top: 0px; margin-bottom: 1px; width: auto;">
+        <label for="node-config-input-extendedRecovery" style="margin-bottom: 0px; width: auto;" data-i18n="device.label.extendedRecovery"></label>
+    </div>
+    <div id="form-row-numRetries" class="form-row">
+        <label for="node-config-input-numRetries"><i class="fa fa-repeat"></i> <span data-i18n="device.label.numRetries"></span></label>
+        <input id="node-config-input-numRetries" style="width: 50px !important;" value="0">
+    </div>
+    <div id="form-row-retryDelay" class="form-row">
+        <label for="node-config-input-retryDelay"><i class="fa fa-hourglass-end"></i> <span data-i18n="device.label.retryDelay"></span></label>
+        <input id="node-config-input-retryDelay" style="width: 50px !important;" value="60">
     </div>
 </script>
 
@@ -57,7 +69,7 @@ SOFTWARE.
         {
             name:
             {
-                value:    ""
+                value: ""
             },
             host:
             {
@@ -67,14 +79,64 @@ SOFTWARE.
             },
             port:
             {
-                value:    "10000",
-                required: true,
-                validate: RED.validators.number()
+                value: "10000"
+            },
+            extendedRecovery:
+            {
+                value: false
+            },
+            numRetries:
+            {
+                value: "0"
+            },
+            retryDelay:
+            {
+                value: "60"
             }
         },
         oneditprepare: function()
         {
             let node = this;
+
+            const spinnerValidator = function(event, ui)
+            {
+                var value = parseInt($(this).spinner("value"), 10);
+                var min = $(this).spinner("option", "min");
+                var max = $(this).spinner("option", "max");
+                if (isNaN(value) ||
+                    (value < min))
+                {
+                    $(this).spinner("value", min);
+                }
+                else if (value > max)
+                {
+                    $(this).spinner("value", max);
+                }
+            };
+
+            const portSpinner = $("#node-config-input-port").spinner(
+            {
+                min: 1,
+                max: 65535,
+                step: 1,
+                change: spinnerValidator
+            });
+
+            const numRetriesSpinner = $("#node-config-input-numRetries").spinner(
+            {
+                min: 0,
+                max: 9999,
+                step: 1,
+                change: spinnerValidator
+            });
+
+            const retryDelaySpinner = $("#node-config-input-retryDelay").spinner(
+            {
+                min: 1,
+                max: 3600,
+                step: 1,
+                change: spinnerValidator
+            });
 
             function deviceDiscovery(msearch)
             {
@@ -140,6 +202,21 @@ SOFTWARE.
                 }
             });
 
+            $("#node-config-input-extendedRecovery").change(function()
+            {
+                if ($(this).prop("checked"))
+                {
+                    $("#form-row-numRetries").show();
+                    $("#form-row-retryDelay").show();
+                }
+                else
+                {
+                    $("#form-row-numRetries").hide();
+                    $("#form-row-retryDelay").hide();
+                }
+            });
+
+            $("#node-config-input-extendedRecovery").change();
             deviceDiscovery(false);
         }
     });

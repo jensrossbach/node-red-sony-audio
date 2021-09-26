@@ -25,8 +25,8 @@
 const MSG_GET_NOTIFICATIONS = 1;
 const MSG_SET_NOTIFICATIONS = 2;
 
-const RECOVERY_DELAY  = 5000;
-const MAX_NUM_RETRIES = 5;
+const DEFAULT_RETRY_DELAY     = 5000;
+const DEFAULT_MAX_NUM_RETRIES = 5;
 
 const STATUS_NOTCONNECTED = {fill: "grey",  shape: "dot", text: "receiver.status.notConnected"   };
 const STATUS_CONNECTED    = {fill: "blue",  shape: "dot", text: "receiver.status.connected"      };
@@ -63,11 +63,16 @@ class EventReceiver extends EventEmitter
         this.eventCallback = null;
 
         this.recoverOnClose = false;
-        this.retryCount = MAX_NUM_RETRIES;
+        this.extendedRetries = false;
+        this.recoveryDelay = DEFAULT_RETRY_DELAY;
+        this.retryCount = DEFAULT_MAX_NUM_RETRIES;
 
         this.client.on("connect", connection =>
         {
             this.connection = connection;
+            this.extendedRetries = false;
+            this.retryDelay = DEFAULT_RETRY_DELAY;
+            this.retryCount = DEFAULT_MAX_NUM_RETRIES;
 
             this.node.debug("Connected to service '" + this.service + "'");
             this.emit("status", STATUS_CONNECTED);
@@ -156,17 +161,9 @@ class EventReceiver extends EventEmitter
                 this.node.debug("Connection closed: " + reasonCode + " (" + description + ")");
                 this.emit("status", STATUS_NOTCONNECTED);
 
-                if (this.recoverOnClose && (this.retryCount > 0))
+                if (this.recoverOnClose)
                 {
-                    this.recoverOnClose = false;
-
-                    setTimeout(() =>
-                    {
-                        this.node.debug("Trying to recover");
-
-                        this.retryCount--;
-                        this.client.connect(this.url);
-                    }, RECOVERY_DELAY);
+                    recover(this);
                 }
             });
 
@@ -175,20 +172,46 @@ class EventReceiver extends EventEmitter
 
         this.client.on("connectFailed", error =>
         {
-            this.node.error("Connection failed: " + error.toString());
-            this.emit("status", STATUS_ERROR);
-
-            if (this.retryCount > 0)
+            if (!this.extendedRetries)
             {
+                this.node.error("Connection failed: " + error.toString());
+            }
+
+            recover(this);
+        });
+
+        function recover(emitter)
+        {
+            emitter.recoverOnClose = false;
+
+            if ((emitter.retryCount != 0) || (emitter.node.extendedRecovery && !emitter.extendedRetries))
+            {
+                if (emitter.retryCount == 0)
+                {
+                    emitter.node.debug("Switching to extended recovery with " + ((emitter.node.numRetries == 0) ? "infinite retries" : ("a maximum of " + emitter.node.numRetries + " retries")) + " every " + emitter.node.retryDelay + " seconds");
+
+                    emitter.extendedRetries = true;
+                    emitter.retryDelay = emitter.node.retryDelay * 1000;
+                    emitter.retryCount = (emitter.node.numRetries == 0) ? -1 : emitter.node.numRetries;
+                }
+
+                emitter.node.debug("Trying to recover in " + (emitter.retryDelay / 1000) + " seconds");
                 setTimeout(() =>
                 {
-                    this.node.debug("Trying to recover");
+                    if (emitter.retryCount > 0)
+                    {
+                        emitter.retryCount--;
+                    }
 
-                    this.retryCount--;
-                    this.client.connect(this.url);
-                }, RECOVERY_DELAY);
+                    emitter.client.connect(emitter.url);
+                }, emitter.retryDelay);
             }
-        });
+            else
+            {
+                emitter.node.error("Maximum number of retries reached, giving up");
+                emitter.emit("status", STATUS_ERROR);
+            }
+        }
     }
 
     connect(mask, callback)
@@ -197,7 +220,7 @@ class EventReceiver extends EventEmitter
         {
             this.eventMask = mask;
             this.eventCallback = callback;
-            this.retryCount = MAX_NUM_RETRIES;
+            this.retryCount = DEFAULT_MAX_NUM_RETRIES;
 
             this.node.debug("Connecting to: " + this.url);
             this.client.connect(this.url);

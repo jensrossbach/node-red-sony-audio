@@ -119,6 +119,9 @@ module.exports = function(RED)
             this.name = config.name;
             this.host = config.host;
             this.port = config.port;
+            this.extendedRecovery = config.extendedRecovery;
+            this.numRetries = parseInt(config.numRetries);
+            this.retryDelay = parseInt(config.retryDelay);
 
             this.subscribers = {};
             this.nextSubscrId = 1;

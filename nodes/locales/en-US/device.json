@@ -42,10 +42,13 @@
     {
         "label":
         {
-            "host":         "Host",
-            "port":         "Port",
-            "discovery":    "Discovery",
-            "selectDevice": "[SELECT DEVICE]"
+            "host":             "Host",
+            "port":             "Port",
+            "discovery":        "Discovery",
+            "selectDevice":     "[SELECT DEVICE]",
+            "extendedRecovery": "Extended recovery on connection loss",
+            "numRetries":       "Retries",
+            "retryDelay":       "Retry Delay"
         },
         "status":
         {
