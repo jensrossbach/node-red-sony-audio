@@ -587,7 +587,7 @@ module.exports = function(RED)
                         "audio",
                         "setSoundSettings",
                         "1.1",
-                        {settings: params});
+                        {settings: convertSoundSettings(params)});
         }
 
         function setSpeakerSettings(context, params)
@@ -739,6 +739,45 @@ module.exports = function(RED)
                         "getPlaybackModeSettings",
                         "1.0",
                         {target: target});
+        }
+
+        function convertSoundSettings(settings)
+        {
+            const ret = [];
+
+            for (let from of settings)
+            {
+                const to = {};
+                to.target = from.target;
+                switch (from.target)
+                {
+                    case "soundField":
+                    case "voice":
+                    {
+                        to.value = from.value;
+                        break;
+                    }
+                    case "clearAudio":
+                    case "nightMode":
+                    case "footballMode":
+                    {
+                        if (typeof from.value == "string")
+                        {
+                            to.value = from.value;
+                        }
+                        else if (typeof from.value == "boolean")
+                        {
+                            to.value = from.value ? "on" : "off";
+                        }
+
+                        break;
+                    }
+                }
+
+                ret.push(to);
+            }
+
+            return ret;
         }
 
         function convertSpeakerSettings(settings)
