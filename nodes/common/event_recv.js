@@ -64,7 +64,7 @@ class EventReceiver extends EventEmitter
 
         this.recoverOnClose = false;
         this.extendedRetries = false;
-        this.recoveryDelay = DEFAULT_RETRY_DELAY;
+        this.retryDelay = DEFAULT_RETRY_DELAY;
         this.retryCount = DEFAULT_MAX_NUM_RETRIES;
 
         this.client.on("connect", connection =>
@@ -235,6 +235,15 @@ class EventReceiver extends EventEmitter
             this.connection.close();
 
             this.connection = null;
+        }
+    }
+
+    reconnect()
+    {
+        if (!this.connection)
+        {
+            this.node.debug("Connecting to: " + this.url);
+            this.client.connect(this.url);
         }
     }
 

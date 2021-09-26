@@ -262,6 +262,14 @@ module.exports = function(RED)
                 this.warn("Unknown subscriber with ID " + id);
             }
         }
+
+        reconnect()
+        {
+            for (const receiver of Object.values(this.receivers))
+            {
+                receiver.reconnect();
+            }
+        }
     }
 
     function calculateEventMask(subscribers, service)

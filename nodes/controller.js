@@ -150,6 +150,16 @@ module.exports = function(RED)
                             setPowerStatus(context, "off");
                             break;
                         }
+                        case "standBy":
+                        {
+                            setPowerStatus(context, "standby");
+                            break;
+                        }
+                        case "reconnect":
+                        {
+                            node.device.reconnect();
+                            break;
+                        }
                         case "setVolume":
                         {
                             let args = {volume: parseInt(node.config.volume),
