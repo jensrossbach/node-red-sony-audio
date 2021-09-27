@@ -48,7 +48,8 @@
             "selectDevice":     "[GERÄT WÄHLEN]",
             "extendedRecovery": "Erweiterte Wiederherstellung nach Verbindungsverlust",
             "numRetries":       "Versuche",
-            "retryDelay":       "Wartezeit"
+            "retryDelay":       "Wartezeit",
+            "seconds":          "Sekunden"
         },
         "status":
         {

@@ -48,7 +48,8 @@
             "selectDevice":     "[SELECT DEVICE]",
             "extendedRecovery": "Extended recovery on connection loss",
             "numRetries":       "Retries",
-            "retryDelay":       "Retry Delay"
+            "retryDelay":       "Retry Delay",
+            "seconds":          "seconds"
         },
         "status":
         {
