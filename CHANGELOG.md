@@ -3,6 +3,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.0] - 2021-09-27
+### Added
+- Added extended recovery mechanism to recover from connections losses longer than 25 seconds.
+- Added new command to controller node for explicitly trigger a reconnection attempt for service connections.
+- Added standby command to controller node which some devices use to distinguish between full power off and standby.
+- Added possibility to specify on/off sound settings (e.g., night mode) as boolean values.
+
+### Fixed
+- Fixed inconsistent types for volume, preset, port and zone.
+- Implemented workaround for forced spinner input field width.
+
 ## [1.7.1] - 2021-03-14
 ### Changed
 - Changed output format for speaker settings filter in case of multiple results: instead of a value array, payload is now an object with properties for each result.
