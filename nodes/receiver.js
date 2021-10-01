@@ -27,6 +27,7 @@ module.exports = function(RED)
     const STATUS_UNCONFIGURED = {fill: "yellow", shape: "dot", text: "node-red-contrib-sony-audio/sony-audio-device:common.status.unconfigured"};
     const STATUS_CONNECTING   = {fill: "grey",   shape: "dot", text: "receiver.status.connecting"                                              };
 
+    const Handlebars = require("handlebars");
     const APIFilter = require("./common/api_filter.js");
     const Events = require("./common/event_constants.js");
 
@@ -38,6 +39,8 @@ module.exports = function(RED)
 
         node.config = config;
         node.name = config.name;
+
+        node.applyTemplate = node.config.topic ? Handlebars.compile(node.config.topic) : null;
 
         node.device = RED.nodes.getNode(config.device);
         if (node.device && (node.config.outputs > 0))
@@ -174,20 +177,38 @@ module.exports = function(RED)
         {
             let arr = [];
 
+            const context =
+            {
+                host: node.device.host,
+                service: eventMsg.service,
+                method: eventMsg.method,
+                version: eventMsg.version
+            };
+
             if (node.config.outFilters)
             {
                 for (let i=0; i<filterMsgs.length; ++i)
                 {
+                    addTopic(filterMsgs[i], context);
                     arr.push(filterMsgs[i]);
                 }
             }
 
             if (node.config.outEvent)
             {
+                addTopic(eventMsg, context);
                 arr.push(eventMsg);
             }
 
             return arr;
+        }
+
+        function addTopic(msg, ctx)
+        {
+            if (msg && node.applyTemplate)
+            {
+                msg.topic = node.applyTemplate(ctx);
+            }
         }
     }
 

@@ -6,6 +6,7 @@
             "filterPort": "filter",
             "name":       "Name",
             "device":     "Device",
+            "topic":      "Topic",
             "outputs":    "Outputs",
             "filters":    "Filters",
             "explicit":   "Explicit"

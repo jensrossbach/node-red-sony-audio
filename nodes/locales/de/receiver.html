@@ -37,18 +37,41 @@ SOFTWARE.
         und Argumente.
     </p>
     <h3>Konfiguration</h3>
-    <p>
-        Zunächst muss der Benachrichtigungsdienst ausgewählt werden. Abhängig
-        von der Auswahl werden die vom Dienst zur Verfügung gestellten
-        Benachrichtigungen anzeigt, von denen die gewünschten selektiert
-        werden können.
-    </p>
-    <p>
+    <dt>Name</dt>
+    <dd>Name für den Knoten (optional).</dd>
+    <dt>Gerät</dt>
+    <dd>Auswahl/Konfiguration des Sony Audio-Geräts.</dd>
+    <dt>Topic</dt>
+    <dd>
+        Das Topic, das an die Ausgabenachrichten gehängt werden soll. Falls
+        nichts angegeben wird, wird kein Topic an die Nachrichten gehängt. Der
+        Text des Topics kann Platzhalter in der Form <code>{{placeholder}}</code>
+        enthalten, um variable Inhalte einzufügen. Die folgenden Platzhalter
+        werden unterstützt:
+    </dd>
+    <dl class="message-properties">
+        <dt>host<span class="property-type">string</span></dt>
+        <dd>Der Host-Name / die IP-Adresse des Geräts</dd>
+        <dt>service<span class="property-type">string</span></dt>
+        <dd>Der Name des API-Dienstes</dd>
+        <dt>method<span class="property-type">string</span></dt>
+        <dd>Der Name der API-Methode</dd>
+        <dt>version<span class="property-type">string</span></dt>
+        <dd>Die API-Versionsnummer</dd>
+    </dl>
+    <dt>Ausgaben</dt>
+    <dd>Die Ausgabe-Ports, die aktiviert werden sollen.</dd>
+    <dt>Dienst</dt>
+    <dd>Der Dienst, von dem Benachrichtigungen erhalten werden sollen.</dd>
+    <dt>Benachr.</dt>
+    <dd>Die Benachrichtigungen, die abonniert werden sollen.</dd>
+    <dt>Filter</dt>
+    <dd>
         Filter können benutzt werden, um die Benachrichtigungen vom Gerät nach
         bestimmten Kriterien zu filtern. Es können beliebig viele Filter hinzugefügt,
         bearbeitet oder gelöscht werden. Die Zahl an der rechten Seite gibt den
         Ausgabeport an, zu dem die gefilterte Benachrichtigung geschickt wird.
-    <p>
+    </dd>
     <h3>Ausgaben</h3>
     <p>
         Der Knoten stellt eine variable Anzahl Ausgaben zur Verfügung, die über die
@@ -62,9 +85,14 @@ SOFTWARE.
                 zur Verfügung, an den dessen gefilterte Daten geschickt werden.
             </p>
             <dl class="message-properties">
+                <dt class="optional">topic<span class="property-type">string</span></dt>
+                <dd>
+                    Das konfigurierte Topic mit den durch dynamische Inhalte
+                    ersetzten Platzhaltern.
+                </dd>
                 <dt>payload<span class="property-type">boolean | number | string | object</span></dt>
                 <dd>
-                    Enthält die gefilterten Daten der erhaltenen Benachrichtigung.
+                    Die gefilterten Daten der erhaltenen Benachrichtigung.
                     Nachrichten werden nur dann an diese Ports geschickt, wenn die
                     Filter auf die Daten angewendet werden können.
                 </dd>
@@ -76,14 +104,19 @@ SOFTWARE.
                 Control API gesendet wurde.
             </p>
             <dl class="message-properties">
+                <dt class="optional">topic<span class="property-type">string</span></dt>
+                <dd>
+                    Das konfigurierte Topic mit den durch dynamische Inhalte
+                    ersetzten Platzhaltern.
+                </dd>
                 <dt>service<span class="property-type">string</span></dt>
-                <dd>der API-Dienst der Benachrichtigung</dd>
+                <dd>Der Name des API-Dienstes</dd>
                 <dt>method<span class="property-type">string</span></dt>
-                <dd>die API-Methode der Benachrichtigung</dd>
+                <dd>Die Name der API-Methode</dd>
                 <dt>version<span class="property-type">string</span></dt>
-                <dd>die API-Version der Benachrichtigung</dd>
+                <dd>Die API-Versionsnummer</dd>
                 <dt>payload<span class="property-type">object</span></dt>
-                <dd>die Argumente der Benachrichtigung</dd>
+                <dd>Die Argumente der Benachrichtigung</dd>
             </dl>
         </li>
     </ol>

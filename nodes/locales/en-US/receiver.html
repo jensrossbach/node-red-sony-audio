@@ -35,16 +35,43 @@ SOFTWARE.
         reference for more details about the notification methods and their parameters.
     </p>
     <h3>Configuration</h3>
-    <p>
-        Please choose the service for the events you want to get notified and
-        select one or more corresponding notifications to subscribe for.
-    </p>
-    <p>
+    <dt>Name</dt>
+    <dd>Optionally specify a name for the node.</dd>
+    <dt>Device</dt>
+    <dd>Select / configure the Sony audio device.</dd>
+    <dt>Topic</dt>
+    <dd>
+        Specify the topic which should be included in the output messages. If
+        left blank, no topic is added to the messages. You can use placeholders
+        in the form <code>{{placeholder}}</code> to insert variable content.
+        The following placeholders are supported:
+    </dd>
+    <dl class="message-properties">
+        <dt>host<span class="property-type">string</span></dt>
+        <dd>the host name / IP address of the device</dd>
+        <dt>service<span class="property-type">string</span></dt>
+        <dd>the API service name</dd>
+        <dt>method<span class="property-type">string</span></dt>
+        <dd>the API method name</dd>
+        <dt>version<span class="property-type">string</span></dt>
+        <dd>the API version number</dd>
+    </dl>
+    <dt>Outputs</dt>
+    <dd>Select the outputs to be provided by the node.</dd>
+    <dt>Service</dt>
+    <dd>Select the service for the events you want to get notified for.</dd>
+    <dt>Events</dt>
+    <dd>
+        Select one or more notifications to subscribe for corresponding to the
+        selected service.
+    </dd>
+    <dt>Filters</dt>
+    <dd>
         You can use filters to filter the event data by certain criteria. Add,
         remove or reorder filters and select the type of filter. The number on
         the right side shows the number of the output to which the result of
         the filter will be sent.
-    <p>
+    </dd>
     <h3>Outputs</h3>
     <p>
         The node provides a variable number of outputs which can be selected via
@@ -58,10 +85,15 @@ SOFTWARE.
                 which its filtered data is sent.
             </p>
             <dl class="message-properties">
+                <dt class="optional">topic<span class="property-type">string</span></dt>
+                <dd>
+                    the configured topic with placeholders being substituted
+                    by dynamic content.
+                </dd>
                 <dt>payload<span class="property-type">boolean | number | string | object</span></dt>
                 <dd>
-                    Contains the filtered data of the received notification.
-                    Messages are only sent on these ports if the event data is
+                    the filtered data of the received notification; messages
+                    are only sent on these ports if the event data is
                     applicable to any of the filters.
                 </dd>
             </dl>
@@ -72,12 +104,17 @@ SOFTWARE.
                 Control API.
             </p>
             <dl class="message-properties">
+                <dt class="optional">topic<span class="property-type">string</span></dt>
+                <dd>
+                    the configured topic with placeholders being substituted
+                    by dynamic content.
+                </dd>
                 <dt>service<span class="property-type">string</span></dt>
-                <dd>the API service of the event</dd>
+                <dd>the API service name</dd>
                 <dt>method<span class="property-type">string</span></dt>
-                <dd>the API method of the event</dd>
+                <dd>the API method name</dd>
                 <dt>version<span class="property-type">string</span></dt>
-                <dd>the API version of the event</dd>
+                <dd>the API version number</dd>
                 <dt>payload<span class="property-type">object</span></dt>
                 <dd>the event data</dd>
             </dl>
