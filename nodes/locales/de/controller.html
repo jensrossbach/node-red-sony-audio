@@ -67,6 +67,27 @@ SOFTWARE.
         <dd>Name für den Knoten (optional).</dd>
         <dt>Gerät</dt>
         <dd>Auswahl/Konfiguration des Sony Audio-Geräts.</dd>
+        <dt>Topic</dt>
+        <dd>
+            Das Topic, das an die Ausgabenachrichten gehängt werden soll. Falls
+            nichts angegeben wird, wird das Topic der Eingangsnachricht an die
+            Ausgabenachrichten durchgereicht. Der Text des Topics kann
+            Platzhalter in der Form <code>{{placeholder}}</code> enthalten, um
+            variable Inhalte einzufügen. Die folgenden Platzhalter werden
+            unterstützt:
+        </dd>
+        <dl class="message-properties">
+            <dt>host<span class="property-type">string</span></dt>
+            <dd>Der Host-Name / die IP-Adresse des Geräts</dd>
+            <dt>service<span class="property-type">string</span></dt>
+            <dd>Der Name des API-Dienstes</dd>
+            <dt>method<span class="property-type">string</span></dt>
+            <dd>Der Name der API-Methode</dd>
+            <dt>version<span class="property-type">string</span></dt>
+            <dd>Die API-Versionsnummer</dd>
+            <dt>command<span class="property-type">string</span></dt>
+            <dd>Das Kommando der Anfrage</dd>
+        </dl>
         <dt>Eingabe</dt>
         <dd>
             Stellt ein, ob das konfigurierte Kommando über bestimmte Eigenschaften
@@ -147,34 +168,38 @@ SOFTWARE.
     </p>
     <dl class="message-properties">
         <dt class="optional">command<span class="property-type">string</span></dt>
-        <dd>das überschriebene Kommando</dd>
+        <dd>Das überschriebene Kommando</dd>
         <dt class="optional">payload<span class="property-type">object</span></dt>
-        <dd>die überschriebenen Kommando-Einstellungen</dd>
+        <dd>Die überschriebenen Kommando-Einstellungen</dd>
     </dl>
     <p>
-        Wenn <i>Topic-Eingabe aktivieren</i> ausgewählt ist, kann das Kommando
-        alternativ über <code>msg.topic</code> angegeben werden.
+        Wenn <i>Topic als Kommando/Anfragetyp interpretieren</i> ausgewählt ist,
+        kann das Kommando alternativ über <code>msg.topic</code> angegeben
+        werden. Andernfalls wird <code>msg.topic</code> entweder durchgereicht
+        oder durch die Konfiguration überschrieben.
     </p>
     <p>
-        Wenn <i>Low-Level-Eingabe aktivieren</i> ausgewählt ist und alle der
+        Wenn <i>Low-Level-Anfrage aktivieren</i> ausgewählt ist und alle der
         folgenden Rohdaten-Attribute vorhanden sind, wird eine direkte Anfrage
         an die Audio Control API geschickt und die Kommando-Konfiguration des
         Knotens ignoriert.
     </p>
     <dl class="message-properties">
         <dt class="optional">service<span class="property-type">string</span></dt>
-        <dd>der API-Dienst der Anfrage</dd>
+        <dd>Der Name des API-Dienstes</dd>
         <dt class="optional">method<span class="property-type">string</span></dt>
-        <dd>die API-Methode der Anfrage</dd>
+        <dd>Der Name der API-Methode</dd>
         <dt class="optional">version<span class="property-type">string</span></dt>
-        <dd>die API-Version der Anfrage</dd>
+        <dd>Die API-Versionsnummer</dd>
         <dt class="optional">payload<span class="property-type">object</span></dt>
-        <dd>die Argumente der Anfrage</dd>
+        <dd>Die Argumente der Anfrage</dd>
     </dl>
     <p>
-        Wenn <i>Topic-Eingabe aktivieren</i> ausgewählt ist, können der API-Dienst,
-        die API-Methode und die API-Version alternativ über <code>msg.topic</code>
-        in der Form <i>Dienst</i>/<i>Methode</i>/<i>Version</i> angegeben werden.
+        Wenn <i>Topic als Kommando/Anfragetyp interpretieren</i> ausgewählt ist,
+        kann der Typ der Low-Level-Anfrage über <code>msg.topic</code> in der
+        Form "<code>service</code>/<code>method</code>/<code>version</code>"
+        angegeben werden. Andernfalls wird <code>msg.topic</code> entweder
+        durchgereicht oder durch die Konfiguration überschrieben.
     </p>
     <h3>Ausgaben</h3>
     <p>
@@ -189,9 +214,14 @@ SOFTWARE.
                 zur Verfügung, an den dessen gefilterte Daten geschickt werden.
             </p>
             <dl class="message-properties">
+                <dt class="optional">topic<span class="property-type">string</span></dt>
+                <dd>
+                    Das Topic aus der Eingangsnachricht oder das konfigurierte Topic
+                    mit den durch dynamische Inhalte ersetzten Platzhaltern.
+                </dd>
                 <dt>payload<span class="property-type">boolean | number | string | object</span></dt>
                 <dd>
-                    Enthält die gefilterten Ergebnisse der Knoten-Aktion. Nachrichten
+                    Die gefilterten Ergebnisse der Knoten-Aktion. Nachrichten
                     werden nur dann an diese Ports geschickt, wenn die Filter auf
                     die Daten angewendet werden können.
                 </dd>
@@ -203,14 +233,19 @@ SOFTWARE.
                 API gesendet wurde, sofern die Aktion erfolgreich war.
             </p>
             <dl class="message-properties">
+                <dt class="optional">topic<span class="property-type">string</span></dt>
+                <dd>
+                    Das Topic aus der Eingangsnachricht oder das konfigurierte Topic
+                    mit den durch dynamische Inhalte ersetzten Platzhaltern.
+                </dd>
                 <dt>service<span class="property-type">string</span></dt>
-                <dd>der API-Dienst der Anfrage</dd>
+                <dd>Der API-Dienst der Anfrage</dd>
                 <dt>method<span class="property-type">string</span></dt>
-                <dd>die API-Methode der Anfrage</dd>
+                <dd>Die API-Methode der Anfrage</dd>
                 <dt>version<span class="property-type">string</span></dt>
-                <dd>die API-Version der Anfrage</dd>
+                <dd>Die API-Version der Anfrage</dd>
                 <dt>payload<span class="property-type">object</span></dt>
-                <dd>die Argumente der Anfrage</dd>
+                <dd>Die Argumente der Anfrage</dd>
             </dl>
         </li>
     </ol>

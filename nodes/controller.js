@@ -32,6 +32,7 @@ module.exports = function(RED)
     const STATUS_SUCCESS       = {fill: "green",  shape: "dot", text: "controller.status.success"                                               };
     const STATUS_ERROR         = {fill: "red",    shape: "dot", text: "controller.status.error"                                                 };
 
+    const Handlebars = require("handlebars");
     const APIFilter = require("./common/api_filter.js");
 
 
@@ -45,6 +46,7 @@ module.exports = function(RED)
         node.name = config.name;
         node.device = RED.nodes.getNode(config.device);
 
+        node.applyTemplate = node.config.topic ? Handlebars.compile(node.config.topic) : null;
         node.timeout = null;
 
         // backward compatibility
@@ -853,26 +855,46 @@ module.exports = function(RED)
         {
             let arr = [];
 
+            const topicContext =
+            {
+                host: node.device.host,
+                service: respMsg.service,
+                method: respMsg.method,
+                version: respMsg.version,
+                command: context.command ? context.command : ""
+            };
+
             if (node.config.outFilters)
             {
                 for (let i=0; i<filterMsgs.length; ++i)
                 {
-                    if ((filterMsgs[i] != null) &&
-                        (typeof context.command == "string"))
-                    {
-                        filterMsgs[i].command = context.command;
-                    }
-
+                    addTopic(filterMsgs[i], context.msg.topic, topicContext);
                     arr.push(filterMsgs[i]);
                 }
             }
 
             if (node.config.outResponse)
             {
+                addTopic(respMsg, context.msg.topic, topicContext);
                 arr.push(respMsg);
             }
 
             return arr;
+        }
+
+        function addTopic(msg, origTopic, ctx)
+        {
+            if (msg)
+            {
+                if (node.applyTemplate)
+                {
+                    msg.topic = node.applyTemplate(ctx);
+                }
+                else if (origTopic)
+                {
+                    msg.topic = origTopic;
+                }
+            }
         }
 
         function sendRequest(context, service, method, version, args)

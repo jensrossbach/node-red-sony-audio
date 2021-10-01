@@ -51,6 +51,10 @@ SOFTWARE.
         <input type="text" id="node-input-device" data-i18n="[placeholder]node-red-contrib-sony-audio/sony-audio-device:common.label.device">
     </div>
     <div class="form-row">
+        <label for="node-input-topic"><i class="fa fa-tasks"></i> <span data-i18n="node-red-contrib-sony-audio/sony-audio-device:common.label.topic"></span></label>
+        <input type="text" id="node-input-topic" data-i18n="[placeholder]node-red-contrib-sony-audio/sony-audio-device:common.label.topic">
+    </div>
+    <div class="form-row">
         <label style="float: left;"><i class="fa fa-download"></i> <span data-i18n="controller.label.input"></span></label>
         <div class="form-checkbox-row">
             <div>
@@ -262,6 +266,10 @@ SOFTWARE.
             {
                 value: "",
                 type:  "sony-audio-device"
+            },
+            topic:
+            {
+                value: ""
             },
             outputs:
             {
