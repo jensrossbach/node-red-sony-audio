@@ -70,10 +70,10 @@ SOFTWARE.
         <dt>Topic</dt>
         <dd>
             Das Topic, das an die Ausgabenachrichten gehängt werden soll. Falls
-            nichts angegeben wird, wird das Topic der Eingangsnachricht an die
-            Ausgabenachrichten durchgereicht. Der Text des Topics kann
-            Platzhalter in der Form <code>{{placeholder}}</code> enthalten, um
-            variable Inhalte einzufügen. Die folgenden Platzhalter werden
+            nichts angegeben wird, wird ein in der Eingangsnachricht vorhandenes
+            Topic an die Ausgabenachrichten durchgereicht. Der Text des Topics
+            kann Platzhalter in der Form <code>{{placeholder}}</code> enthalten,
+            um variable Inhalte einzufügen. Die folgenden Platzhalter werden
             unterstützt:
         </dd>
         <dl class="message-properties">
@@ -175,8 +175,7 @@ SOFTWARE.
     <p>
         Wenn <i>Topic als Kommando/Anfragetyp interpretieren</i> ausgewählt ist,
         kann das Kommando alternativ über <code>msg.topic</code> angegeben
-        werden. Andernfalls wird <code>msg.topic</code> entweder durchgereicht
-        oder durch die Konfiguration überschrieben.
+        werden.
     </p>
     <p>
         Wenn <i>Low-Level-Anfrage aktivieren</i> ausgewählt ist und alle der
@@ -198,8 +197,7 @@ SOFTWARE.
         Wenn <i>Topic als Kommando/Anfragetyp interpretieren</i> ausgewählt ist,
         kann der Typ der Low-Level-Anfrage über <code>msg.topic</code> in der
         Form "<code>service</code>/<code>method</code>/<code>version</code>"
-        angegeben werden. Andernfalls wird <code>msg.topic</code> entweder
-        durchgereicht oder durch die Konfiguration überschrieben.
+        angegeben werden.
     </p>
     <h3>Ausgaben</h3>
     <p>

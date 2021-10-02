@@ -67,10 +67,10 @@ SOFTWARE.
         <dt>Topic</dt>
         <dd>
             Specify the topic which should be included in the output messages.
-            If left blank, the topic from the input message is passed through
-            to the output messages. You can use placeholders in the form
-            <code>{{placeholder}}</code> to insert variable content. The
-            following placeholders are supported:
+            If left blank, a potentially existing topic in the input message is
+            passed through to the output messages. You can use placeholders in
+            the form <code>{{placeholder}}</code> to insert variable content.
+            The following placeholders are supported:
         </dd>
         <dl class="message-properties">
             <dt>host<span class="property-type">string</span></dt>
@@ -168,9 +168,7 @@ SOFTWARE.
     </dl>
     <p>
         If <i>Treat topic as command / request type</i> is activated, the command
-        can alternatively be specified in <code>msg.topic</code>. Otherwise
-        <code>msg.topic</code> is either passed through or overridden by the
-        configuration.
+        can alternatively be specified in <code>msg.topic</code>.
     </p>
     <p>
         If <i>Enable low-level override</i> is activated and all of the following
@@ -191,8 +189,6 @@ SOFTWARE.
         If <i>Treat topic as command / request type</i> is activated, the request
         type can alternatively be specified in <code>msg.topic</code> in the
         form "<code>service</code>/<code>method</code>/<code>version</code>".
-        Otherwise <code>msg.topic</code> is either passed through or overridden
-        by the configuration.
     </p>
     <h3>Outputs</h3>
     <p>
