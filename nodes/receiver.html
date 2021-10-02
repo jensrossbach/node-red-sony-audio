@@ -258,36 +258,68 @@ SOFTWARE.
                         filter.name = "auto";
                     }
 
-                    let filterName = $("<select/>", {class: "node-input-filterName",
-                                                     style: "width: auto;"}).appendTo(item);
-                    filterName.append($("<option></option>").val("auto").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.auto")));
-                    filterName.append($("<option></option>").val("powered").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.powered")));
-                    filterName.append($("<option></option>").val("standby").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.standby")));
-                    filterName.append($("<option></option>").val("swupdate").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.swupdate")));
-                    filterName.append($("<option></option>").val("source").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.source")));
-                    filterName.append($("<option></option>").val("absoluteVolume").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.absoluteVolume")));
-                    filterName.append($("<option></option>").val("muted").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.muted")));
+                    let fragment = document.createDocumentFragment();
+                    let container = $("<div/>", {style: "display: inline-block; vertical-align: middle; width: auto;"}).appendTo(fragment);
+                    let row1 = $("<div/>").appendTo(container);
+                    let row2 = $("<div/>", {style: "margin-top: 5px; "}).appendTo(container);
 
-                    let explicitContainer = $("<span/>", {id: "item-elem-explicit-" + index,
-                                                          style: "padding-left: 10px;"}).appendTo(item);
+                    $("<div/>", {class: "node-input-filterIndex", style: "position: absolute; width: auto; top: 50%; right: 26px; margin-top: -9px;"})
+                            .html("&#8594; " + (index + 1))
+                            .appendTo(fragment);
+
+                    let filterName = $("<select/>", {class: "node-input-filterName", style: "width: auto;"})
+                            .append($("<option></option>").val("auto").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.auto")))
+                            .append($("<option></option>").val("powered").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.powered")))
+                            .append($("<option></option>").val("standby").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.standby")))
+                            .append($("<option></option>").val("swupdate").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.swupdate")))
+                            .append($("<option></option>").val("source").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.source")))
+                            .append($("<option></option>").val("absoluteVolume").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.absoluteVolume")))
+                            .append($("<option></option>").val("muted").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.muted")))
+                            .append($("<option></option>").val("custom").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.custom")))
+                            .appendTo(row1);
+
+                    let explicitContainer = $("<span/>", {id: "item-elem-explicit-" + index, style: "padding-left: 10px;"})
+                            .appendTo(row1);
                     let explicit = $("<input/>", {id: "node-input-filterExplicit-" + index,
                                                   class: "node-input-filterExplicit",
                                                   type: "checkbox",
-                                                  style: "vertical-align: text-bottom; width: auto;"}).appendTo(explicitContainer);
-                    $("<label/>", {for: "node-input-filterExplicit-" + index,
-                                   style: "padding-left: 4px;"}).text(node._("node-red-contrib-sony-audio/sony-audio-device:common.label.explicit")).appendTo(explicitContainer);
+                                                  style: "vertical-align: text-bottom; width: auto;"})
+                            .appendTo(explicitContainer);
+                    $("<label/>", {for: "node-input-filterExplicit-" + index, style: "padding-left: 4px;"})
+                            .text(node._("node-red-contrib-sony-audio/sony-audio-device:common.label.explicit"))
+                            .appendTo(explicitContainer);
 
-                    let idx = $("<span/>", {style: "float: right; margin-top: 6px;"}).appendTo(item);
-                    idx.append(" &#8594; <span class=\"node-input-filterIndex\">" + (index + 1) + "</span> ");
+                    let customFilter = $("<input/>", {type: "text", class: "node-input-customFilter"})
+                            .appendTo(row2)
+                            .typedInput({types: ["global", "flow", "jsonata"]});
+                    customFilter.typedInput("width", "280px");
 
                     filterName.change(function()
                     {
+                        row2.hide();
                         explicitContainer.hide();
 
-                        let value = filterName.val();
-                        if ((value == "powered") || (value == "standby") || (value == "swupdate"))
+                        switch (filterName.val())
                         {
-                            explicitContainer.show();
+                            case "powered":
+                            case "standby":
+                            case "swupdate":
+                            {
+                                explicitContainer.show();
+                                break;
+                            }
+                            case "custom":
+                            {
+                                if (!("custom" in filter))
+                                {
+                                    filter.custom = {type: "jsonata", value: "null"};
+                                    customFilter.typedInput("value", filter.custom.value);
+                                    customFilter.typedInput("type", filter.custom.type);
+                                }
+
+                                row2.show();
+                                break;
+                            }
                         }
                     });
 
@@ -296,23 +328,30 @@ SOFTWARE.
                         explicit.prop("checked", filter.explicit);
                     }
 
+                    if (filter.name == "custom")
+                    {
+                        customFilter.typedInput("value", filter.custom.value);
+                        customFilter.typedInput("type", filter.custom.type);
+                    }
+
                     filterName.val(filter.name);
                     filterName.change();
+
+                    item[0].appendChild(fragment);
                 },
                 removeItem: function(filter)
                 {
                     let filterList = $("#node-input-filterList").editableList("items");
                     filterList.each(function(index)
                     {
-                        $(this).find(".node-input-filterIndex").html(index + 1);
+                        $(this).find(".node-input-filterIndex").html("&#8594; " + (index + 1));
                     });
                 },
-                sortItems: function(filter)
+                sortItems: function(items)
                 {
-                    let filterList = $("#node-input-filterList").editableList("items");
-                    filterList.each(function(index)
+                    items.each(function(index)
                     {
-                        $(this).find(".node-input-filterIndex").html(index + 1);
+                        $(this).find(".node-input-filterIndex").html("&#8594; " + (index + 1));
                     });
                 }
             });
@@ -358,8 +397,15 @@ SOFTWARE.
                     {
                         filter.explicit = $(this).find(".node-input-filterExplicit").prop("checked");
                     }
+                    else if (filter.name == "custom")
+                    {
+                        let customFilter = $(this).find(".node-input-customFilter");
 
-                    node.outputPorts.push({label: node._("node-red-contrib-sony-audio/sony-audio-device:common.label.filterPort") + ": " + filter.name, filter: filter});
+                        filter.custom = {type: customFilter.typedInput("type"),
+                                         value: customFilter.typedInput("value")};
+                    }
+
+                    node.outputPorts.push({label: node._("node-red-contrib-sony-audio/sony-audio-device:common.label.filterPort") + ": " + node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter." + filter.name), filter: filter});
                     node.outputs++;
                 });
             }

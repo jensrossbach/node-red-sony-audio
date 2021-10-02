@@ -31,7 +31,8 @@
                 "muted":          "Stumm",
                 "soundSetting":   "Klangeinstellungen",
                 "speakerSetting": "Lautsprechereinstellungen",
-                "playbackMode":   "Abspieleinstellungen"
+                "playbackMode":   "Abspieleinstellungen",
+                "custom":         "Benutzerdefiniert"
             }
         },
         "status":

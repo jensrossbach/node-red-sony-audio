@@ -24,7 +24,7 @@
 
 module.exports =
 {
-    filterData: function(data, filter)
+    filterData: function(RED, node, data, filter, inputMsg)
     {
         const URI_REGEX    = /^([a-zA-Z0-9-]+):([a-zA-Z0-9-]+)(?:\?port=([0-9]))?$/;
         const OUTPUT_REGEX = /^[a-zA-Z0-9-]+:[a-zA-Z0-9-]+(?:\?zone=([0-9]))?$/;
@@ -315,6 +315,43 @@ module.exports =
                     else if (out.length > 1)
                     {
                         outputMsg = {payload: out};
+                    }
+                }
+
+                break;
+            }
+            case "custom":
+            {
+                let expression = null;
+                switch (filter.custom.type)
+                {
+                    case "global":
+                    case "flow":
+                    {
+                        let ctx = RED.util.parseContextStore(filter.custom.value);
+                        expression = node.context()[filter.custom.type].get(ctx.key, ctx.store);
+                        break;
+                    }
+                    case "msg":
+                    {
+                        expression = RED.util.getMessageProperty(inputMsg, filter.custom.value);
+                        break;
+                    }
+                    case "jsonata":
+                    {
+                        expression = filter.custom.value;
+                    }
+                }
+
+                if ((typeof expression == "string") && (expression.length > 0))
+                {
+                    let jsonataExpr = RED.util.prepareJSONataExpression(expression, node);
+                    jsonataExpr.assign("host", node.device.host);
+
+                    let payload = RED.util.evaluateJSONataExpression(jsonataExpr, data);
+                    if (payload != null)
+                    {
+                        outputMsg = {payload: payload};
                     }
                 }
 

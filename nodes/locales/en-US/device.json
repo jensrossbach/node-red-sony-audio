@@ -31,7 +31,8 @@
                 "muted":          "Muted",
                 "soundSetting":   "Sound Setting",
                 "speakerSetting": "Speaker Setting",
-                "playbackMode":   "Playback Setting"
+                "playbackMode":   "Playback Setting",
+                "custom":         "Custom"
             }
         },
         "status":

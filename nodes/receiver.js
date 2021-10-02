@@ -162,7 +162,7 @@ module.exports = function(RED)
                             filter = node.config.outputPorts[i].filter;
                         }
 
-                        filteredMsgs.push(APIFilter.filterData(eventMsg, filter));
+                        filteredMsgs.push(APIFilter.filterData(RED, node, eventMsg, filter, null));
                     }
                 }
             }

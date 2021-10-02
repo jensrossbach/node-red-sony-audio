@@ -1038,7 +1038,7 @@ module.exports = function(RED)
                             filter = node.config.outputPorts[i].filter;
                         }
 
-                        filteredMsgs.push(APIFilter.filterData(respMsg, filter));
+                        filteredMsgs.push(APIFilter.filterData(RED, node, respMsg, filter, context.msg));
                     }
                 }
             }
