@@ -3,6 +3,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0] - 2021-10-04
+### Added
+- Added support for specifying the topic for output messages, including the usage of placeholders.
+- Added new custom filter which makes it possible to define an own filter based on a JSONata expression.
+- Added connection monitoring via regular lifesign/ping messages to detect dead connections.
+
+### Changed
+- Topics from incoming messages of controller node will now be passed through to the outputs.
+- Reconnect command of controller node closes connection if open before reconnection instead of ignoring trigger.
+- Reconnect command indicates reaction with status update.
+
 ## [1.8.0] - 2021-09-27
 ### Added
 - Added extended recovery mechanism to recover from connections losses longer than 25 seconds.
