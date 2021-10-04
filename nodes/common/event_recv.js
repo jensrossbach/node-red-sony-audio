@@ -25,6 +25,8 @@
 const MSG_GET_NOTIFICATIONS = 1;
 const MSG_SET_NOTIFICATIONS = 2;
 
+const PING_DELAY              = 30000;
+const PONG_DELAY              = 5000;
 const DEFAULT_RETRY_DELAY     = 5000;
 const DEFAULT_MAX_NUM_RETRIES = 5;
 
@@ -54,6 +56,7 @@ class EventReceiver extends EventEmitter
         super();
 
         this.client = new WebSocketClient();
+        this.connection = null;
         this.node = node;
 
         this.service = service;
@@ -62,10 +65,51 @@ class EventReceiver extends EventEmitter
         this.eventMask = 0;
         this.eventCallback = null;
 
+        this.pingTimer = null;
+        this.pongTimer = null;
+        this.awaitingPong = false;
+
+        this.recoveryTimer = null;
+        this.reconnectOnClose = false;
         this.recoverOnClose = false;
         this.extendedRetries = false;
         this.retryDelay = DEFAULT_RETRY_DELAY;
         this.retryCount = DEFAULT_MAX_NUM_RETRIES;
+
+        const recover = () =>
+        {
+            this.recoverOnClose = false;
+
+            if ((this.retryCount != 0) || (this.node.extendedRecovery && !this.extendedRetries))
+            {
+                if (this.retryCount == 0)
+                {
+                    this.node.debug("Switching to extended recovery with " + ((this.node.numRetries == 0) ? "infinite retries" : ("a maximum of " + this.node.numRetries + " retries")) + " every " + this.node.retryDelay + " seconds");
+
+                    this.extendedRetries = true;
+                    this.retryDelay = this.node.retryDelay * 1000;
+                    this.retryCount = (this.node.numRetries == 0) ? -1 : this.node.numRetries;
+                }
+
+                this.node.debug("Trying to recover in " + (this.retryDelay / 1000) + " seconds");
+                this.recoveryTimer = setTimeout(() =>
+                {
+                    this.recoveryTimer = null;
+
+                    if (this.retryCount > 0)
+                    {
+                        this.retryCount--;
+                    }
+
+                    this.client.connect(this.url);
+                }, this.retryDelay);
+            }
+            else
+            {
+                this.node.error("Maximum number of retries reached, giving up");
+                this.emit("status", STATUS_ERROR);
+            }
+        };
 
         this.client.on("connect", connection =>
         {
@@ -146,6 +190,11 @@ class EventReceiver extends EventEmitter
                 }
             });
 
+            connection.on("pong", () =>
+            {
+                this.awaitingPong = false;
+            });
+
             connection.on("error", error =>
             {
                 this.node.error("Connection error: " + error.toString());
@@ -158,14 +207,65 @@ class EventReceiver extends EventEmitter
             {
                 this.connection = null;
 
+                if (this.pingTimer)
+                {
+                    clearInterval(this.pingTimer);
+                    this.pingTimer = null;
+                }
+
+                if (this.pongTimer)
+                {
+                    clearTimeout(this.pongTimer);
+                    this.pongTimer = null;
+                }
+
+                if (this.recoveryTimer)
+                {
+                    clearTimeout(this.recoveryTimer);
+                    this.recoveryTimer = null;
+                }
+
                 this.node.debug("Connection closed: " + reasonCode + " (" + description + ")");
                 this.emit("status", STATUS_NOTCONNECTED);
 
+                if (this.reconnectOnClose)
+                {
+                    this.reconnectOnClose = false;
+
+                    this.node.debug("Reconnecting to: " + this.url);
+                    this.client.connect(this.url);
+                }
+
                 if (this.recoverOnClose)
                 {
-                    recover(this);
+                    recover();
                 }
             });
+
+            this.pingTimer = setInterval(() =>
+            {
+                if (this.connection)
+                {
+                    this.awaitingPong = true;
+
+                    this.node.debug("Sending ping to service: " + this.url);
+                    this.connection.ping();
+
+                    this.pongTimer = setTimeout(() =>
+                    {
+                        this.pongTimer = null;
+
+                        if (this.awaitingPong)
+                        {
+                            this.node.error("Connection error: No response to ping");
+                            this.emit("status", STATUS_ERROR);
+
+                            this.recoverOnClose = true;
+                            this.connection.drop();
+                        }
+                    }, PONG_DELAY);
+                }
+            }, PING_DELAY);
 
             connection.sendUTF(JSON.stringify(switchNotifications(MSG_GET_NOTIFICATIONS, [], [])));
         });
@@ -177,41 +277,8 @@ class EventReceiver extends EventEmitter
                 this.node.error("Connection failed: " + error.toString());
             }
 
-            recover(this);
+            recover();
         });
-
-        function recover(emitter)
-        {
-            emitter.recoverOnClose = false;
-
-            if ((emitter.retryCount != 0) || (emitter.node.extendedRecovery && !emitter.extendedRetries))
-            {
-                if (emitter.retryCount == 0)
-                {
-                    emitter.node.debug("Switching to extended recovery with " + ((emitter.node.numRetries == 0) ? "infinite retries" : ("a maximum of " + emitter.node.numRetries + " retries")) + " every " + emitter.node.retryDelay + " seconds");
-
-                    emitter.extendedRetries = true;
-                    emitter.retryDelay = emitter.node.retryDelay * 1000;
-                    emitter.retryCount = (emitter.node.numRetries == 0) ? -1 : emitter.node.numRetries;
-                }
-
-                emitter.node.debug("Trying to recover in " + (emitter.retryDelay / 1000) + " seconds");
-                setTimeout(() =>
-                {
-                    if (emitter.retryCount > 0)
-                    {
-                        emitter.retryCount--;
-                    }
-
-                    emitter.client.connect(emitter.url);
-                }, emitter.retryDelay);
-            }
-            else
-            {
-                emitter.node.error("Maximum number of retries reached, giving up");
-                emitter.emit("status", STATUS_ERROR);
-            }
-        }
     }
 
     connect(mask, callback)
@@ -233,16 +300,21 @@ class EventReceiver extends EventEmitter
         {
             this.node.debug("Disconnecting");
             this.connection.close();
-
-            this.connection = null;
         }
     }
 
     reconnect()
     {
-        if (!this.connection)
+        this.retryCount = DEFAULT_MAX_NUM_RETRIES;
+
+        if (this.connection)
         {
-            this.node.debug("Connecting to: " + this.url);
+            this.reconnectOnClose = true;
+            this.connection.close();
+        }
+        else
+        {
+            this.node.debug("Reconnecting to: " + this.url);
             this.client.connect(this.url);
         }
     }
