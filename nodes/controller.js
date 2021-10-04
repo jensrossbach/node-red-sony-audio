@@ -160,6 +160,8 @@ module.exports = function(RED)
                         case "reconnect":
                         {
                             node.device.reconnect();
+                            setStatus(STATUS_SUCCESS, STATUS_TEMP_DURATION);
+
                             break;
                         }
                         case "setVolume":
