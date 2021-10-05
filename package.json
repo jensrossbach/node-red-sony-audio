@@ -1,6 +1,6 @@
 {
     "name": "node-red-contrib-sony-audio",
-    "version": "1.9.0",
+    "version": "1.9.1",
     "description": "Node-RED nodes for accessing Sony Audio Control API",
     "author": {
         "name": "Jens-Uwe Rossbach",
@@ -22,9 +22,10 @@
     "homepage": "https://github.com/jensrossbach/node-red-contrib-sony-audio#readme",
     "bugs": "https://github.com/jensrossbach/node-red-contrib-sony-audio/issues",
     "dependencies": {
-        "node-fetch": "^2.6.0",
-        "websocket": "^1.0.28",
+        "handlebars": "^4.7.7",
+        "node-fetch": "^2.6.5",
         "node-ssdp": "^4.0.0",
+        "websocket": "^1.0.28",
         "xml-js": "^1.6.11"
     },
     "devDependencies": {
