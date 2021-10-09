@@ -179,6 +179,8 @@ module.exports = function(RED)
 
             const context =
             {
+                device: node.device.name || "",
+                receiver: node.name || "",
                 host: node.device.host,
                 service: eventMsg.service,
                 method: eventMsg.method,

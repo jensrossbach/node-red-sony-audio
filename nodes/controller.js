@@ -859,11 +859,13 @@ module.exports = function(RED)
 
             const topicContext =
             {
+                device: node.device.name || "",
+                controller: node.name || "",
                 host: node.device.host,
                 service: respMsg.service,
                 method: respMsg.method,
                 version: respMsg.version,
-                command: context.command ? context.command : ""
+                command: context.command || ""
             };
 
             if (node.config.outFilters)
