@@ -26,7 +26,7 @@ module.exports =
 {
     filterData: function(RED, node, data, filter, inputMsg)
     {
-        const URI_REGEX    = /^([a-zA-Z0-9-]+):([a-zA-Z0-9-]+)(?:\?port=([0-9]))?$/;
+        const URI_REGEX    = /^([a-zA-Z0-9-]+):([a-zA-Z0-9-]+)(?:\?(port|contentId)=([0-9]))?$/;
         const OUTPUT_REGEX = /^[a-zA-Z0-9-]+:[a-zA-Z0-9-]+(?:\?zone=([0-9]))?$/;
 
         function filterVolumeInfo(data, getFilteredData)
@@ -148,15 +148,23 @@ module.exports =
                     uri = data.payload.uri;
                 }
 
-                if (uri != null)
+                if (uri)
                 {
                     let matches = uri.match(URI_REGEX);
-                    if (matches != null)
+                    if (matches)
                     {
                         let source = {scheme: matches[1], resource: matches[2]};
-                        if (matches[3] != null)
+
+                        if (matches[4])
                         {
-                            source.port = Number(matches[3]);
+                            if (matches[3] === "port")
+                            {
+                                source.port = parseInt(matches[4]);
+                            }
+                            else if (matches[3] === "contentId")
+                            {
+                                source.preset = parseInt(matches[4]);
+                            }
                         }
 
                         outputMsg = {payload: source};
