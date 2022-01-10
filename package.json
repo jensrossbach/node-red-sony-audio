@@ -1,7 +1,7 @@
 {
-    "name": "node-red-contrib-sony-audio",
-    "version": "1.9.2",
-    "description": "Node-RED nodes for accessing Sony Audio Control API",
+    "name": "@jens_rossbach/node-red-sony-audio",
+    "version": "2.0.0",
+    "description": "Node-RED nodes for querying and controlling Sony audio devices",
     "author": {
         "name": "Jens-Uwe Rossbach",
         "email": "devel@jrossbach.de"
@@ -17,10 +17,10 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/jensrossbach/node-red-contrib-sony-audio"
+        "url": "https://github.com/jensrossbach/node-red-sony-audio"
     },
-    "homepage": "https://github.com/jensrossbach/node-red-contrib-sony-audio#readme",
-    "bugs": "https://github.com/jensrossbach/node-red-contrib-sony-audio/issues",
+    "homepage": "https://jensrossbach.github.io/node-red-sony-audio",
+    "bugs": "https://github.com/jensrossbach/node-red-sony-audio/issues",
     "dependencies": {
         "handlebars": "^4.7.7",
         "node-fetch": "^2.6.5",
@@ -37,9 +37,9 @@
     },
     "node-red": {
         "nodes": {
-            "sony-audio-device": "nodes/device.js",
-            "sony-audio-controller": "nodes/controller.js",
-            "sony-audio-receiver": "nodes/receiver.js"
+            "sonyaudio-device": "nodes/device.js",
+            "sonyaudio-control": "nodes/control.js",
+            "sonyaudio-notify": "nodes/notify.js"
         }
     }
 }

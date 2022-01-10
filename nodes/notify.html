@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 
-<script type="text/x-red" data-template-name="sony-audio-receiver">
+<script type="text/x-red" data-template-name="sony-audio-notify">
     <style>
         .form-checkbox-row
         {
@@ -63,13 +63,13 @@ SOFTWARE.
             </div>
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-outEvent">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-outEvent" data-i18n="receiver.label.event"></label>
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-outEvent" data-i18n="notify.label.event"></label>
             </div>
         </div>
     </div>
     <div class="form-row"></div>
     <div class="form-row">
-        <label for="node-input-service"><i class="fa fa-wrench"></i> <span data-i18n="receiver.label.service"></span></label>
+        <label for="node-input-service"><i class="fa fa-wrench"></i> <span data-i18n="notify.label.service"></span></label>
         <select id="node-input-service" style="width: auto;">
             <option value="system" data-i18n="node-red-contrib-sony-audio/sony-audio-device:common.list.service.system"></option>
             <option value="audio" data-i18n="node-red-contrib-sony-audio/sony-audio-device:common.list.service.audio"></option>
@@ -77,43 +77,43 @@ SOFTWARE.
         </select>
     </div>
     <div class="form-row">
-        <label style="float: left;"><i class="fa fa-calendar-o"></i> <span data-i18n="receiver.label.events"></span></label>
+        <label style="float: left;"><i class="fa fa-calendar-o"></i> <span data-i18n="notify.label.events"></span></label>
         <div id="form-row-system" class="form-checkbox-row">
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-notifyPowerStatus">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyPowerStatus" data-i18n="receiver.label.notifyPowerStatus"></label>
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyPowerStatus" data-i18n="notify.label.notifyPowerStatus"></label>
             </div>
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-notifyStorageStatus">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyStorageStatus" data-i18n="receiver.label.notifyStorageStatus"></label>
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyStorageStatus" data-i18n="notify.label.notifyStorageStatus"></label>
             </div>
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-notifySettingsUpdate">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifySettingsUpdate" data-i18n="receiver.label.notifySettingsUpdate"></label>
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifySettingsUpdate" data-i18n="notify.label.notifySettingsUpdate"></label>
             </div>
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-notifySWUpdateInfo">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifySWUpdateInfo" data-i18n="receiver.label.notifySWUpdateInfo"></label>
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifySWUpdateInfo" data-i18n="notify.label.notifySWUpdateInfo"></label>
             </div>
         </div>
         <div id="form-row-audio" class="form-checkbox-row">
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-notifyVolumeInformation">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyVolumeInformation" data-i18n="receiver.label.notifyVolumeInformation"></label>
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyVolumeInformation" data-i18n="notify.label.notifyVolumeInformation"></label>
             </div>
         </div>
         <div id="form-row-avcontent" class="form-checkbox-row">
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-notifyExternalTerminalStatus">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyExternalTerminalStatus" data-i18n="receiver.label.notifyExternalTerminalStatus"></label>
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyExternalTerminalStatus" data-i18n="notify.label.notifyExternalTerminalStatus"></label>
             </div>
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-notifyAvailablePlaybackFunction">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyAvailablePlaybackFunction" data-i18n="receiver.label.notifyAvailablePlaybackFunction"></label>
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyAvailablePlaybackFunction" data-i18n="notify.label.notifyAvailablePlaybackFunction"></label>
             </div>
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-notifyPlayingContentInfo">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyPlayingContentInfo" data-i18n="receiver.label.notifyPlayingContentInfo"></label>
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyPlayingContentInfo" data-i18n="notify.label.notifyPlayingContentInfo"></label>
             </div>
         </div>
     </div>
@@ -126,16 +126,16 @@ SOFTWARE.
 </script>
 
 <script type="text/javascript">
-    RED.nodes.registerType("sony-audio-receiver",
+    RED.nodes.registerType("sony-audio-notify",
     {
         category:     "sony audio",
         color:        "#2DABCE",
         icon:         "sony.png",
         outputs:      1,
-        paletteLabel: "receiver",
+        paletteLabel: "notify",
         label: function()
         {
-            return (this.name || "receiver: " + this.service);
+            return (this.name || "notify: " + this.service);
         },
         labelStyle: function()
         {
@@ -412,7 +412,7 @@ SOFTWARE.
 
             if ($("#node-input-outEvent").prop("checked"))
             {
-                node.outputPorts.push({label: node._("receiver.label.eventPort")});
+                node.outputPorts.push({label: node._("notify.label.eventPort")});
                 node.outputs++;
             }
         }
