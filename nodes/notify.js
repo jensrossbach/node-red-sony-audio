@@ -25,14 +25,14 @@
 module.exports = function(RED)
 {
     const STATUS_UNCONFIGURED = {fill: "yellow", shape: "dot", text: "node-red-contrib-sony-audio/sony-audio-device:common.status.unconfigured"};
-    const STATUS_CONNECTING   = {fill: "grey",   shape: "dot", text: "receiver.status.connecting"                                              };
+    const STATUS_CONNECTING   = {fill: "grey",   shape: "dot", text: "notify.status.connecting"                                              };
 
     const Handlebars = require("handlebars");
-    const APIFilter = require("./common/api_filter.js");
+    const APIFilter = require("./common/output.js");
     const Events = require("./common/event_constants.js");
 
 
-    function SonyAudioReceiverNode(config)
+    function SonyAudioNotifyNode(config)
     {
         let node = this;
         RED.nodes.createNode(node, config);
@@ -180,7 +180,7 @@ module.exports = function(RED)
             const context =
             {
                 device: node.device.name || "",
-                receiver: node.name || "",
+                notify: node.name || "",
                 host: node.device.host,
                 service: eventMsg.service,
                 method: eventMsg.method,
@@ -214,5 +214,5 @@ module.exports = function(RED)
         }
     }
 
-    RED.nodes.registerType("sony-audio-receiver", SonyAudioReceiverNode);
+    RED.nodes.registerType("sony-audio-notify", SonyAudioNotifyNode);
 };

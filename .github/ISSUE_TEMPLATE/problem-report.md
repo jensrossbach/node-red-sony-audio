@@ -26,7 +26,7 @@ If applicable, add screenshots to help explain your problem.
 **Context information**
 Please complete the following information.
  - Platform & OS:
- - node-red-contrib-sony-audio version:
+ - Node-RED Sony Audio version:
  - Node-RED version:
  - Node.js version:
 

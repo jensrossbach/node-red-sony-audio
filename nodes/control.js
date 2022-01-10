@@ -27,16 +27,16 @@ module.exports = function(RED)
     const STATUS_TEMP_DURATION = 5000;
 
     const STATUS_UNCONFIGURED  = {fill: "yellow", shape: "dot", text: "node-red-contrib-sony-audio/sony-audio-device:common.status.unconfigured"};
-    const STATUS_MISCONFIGURED = {fill: "yellow", shape: "dot", text: "controller.status.configurationErrors"                                   };
-    const STATUS_SENDING       = {fill: "grey",   shape: "dot", text: "controller.status.sending"                                               };
-    const STATUS_SUCCESS       = {fill: "green",  shape: "dot", text: "controller.status.success"                                               };
-    const STATUS_ERROR         = {fill: "red",    shape: "dot", text: "controller.status.error"                                                 };
+    const STATUS_MISCONFIGURED = {fill: "yellow", shape: "dot", text: "control.status.configurationErrors"                                   };
+    const STATUS_SENDING       = {fill: "grey",   shape: "dot", text: "control.status.sending"                                               };
+    const STATUS_SUCCESS       = {fill: "green",  shape: "dot", text: "control.status.success"                                               };
+    const STATUS_ERROR         = {fill: "red",    shape: "dot", text: "control.status.error"                                                 };
 
     const Handlebars = require("handlebars");
-    const APIFilter = require("./common/api_filter.js");
+    const APIFilter = require("./common/output.js");
 
 
-    function SonyAudioControllerNode(config)
+    function SonyAudioControlNode(config)
     {
         let node = this;
 
@@ -1054,5 +1054,5 @@ module.exports = function(RED)
         }
     }
 
-    RED.nodes.registerType("sony-audio-controller", SonyAudioControllerNode);
+    RED.nodes.registerType("sony-audio-control", SonyAudioControlNode);
 };

@@ -30,10 +30,10 @@ const PONG_DELAY              = 5000;
 const DEFAULT_RETRY_DELAY     = 5000;
 const DEFAULT_MAX_NUM_RETRIES = 5;
 
-const STATUS_NOTCONNECTED = {fill: "grey",  shape: "dot", text: "receiver.status.notConnected"   };
-const STATUS_CONNECTED    = {fill: "blue",  shape: "dot", text: "receiver.status.connected"      };
-const STATUS_READY        = {fill: "green", shape: "dot", text: "receiver.status.ready"          };
-const STATUS_ERROR        = {fill: "red",   shape: "dot", text: "receiver.status.connectionError"};
+const STATUS_NOTCONNECTED = {fill: "grey",  shape: "dot", text: "notify.status.notConnected"   };
+const STATUS_CONNECTED    = {fill: "blue",  shape: "dot", text: "notify.status.connected"      };
+const STATUS_READY        = {fill: "green", shape: "dot", text: "notify.status.ready"          };
+const STATUS_ERROR        = {fill: "red",   shape: "dot", text: "notify.status.connectionError"};
 
 const Events = require("./event_constants.js");
 

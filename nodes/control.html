@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 
-<script type="text/x-red" data-template-name="sony-audio-controller">
+<script type="text/x-red" data-template-name="sony-audio-control">
     <style>
         .form-checkbox-row
         {
@@ -55,15 +55,15 @@ SOFTWARE.
         <input type="text" id="node-input-topic" data-i18n="[placeholder]node-red-contrib-sony-audio/sony-audio-device:common.label.topic">
     </div>
     <div class="form-row">
-        <label style="float: left;"><i class="fa fa-download"></i> <span data-i18n="controller.label.input"></span></label>
+        <label style="float: left;"><i class="fa fa-download"></i> <span data-i18n="control.label.input"></span></label>
         <div class="form-checkbox-row">
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-enableTopic">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-enableTopic" data-i18n="controller.label.enableTopic"></label>
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-enableTopic" data-i18n="control.label.enableTopic"></label>
             </div>
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-enableLowLevel">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-enableLowLevel" data-i18n="controller.label.enableLowLevel"></label>
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-enableLowLevel" data-i18n="control.label.enableLowLevel"></label>
             </div>
         </div>
     </div>
@@ -76,151 +76,151 @@ SOFTWARE.
             </div>
             <div>
                 <input type="checkbox" class="form-checkbox" id="node-input-outResponse">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-outResponse" data-i18n="controller.label.response"></label>
+                <label class="form-checkbox-label" style="width: auto;" for="node-input-outResponse" data-i18n="control.label.response"></label>
             </div>
         </div>
     </div>
     <div class="form-row"></div>
     <div class="form-row">
-        <label for="node-input-command"><i class="fa fa-exchange"></i> <span data-i18n="controller.label.command"></span></label>
+        <label for="node-input-command"><i class="fa fa-exchange"></i> <span data-i18n="control.label.command"></span></label>
         <select id="node-input-command" style="width: auto;">
             <optgroup data-i18n="[label]node-red-contrib-sony-audio/sony-audio-device:common.list.service.system">
-                <option value="getPowerStatus" data-i18n="controller.list.command.getPowerStatus"></option>
-                <option value="powerOn" data-i18n="controller.list.command.powerOn"></option>
-                <option value="powerOff" data-i18n="controller.list.command.powerOff"></option>
-                <option value="standBy" data-i18n="controller.list.command.standBy"></option>
-                <option value="getSWUpdateInfo" data-i18n="controller.list.command.getSWUpdateInfo"></option>
-                <option value="reconnect" data-i18n="controller.list.command.reconnect"></option>
+                <option value="getPowerStatus" data-i18n="control.list.command.getPowerStatus"></option>
+                <option value="powerOn" data-i18n="control.list.command.powerOn"></option>
+                <option value="powerOff" data-i18n="control.list.command.powerOff"></option>
+                <option value="standBy" data-i18n="control.list.command.standBy"></option>
+                <option value="getSWUpdateInfo" data-i18n="control.list.command.getSWUpdateInfo"></option>
+                <option value="reconnect" data-i18n="control.list.command.reconnect"></option>
             </optgroup>
             <optgroup data-i18n="[label]node-red-contrib-sony-audio/sony-audio-device:common.list.service.audio">
-                <option value="getVolumeInfo" data-i18n="controller.list.command.getVolumeInfo"></option>
-                <option value="setVolume" data-i18n="controller.list.command.setVolume"></option>
-                <option value="mute" data-i18n="controller.list.command.mute"></option>
-                <option value="unmute" data-i18n="controller.list.command.unmute"></option>
-                <option value="toggleMute" data-i18n="controller.list.command.toggleMute"></option>
-                <option value="getSoundSettings" data-i18n="controller.list.command.getSoundSettings"></option>
-                <option value="setSoundSettings" data-i18n="controller.list.command.setSoundSettings"></option>
-                <option value="getSpeakerSettings" data-i18n="controller.list.command.getSpeakerSettings"></option>
-                <option value="setSpeakerSettings" data-i18n="controller.list.command.setSpeakerSettings"></option>
+                <option value="getVolumeInfo" data-i18n="control.list.command.getVolumeInfo"></option>
+                <option value="setVolume" data-i18n="control.list.command.setVolume"></option>
+                <option value="mute" data-i18n="control.list.command.mute"></option>
+                <option value="unmute" data-i18n="control.list.command.unmute"></option>
+                <option value="toggleMute" data-i18n="control.list.command.toggleMute"></option>
+                <option value="getSoundSettings" data-i18n="control.list.command.getSoundSettings"></option>
+                <option value="setSoundSettings" data-i18n="control.list.command.setSoundSettings"></option>
+                <option value="getSpeakerSettings" data-i18n="control.list.command.getSpeakerSettings"></option>
+                <option value="setSpeakerSettings" data-i18n="control.list.command.setSpeakerSettings"></option>
             </optgroup>
             <optgroup data-i18n="[label]node-red-contrib-sony-audio/sony-audio-device:common.list.service.avContent">
-                <option value="getSource" data-i18n="controller.list.command.getSource"></option>
-                <option value="setSource" data-i18n="controller.list.command.setSource"></option>
-                <option value="getPlaybackSettings" data-i18n="controller.list.command.getPlaybackSettings"></option>
-                <option value="setPlaybackSettings" data-i18n="controller.list.command.setPlaybackSettings"></option>
-                <option value="stop" data-i18n="controller.list.command.stop"></option>
-                <option value="togglePause" data-i18n="controller.list.command.togglePause"></option>
-                <option value="skipPrev" data-i18n="controller.list.command.skipPrev"></option>
-                <option value="skipNext" data-i18n="controller.list.command.skipNext"></option>
-                <option value="scanBackward" data-i18n="controller.list.command.scanBackward"></option>
-                <option value="scanForward" data-i18n="controller.list.command.scanForward"></option>
+                <option value="getSource" data-i18n="control.list.command.getSource"></option>
+                <option value="setSource" data-i18n="control.list.command.setSource"></option>
+                <option value="getPlaybackSettings" data-i18n="control.list.command.getPlaybackSettings"></option>
+                <option value="setPlaybackSettings" data-i18n="control.list.command.setPlaybackSettings"></option>
+                <option value="stop" data-i18n="control.list.command.stop"></option>
+                <option value="togglePause" data-i18n="control.list.command.togglePause"></option>
+                <option value="skipPrev" data-i18n="control.list.command.skipPrev"></option>
+                <option value="skipNext" data-i18n="control.list.command.skipNext"></option>
+                <option value="scanBackward" data-i18n="control.list.command.scanBackward"></option>
+                <option value="scanForward" data-i18n="control.list.command.scanForward"></option>
             </optgroup>
         </select>
     </div>
     <div id="form-row-swupdate" class="form-row">
-        <label><i class="fa fa-sign-in"></i> <span data-i18n="controller.label.swSource"></span></label>
+        <label><i class="fa fa-sign-in"></i> <span data-i18n="control.label.swSource"></span></label>
         <span>
             <input id="node-input-networkUpdate" type="checkbox" style="vertical-align: text-bottom; width: auto;">
-            <label for="node-input-networkUpdate" style="width: auto;" data-i18n="controller.label.networkUpdate"></label>
+            <label for="node-input-networkUpdate" style="width: auto;" data-i18n="control.label.networkUpdate"></label>
         </span>
     </div>
     <div id="form-row-volume" class="form-row">
-        <label for="node-input-volume"><i class="fa fa-volume-up"></i> <span data-i18n="controller.label.volume"></span></label>
+        <label for="node-input-volume"><i class="fa fa-volume-up"></i> <span data-i18n="control.label.volume"></span></label>
         <input id="node-input-volume" style="width: 60px !important; float: left;" value="1">
         <span style="padding-left: 10px;">
             <input id="node-input-relativeVolume" type="checkbox" style="vertical-align: text-bottom; width: auto;">
-            <label for="node-input-relativeVolume" style="width: auto;" data-i18n="controller.label.relativeVolume"></label>
+            <label for="node-input-relativeVolume" style="width: auto;" data-i18n="control.label.relativeVolume"></label>
         </span>
     </div>
     <div id="form-row-source" class="form-row">
-        <label for="node-input-source"><i class="fa fa-sign-in"></i> <span data-i18n="controller.label.audioSource"></span></label>
+        <label for="node-input-source"><i class="fa fa-sign-in"></i> <span data-i18n="control.label.audioSource"></span></label>
         <select id="node-input-source" style="width: auto;">
-            <option value="extInput:tv" data-i18n="controller.list.source.tv"></option>
-            <option value="extInput:sat-catv" data-i18n="controller.list.source.satcatv"></option>
-            <option value="extInput:hdmi" data-i18n="controller.list.source.hdmi"></option>
-            <option value="extInput:video" data-i18n="controller.list.source.video"></option>
-            <option value="extInput:sacd-cd" data-i18n="controller.list.source.sacdcd"></option>
-            <option value="extInput:bd-dvd" data-i18n="controller.list.source.bddvd"></option>
-            <option value="storage:usb1" data-i18n="controller.list.source.usb"></option>
-            <option value="extInput:line" data-i18n="controller.list.source.line"></option>
-            <option value="extInput:btAudio" data-i18n="controller.list.source.bt"></option>
-            <option value="dlna:music" data-i18n="controller.list.source.dlna"></option>
-            <option value="radio:fm" data-i18n="controller.list.source.fm"></option>
-            <option value="extInput:game" data-i18n="controller.list.source.game"></option>
-            <option value="extInput:source" data-i18n="controller.list.source.source"></option>
+            <option value="extInput:tv" data-i18n="control.list.source.tv"></option>
+            <option value="extInput:sat-catv" data-i18n="control.list.source.satcatv"></option>
+            <option value="extInput:hdmi" data-i18n="control.list.source.hdmi"></option>
+            <option value="extInput:video" data-i18n="control.list.source.video"></option>
+            <option value="extInput:sacd-cd" data-i18n="control.list.source.sacdcd"></option>
+            <option value="extInput:bd-dvd" data-i18n="control.list.source.bddvd"></option>
+            <option value="storage:usb1" data-i18n="control.list.source.usb"></option>
+            <option value="extInput:line" data-i18n="control.list.source.line"></option>
+            <option value="extInput:btAudio" data-i18n="control.list.source.bt"></option>
+            <option value="dlna:music" data-i18n="control.list.source.dlna"></option>
+            <option value="radio:fm" data-i18n="control.list.source.fm"></option>
+            <option value="extInput:game" data-i18n="control.list.source.game"></option>
+            <option value="extInput:source" data-i18n="control.list.source.source"></option>
         </select>
     </div>
     <div id="form-row-port" class="form-row">
-        <label for="node-input-port"><i class="fa fa-bookmark"></i> <span data-i18n="controller.label.port"></span></label>
+        <label for="node-input-port"><i class="fa fa-bookmark"></i> <span data-i18n="control.label.port"></span></label>
         <input id="node-input-port" style="width: 60px !important;" value="1">
     </div>
     <div id="form-row-preset" class="form-row">
-        <label for="node-input-preset"><i class="fa fa-bookmark"></i> <span data-i18n="controller.label.preset"></span></label>
+        <label for="node-input-preset"><i class="fa fa-bookmark"></i> <span data-i18n="control.label.preset"></span></label>
         <input id="node-input-preset" style="width: 60px !important;" value="0">
     </div>
     <div id="form-row-zone" class="form-row">
-        <label for="node-input-zone"><i class="fa fa-sign-out"></i> <span data-i18n="controller.label.zone"></span></label>
+        <label for="node-input-zone"><i class="fa fa-sign-out"></i> <span data-i18n="control.label.zone"></span></label>
         <input id="node-input-zone" style="width: 60px !important;" value="1">
         <span style="padding-left: 10px;">
             <input id="node-input-allzones" type="checkbox" style="vertical-align: text-bottom; width: auto;">
-            <label for="node-input-allzones" style="width: auto;" data-i18n="controller.label.allZones"></label>
+            <label for="node-input-allzones" style="width: auto;" data-i18n="control.label.allZones"></label>
         </span>
     </div>
     <div id="form-row-soundSettings" class="form-row" style="padding-top: 10px">
-        <label><i class="fa fa-sliders"></i> <span data-i18n="controller.label.settings"></span></label>
+        <label><i class="fa fa-sliders"></i> <span data-i18n="control.label.settings"></span></label>
         <div class="form-row">
             <ol id="node-input-soundSettingsList"></ol>
         </div>
     </div>
     <div id="form-row-soundTarget" class="form-row">
-        <label for="node-input-soundTarget"><i class="fa fa-sliders"></i> <span data-i18n="controller.label.setting"></span></label>
+        <label for="node-input-soundTarget"><i class="fa fa-sliders"></i> <span data-i18n="control.label.setting"></span></label>
         <select id="node-input-soundTarget" style="width: auto;">
-            <option value="all" data-i18n="controller.list.soundTarget.all"></option>
-            <option value="soundField" data-i18n="controller.list.soundTarget.soundField"></option>
-            <option value="clearAudio" data-i18n="controller.list.soundTarget.clearAudio"></option>
-            <option value="nightMode" data-i18n="controller.list.soundTarget.nightMode"></option>
-            <option value="footballMode" data-i18n="controller.list.soundTarget.footballMode"></option>
-            <option value="voice" data-i18n="controller.list.soundTarget.voice"></option>
+            <option value="all" data-i18n="control.list.soundTarget.all"></option>
+            <option value="soundField" data-i18n="control.list.soundTarget.soundField"></option>
+            <option value="clearAudio" data-i18n="control.list.soundTarget.clearAudio"></option>
+            <option value="nightMode" data-i18n="control.list.soundTarget.nightMode"></option>
+            <option value="footballMode" data-i18n="control.list.soundTarget.footballMode"></option>
+            <option value="voice" data-i18n="control.list.soundTarget.voice"></option>
         </select>
     </div>
     <div id="form-row-speakerSettings" class="form-row" style="padding-top: 10px">
-        <label><i class="fa fa-sliders"></i> <span data-i18n="controller.label.settings"></span></label>
+        <label><i class="fa fa-sliders"></i> <span data-i18n="control.label.settings"></span></label>
         <div class="form-row">
             <ol id="node-input-speakerSettingsList"></ol>
         </div>
     </div>
     <div id="form-row-speakerTarget" class="form-row">
-        <label for="node-input-speakerTarget"><i class="fa fa-sliders"></i> <span data-i18n="controller.label.setting"></span></label>
+        <label for="node-input-speakerTarget"><i class="fa fa-sliders"></i> <span data-i18n="control.label.setting"></span></label>
         <select id="node-input-speakerTarget" style="width: auto;">
-            <option value="all" data-i18n="controller.list.speakerTarget.all"></option>
-            <option value="inCeilingSpeakerMode" data-i18n="controller.list.speakerTarget.inCeilingSpeakerMode"></option>
-            <option value="speakerSelection" data-i18n="controller.list.speakerTarget.speakerSelection"></option>
-            <option value="frontLLevel" data-i18n="controller.list.speakerTarget.frontLLevel"></option>
-            <option value="frontRLevel" data-i18n="controller.list.speakerTarget.frontRLevel"></option>
-            <option value="centerLevel" data-i18n="controller.list.speakerTarget.centerLevel"></option>
-            <option value="surroundLLevel" data-i18n="controller.list.speakerTarget.surroundLLevel"></option>
-            <option value="surroundRLevel" data-i18n="controller.list.speakerTarget.surroundRLevel"></option>
-            <option value="surroundcBackLevel" data-i18n="controller.list.speakerTarget.surroundcBackLevel"></option>
-            <option value="surroundBackLLevel" data-i18n="controller.list.speakerTarget.surroundBackLLevel"></option>
-            <option value="surroundBackRLevel" data-i18n="controller.list.speakerTarget.surroundBackRLevel"></option>
-            <option value="heightLLevel" data-i18n="controller.list.speakerTarget.heightLLevel"></option>
-            <option value="heightRLevel" data-i18n="controller.list.speakerTarget.heightRLevel"></option>
-            <option value="subwooferLevel" data-i18n="controller.list.speakerTarget.subwooferLevel"></option>
+            <option value="all" data-i18n="control.list.speakerTarget.all"></option>
+            <option value="inCeilingSpeakerMode" data-i18n="control.list.speakerTarget.inCeilingSpeakerMode"></option>
+            <option value="speakerSelection" data-i18n="control.list.speakerTarget.speakerSelection"></option>
+            <option value="frontLLevel" data-i18n="control.list.speakerTarget.frontLLevel"></option>
+            <option value="frontRLevel" data-i18n="control.list.speakerTarget.frontRLevel"></option>
+            <option value="centerLevel" data-i18n="control.list.speakerTarget.centerLevel"></option>
+            <option value="surroundLLevel" data-i18n="control.list.speakerTarget.surroundLLevel"></option>
+            <option value="surroundRLevel" data-i18n="control.list.speakerTarget.surroundRLevel"></option>
+            <option value="surroundcBackLevel" data-i18n="control.list.speakerTarget.surroundcBackLevel"></option>
+            <option value="surroundBackLLevel" data-i18n="control.list.speakerTarget.surroundBackLLevel"></option>
+            <option value="surroundBackRLevel" data-i18n="control.list.speakerTarget.surroundBackRLevel"></option>
+            <option value="heightLLevel" data-i18n="control.list.speakerTarget.heightLLevel"></option>
+            <option value="heightRLevel" data-i18n="control.list.speakerTarget.heightRLevel"></option>
+            <option value="subwooferLevel" data-i18n="control.list.speakerTarget.subwooferLevel"></option>
         </select>
     </div>
     <div id="form-row-modeSettings" class="form-row" style="padding-top: 10px">
-        <label><i class="fa fa-sliders"></i> <span data-i18n="controller.label.modes"></span></label>
+        <label><i class="fa fa-sliders"></i> <span data-i18n="control.label.modes"></span></label>
         <div class="form-row">
             <ol id="node-input-modeSettingsList"></ol>
         </div>
     </div>
     <div id="form-row-modeTarget" class="form-row">
-        <label for="node-input-modeTarget"><i class="fa fa-sliders"></i> <span data-i18n="controller.label.mode"></span></label>
+        <label for="node-input-modeTarget"><i class="fa fa-sliders"></i> <span data-i18n="control.label.mode"></span></label>
         <select id="node-input-modeTarget" style="width: auto;">
-            <option value="all" data-i18n="controller.list.modeTarget.all"></option>
-            <option value="playType" data-i18n="controller.list.modeTarget.playType"></option>
-            <option value="repeatType" data-i18n="controller.list.modeTarget.repeatType"></option>
-            <option value="shuffleType" data-i18n="controller.list.modeTarget.shuffleType"></option>
+            <option value="all" data-i18n="control.list.modeTarget.all"></option>
+            <option value="playType" data-i18n="control.list.modeTarget.playType"></option>
+            <option value="repeatType" data-i18n="control.list.modeTarget.repeatType"></option>
+            <option value="shuffleType" data-i18n="control.list.modeTarget.shuffleType"></option>
         </select>
     </div>
     <div id="form-row-filterList" class="form-row" style="padding-top: 10px">
@@ -232,7 +232,7 @@ SOFTWARE.
 </script>
 
 <script type="text/javascript">
-    RED.nodes.registerType("sony-audio-controller",
+    RED.nodes.registerType("sony-audio-control",
     {
         category:     "sony audio",
         color:        "#2DABCE",
@@ -241,12 +241,12 @@ SOFTWARE.
         outputs:      1,
         inputLabels:  function()
         {
-            return this._("controller.label.inputPort");
+            return this._("control.label.inputPort");
         },
-        paletteLabel: "controller",
+        paletteLabel: "control",
         label: function()
         {
-            return (this.name || "controller: " + this.command);
+            return (this.name || "control: " + this.command);
         },
         labelStyle: function()
         {
@@ -451,31 +451,31 @@ SOFTWARE.
                     }
 
                     let soundTarget = $("<select/>", {class: "node-input-soundTarget"}).appendTo(item);
-                    soundTarget.append($("<option></option>").val("soundField").text(node._("controller.list.soundTarget.soundField")));
-                    soundTarget.append($("<option></option>").val("clearAudio").text(node._("controller.list.soundTarget.clearAudio")));
-                    soundTarget.append($("<option></option>").val("nightMode").text(node._("controller.list.soundTarget.nightMode")));
-                    soundTarget.append($("<option></option>").val("footballMode").text(node._("controller.list.soundTarget.footballMode")));
-                    soundTarget.append($("<option></option>").val("voice").text(node._("controller.list.soundTarget.voice")));
+                    soundTarget.append($("<option></option>").val("soundField").text(node._("control.list.soundTarget.soundField")));
+                    soundTarget.append($("<option></option>").val("clearAudio").text(node._("control.list.soundTarget.clearAudio")));
+                    soundTarget.append($("<option></option>").val("nightMode").text(node._("control.list.soundTarget.nightMode")));
+                    soundTarget.append($("<option></option>").val("footballMode").text(node._("control.list.soundTarget.footballMode")));
+                    soundTarget.append($("<option></option>").val("voice").text(node._("control.list.soundTarget.voice")));
 
                     let soundFieldContainer = $("<span/>", {id: "item-elem-soundField-" + index,
                                                             style: "padding-left: 10px;"}).appendTo(item);
                     let soundField = $("<select/>", {class: "node-input-soundField",
                                                      style: "width: auto;"}).appendTo(soundFieldContainer);
-                    soundField.append($("<option></option>").val("off").text(node._("controller.list.soundField.off")));
-                    soundField.append($("<option></option>").val("standard").text(node._("controller.list.soundField.standard")));
-                    soundField.append($("<option></option>").val("clearAudio").text(node._("controller.list.soundField.clearAudio")));
-                    soundField.append($("<option></option>").val("music").text(node._("controller.list.soundField.music")));
-                    soundField.append($("<option></option>").val("movie").text(node._("controller.list.soundField.movie")));
-                    soundField.append($("<option></option>").val("sports").text(node._("controller.list.soundField.sports")));
-                    soundField.append($("<option></option>").val("game").text(node._("controller.list.soundField.game")));
+                    soundField.append($("<option></option>").val("off").text(node._("control.list.soundField.off")));
+                    soundField.append($("<option></option>").val("standard").text(node._("control.list.soundField.standard")));
+                    soundField.append($("<option></option>").val("clearAudio").text(node._("control.list.soundField.clearAudio")));
+                    soundField.append($("<option></option>").val("music").text(node._("control.list.soundField.music")));
+                    soundField.append($("<option></option>").val("movie").text(node._("control.list.soundField.movie")));
+                    soundField.append($("<option></option>").val("sports").text(node._("control.list.soundField.sports")));
+                    soundField.append($("<option></option>").val("game").text(node._("control.list.soundField.game")));
 
                     let voiceTypeContainer = $("<span/>", {id: "item-elem-voiceType-" + index,
                                                            style: "padding-left: 10px;"}).appendTo(item);
                     let voiceType = $("<select/>", {class: "node-input-voiceType",
                                                     style: "width: auto;"}).appendTo(voiceTypeContainer);
-                    voiceType.append($("<option></option>").val("type1").text(node._("controller.list.voiceType.type1")));
-                    voiceType.append($("<option></option>").val("type2").text(node._("controller.list.voiceType.type2")));
-                    voiceType.append($("<option></option>").val("type3").text(node._("controller.list.voiceType.type3")));
+                    voiceType.append($("<option></option>").val("type1").text(node._("control.list.voiceType.type1")));
+                    voiceType.append($("<option></option>").val("type2").text(node._("control.list.voiceType.type2")));
+                    voiceType.append($("<option></option>").val("type3").text(node._("control.list.voiceType.type3")));
 
                     let switchedOnContainer = $("<span/>", {id: "item-elem-switchedOn-" + index,
                                                             style: "padding-left: 10px;"}).appendTo(item);
@@ -484,7 +484,7 @@ SOFTWARE.
                                                     type: "checkbox",
                                                     style: "vertical-align: text-bottom; width: auto;"}).appendTo(switchedOnContainer);
                     $("<label/>", {for: "node-input-switchedOn-" + index,
-                                   style: "padding-left: 4px;"}).text(node._("controller.label.switchedOn")).appendTo(switchedOnContainer);
+                                   style: "padding-left: 4px;"}).text(node._("control.label.switchedOn")).appendTo(switchedOnContainer);
 
                     soundTarget.change(function()
                     {
@@ -564,34 +564,34 @@ SOFTWARE.
                     };
 
                     let speakerTarget = $("<select/>", {class: "node-input-speakerTarget"}).appendTo(item);
-                    speakerTarget.append($("<option></option>").val("inCeilingSpeakerMode").text(node._("controller.list.speakerTarget.inCeilingSpeakerMode")));
-                    speakerTarget.append($("<option></option>").val("speakerSelection").text(node._("controller.list.speakerTarget.speakerSelection")));
-                    speakerTarget.append($("<option></option>").val("frontLLevel").text(node._("controller.list.speakerTarget.frontLLevel")));
-                    speakerTarget.append($("<option></option>").val("frontRLevel").text(node._("controller.list.speakerTarget.frontRLevel")));
-                    speakerTarget.append($("<option></option>").val("centerLevel").text(node._("controller.list.speakerTarget.centerLevel")));
-                    speakerTarget.append($("<option></option>").val("surroundLLevel").text(node._("controller.list.speakerTarget.surroundLLevel")));
-                    speakerTarget.append($("<option></option>").val("surroundRLevel").text(node._("controller.list.speakerTarget.surroundRLevel")));
-                    speakerTarget.append($("<option></option>").val("surroundcBackLevel").text(node._("controller.list.speakerTarget.surroundcBackLevel")));
-                    speakerTarget.append($("<option></option>").val("surroundBackLLevel").text(node._("controller.list.speakerTarget.surroundBackLLevel")));
-                    speakerTarget.append($("<option></option>").val("surroundBackRLevel").text(node._("controller.list.speakerTarget.surroundBackRLevel")));
-                    speakerTarget.append($("<option></option>").val("heightLLevel").text(node._("controller.list.speakerTarget.heightLLevel")));
-                    speakerTarget.append($("<option></option>").val("heightRLevel").text(node._("controller.list.speakerTarget.heightRLevel")));
-                    speakerTarget.append($("<option></option>").val("subwooferLevel").text(node._("controller.list.speakerTarget.subwooferLevel")));
+                    speakerTarget.append($("<option></option>").val("inCeilingSpeakerMode").text(node._("control.list.speakerTarget.inCeilingSpeakerMode")));
+                    speakerTarget.append($("<option></option>").val("speakerSelection").text(node._("control.list.speakerTarget.speakerSelection")));
+                    speakerTarget.append($("<option></option>").val("frontLLevel").text(node._("control.list.speakerTarget.frontLLevel")));
+                    speakerTarget.append($("<option></option>").val("frontRLevel").text(node._("control.list.speakerTarget.frontRLevel")));
+                    speakerTarget.append($("<option></option>").val("centerLevel").text(node._("control.list.speakerTarget.centerLevel")));
+                    speakerTarget.append($("<option></option>").val("surroundLLevel").text(node._("control.list.speakerTarget.surroundLLevel")));
+                    speakerTarget.append($("<option></option>").val("surroundRLevel").text(node._("control.list.speakerTarget.surroundRLevel")));
+                    speakerTarget.append($("<option></option>").val("surroundcBackLevel").text(node._("control.list.speakerTarget.surroundcBackLevel")));
+                    speakerTarget.append($("<option></option>").val("surroundBackLLevel").text(node._("control.list.speakerTarget.surroundBackLLevel")));
+                    speakerTarget.append($("<option></option>").val("surroundBackRLevel").text(node._("control.list.speakerTarget.surroundBackRLevel")));
+                    speakerTarget.append($("<option></option>").val("heightLLevel").text(node._("control.list.speakerTarget.heightLLevel")));
+                    speakerTarget.append($("<option></option>").val("heightRLevel").text(node._("control.list.speakerTarget.heightRLevel")));
+                    speakerTarget.append($("<option></option>").val("subwooferLevel").text(node._("control.list.speakerTarget.subwooferLevel")));
 
                     let inCeilingSpeakerModeContainer = $("<span/>", {style: "padding-left: 10px;"}).appendTo(item);
                     let inCeilingSpeakerMode = $("<select/>", {class: "node-input-inCeilingSpeakerMode",
                                                                style: "width: auto;"}).appendTo(inCeilingSpeakerModeContainer);
-                    inCeilingSpeakerMode.append($("<option></option>").val("off").text(node._("controller.list.inCeilingSpeakerMode.off")));
-                    inCeilingSpeakerMode.append($("<option></option>").val("front").text(node._("controller.list.inCeilingSpeakerMode.front")));
-                    inCeilingSpeakerMode.append($("<option></option>").val("front&center").text(node._("controller.list.inCeilingSpeakerMode.front_center")));
+                    inCeilingSpeakerMode.append($("<option></option>").val("off").text(node._("control.list.inCeilingSpeakerMode.off")));
+                    inCeilingSpeakerMode.append($("<option></option>").val("front").text(node._("control.list.inCeilingSpeakerMode.front")));
+                    inCeilingSpeakerMode.append($("<option></option>").val("front&center").text(node._("control.list.inCeilingSpeakerMode.front_center")));
 
                     let speakerSelectionContainer = $("<span/>", {style: "padding-left: 10px;"}).appendTo(item);
                     let speakerSelection = $("<select/>", {class: "node-input-speakerSelection",
                                                            style: "width: auto;"}).appendTo(speakerSelectionContainer);
-                    speakerSelection.append($("<option></option>").val("off").text(node._("controller.list.speakerSelection.off")));
-                    speakerSelection.append($("<option></option>").val("speakerA").text(node._("controller.list.speakerSelection.speakerA")));
-                    speakerSelection.append($("<option></option>").val("speakerB").text(node._("controller.list.speakerSelection.speakerB")));
-                    speakerSelection.append($("<option></option>").val("speakerA_B").text(node._("controller.list.speakerSelection.speakerA_B")));
+                    speakerSelection.append($("<option></option>").val("off").text(node._("control.list.speakerSelection.off")));
+                    speakerSelection.append($("<option></option>").val("speakerA").text(node._("control.list.speakerSelection.speakerA")));
+                    speakerSelection.append($("<option></option>").val("speakerB").text(node._("control.list.speakerSelection.speakerB")));
+                    speakerSelection.append($("<option></option>").val("speakerA_B").text(node._("control.list.speakerSelection.speakerA_B")));
 
                     let speakerLevelContainer = $("<span/>", {style: "padding-left: 10px;"}).appendTo(item);
                     let speakerLevel = $("<input/>", {class: "node-input-speakerLevel", style: "width: 50px;"})
@@ -651,36 +651,36 @@ SOFTWARE.
                     }
 
                     let modeTarget = $("<select/>", {class: "node-input-modeTarget"}).appendTo(item);
-                    modeTarget.append($("<option></option>").val("playType").text(node._("controller.list.modeTarget.playType")));
-                    modeTarget.append($("<option></option>").val("repeatType").text(node._("controller.list.modeTarget.repeatType")));
-                    modeTarget.append($("<option></option>").val("shuffleType").text(node._("controller.list.modeTarget.shuffleType")));
+                    modeTarget.append($("<option></option>").val("playType").text(node._("control.list.modeTarget.playType")));
+                    modeTarget.append($("<option></option>").val("repeatType").text(node._("control.list.modeTarget.repeatType")));
+                    modeTarget.append($("<option></option>").val("shuffleType").text(node._("control.list.modeTarget.shuffleType")));
 
                     let playTypeContainer = $("<span/>", {id: "item-elem-playType-" + index,
                                                             style: "padding-left: 10px;"}).appendTo(item);
                     let playType = $("<select/>", {class: "node-input-playType",
                                                    style: "width: auto;"}).appendTo(playTypeContainer);
-                    playType.append($("<option></option>").val("normal").text(node._("controller.list.playType.normal")));
-                    playType.append($("<option></option>").val("repeatAll").text(node._("controller.list.playType.repeatAll")));
-                    playType.append($("<option></option>").val("repeatFolder").text(node._("controller.list.playType.repeatFolder")));
-                    playType.append($("<option></option>").val("repeatTrack").text(node._("controller.list.playType.repeatTrack")));
-                    playType.append($("<option></option>").val("shuffleAll").text(node._("controller.list.playType.shuffleAll")));
+                    playType.append($("<option></option>").val("normal").text(node._("control.list.playType.normal")));
+                    playType.append($("<option></option>").val("repeatAll").text(node._("control.list.playType.repeatAll")));
+                    playType.append($("<option></option>").val("repeatFolder").text(node._("control.list.playType.repeatFolder")));
+                    playType.append($("<option></option>").val("repeatTrack").text(node._("control.list.playType.repeatTrack")));
+                    playType.append($("<option></option>").val("shuffleAll").text(node._("control.list.playType.shuffleAll")));
 
                     let repeatTypeContainer = $("<span/>", {id: "item-elem-repeatType-" + index,
                                                             style: "padding-left: 10px;"}).appendTo(item);
                     let repeatType = $("<select/>", {class: "node-input-repeatType",
                                                     style: "width: auto;"}).appendTo(repeatTypeContainer);
-                    repeatType.append($("<option></option>").val("off").text(node._("controller.list.repeatType.off")));
-                    repeatType.append($("<option></option>").val("all").text(node._("controller.list.repeatType.all")));
-                    repeatType.append($("<option></option>").val("folder").text(node._("controller.list.repeatType.folder")));
-                    repeatType.append($("<option></option>").val("track").text(node._("controller.list.repeatType.track")));
-                    repeatType.append($("<option></option>").val("chapter").text(node._("controller.list.repeatType.chapter")));
+                    repeatType.append($("<option></option>").val("off").text(node._("control.list.repeatType.off")));
+                    repeatType.append($("<option></option>").val("all").text(node._("control.list.repeatType.all")));
+                    repeatType.append($("<option></option>").val("folder").text(node._("control.list.repeatType.folder")));
+                    repeatType.append($("<option></option>").val("track").text(node._("control.list.repeatType.track")));
+                    repeatType.append($("<option></option>").val("chapter").text(node._("control.list.repeatType.chapter")));
 
                     let shuffleTypeContainer = $("<span/>", {id: "item-elem-shuffleType-" + index,
                                                              style: "padding-left: 10px;"}).appendTo(item);
                     let shuffleType = $("<select/>", {class: "node-input-shuffleType",
                                                       style: "width: auto;"}).appendTo(shuffleTypeContainer);
-                    shuffleType.append($("<option></option>").val("off").text(node._("controller.list.shuffleType.off")));
-                    shuffleType.append($("<option></option>").val("folder").text(node._("controller.list.shuffleType.folder")));
+                    shuffleType.append($("<option></option>").val("off").text(node._("control.list.shuffleType.off")));
+                    shuffleType.append($("<option></option>").val("folder").text(node._("control.list.shuffleType.folder")));
 
                     modeTarget.change(function()
                     {
@@ -1130,7 +1130,7 @@ SOFTWARE.
 
             if ($("#node-input-outResponse").prop("checked"))
             {
-                node.outputPorts.push({label: node._("controller.label.responsePort")});
+                node.outputPorts.push({label: node._("control.label.responsePort")});
                 node.outputs++;
             }
         }
