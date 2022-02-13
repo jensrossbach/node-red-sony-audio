@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 
-<script type="text/x-red" data-template-name="sony-audio-device">
+<script type="text/html" data-template-name="sonyaudio-device">
     <div class="form-row">
         <label for="node-config-input-name"><i class="fa fa-tag"></i> <span data-i18n="common.label.name"></span></label>
         <input type="text" id="node-config-input-name" data-i18n="[placeholder]common.label.name">
@@ -58,13 +58,13 @@ SOFTWARE.
 </script>
 
 <script type="text/javascript">
-    RED.nodes.registerType("sony-audio-device",
+    RED.nodes.registerType("sonyaudio-device",
     {
         category: "config",
         icon:     "sony.png",
         label:    function()
         {
-            return (this.name || this.host);
+            return (this.name || this.host || "device");
         },
         defaults:
         {
@@ -148,7 +148,7 @@ SOFTWARE.
                     RED.notify(node._("device.status.searching"), "info");
                 }
 
-                $.getJSON("sony_audio_devices", {type: msearch ? "msearch" : "cached"}).done(data =>
+                $.getJSON("sonyaudio_devices", {type: msearch ? "msearch" : "cached"}).done(data =>
                 {
                     $("#node-config-input-devices").find("option").remove();
                     $("#node-config-input-devices").append($("<option></option>").val("none").text(node._("device.label.selectDevice")));
@@ -178,8 +178,12 @@ SOFTWARE.
                     }
                 }).fail(error =>
                 {
+                    console.log("Failed to scan for devices: " + JSON.stringify(error));
+
                     if (msearch)
                     {
+                        $("#node-config-input-discovery").attr("disabled", false);
+                        $("#node-config-input-devices").attr("disabled", false);
                         RED.notify(node._("device.status.error"), "error");
                     }
                 });

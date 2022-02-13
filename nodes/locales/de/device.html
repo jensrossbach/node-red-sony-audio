@@ -22,35 +22,34 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 
-<script type="text/x-red" data-help-name="sony-audio-device">
+<script type="text/html" data-help-name="sonyaudio-device">
     <p>
         Knoten zum Konfigurieren eines Sony Audio-Geräts, das die Sony Audio Control
         API unterstützt.
     </p>
+    <p style="margin-bottom: 15px;"></p>
     <h3>Details</h3>
     <p>
         Hier werden die Netzwerkparameter des Sony Audio-Geräts konfiguriert,
         damit die Knoten sich mit dem Gerät verbinden können. Es können mehrere
         Konfigurations-Knoten angelegt werden, um mehrere Geräte einzubinden.
     </p>
+    <p style="margin-bottom: 15px;"></p>
     <h3>Konfiguration</h3>
     <dt>Name</dt>
-    <dd>
-        Name der Konfiguration (optional).
-    </dd>
+    <dd>Ein Name für den Knoten (optional).</dd>
     <dt>Host</dt>
-    <dd>
-        IP-Adresse oder Hostname des Geräts.
-    </dd>
+    <dd>IP-Adresse des Geräts.</dd>
     <dt>Port</dt>
     <dd>
-        IP-Port des API-Dienstes auf dem Gerät.
+        IP-Port des API-Dienstes auf dem Gerät. Normalerweise 10000 für
+        Soundbars und Receiver sowie 54480 für kabellose Lautsprecher.
     </dd>
     <dt>Suche</dt>
     <dd>
         Über den Aktualisieren-Button wird eine Suche nach verfügbaren Sony
         Audio-Geräten im Netzwerk gestartet. Gefundene Geräte können anschließend
-        in der Liste ausgewählt werden, damit die Felder für Host und Port
+        in der Liste ausgewählt werden, damit die Felder für Name, Host und Port
         automatisch ausgefüllt werden.
     </dd>
     <dt>Erweiterte Wiederherstellung nach Verbindungsverlust</dt>
@@ -61,7 +60,7 @@ SOFTWARE.
     <dt>Versuche</dt>
     <dd>
         Die maximale Anzahl an Versuchen, die Verbindung wiederherzustellen.
-        Ein Wert von 0 bedeutet unendlich viele Versuche.
+        Ein Wert von 0 bedeutet unbegrenzt viele Versuche.
     </dd>
     <dt>Wartezeit</dt>
     <dd>

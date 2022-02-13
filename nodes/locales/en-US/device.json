@@ -3,63 +3,78 @@
     {
         "label":
         {
-            "filterPort": "filter",
-            "name":       "Name",
-            "device":     "Device",
-            "topic":      "Topic",
-            "outputs":    "Outputs",
-            "filters":    "Filters",
-            "explicit":   "Explicit"
+            "name":            "Name",
+            "device":          "Device",
+            "output":          "Output",
+            "unfilteredData":  "unfiltered data",
+            "filteredData":    "filtered data",
+            "sendIfPayload":   "Send message only if <code>msg.payload</code> has been set"
         },
         "list":
         {
             "service":
             {
-                "system":    "System",
-                "audio":     "Audio",
-                "avContent": "A/V Content"
+                "system":     "System",
+                "audio":      "Audio",
+                "avContent":  "A/V Content"
             },
-            "filter":
+            "unfilteredData":
             {
-                "auto":           "Auto",
-                "powered":        "Powered",
-                "standby":        "Standby",
-                "swupdate":       "Software Update",
-                "source":         "Source",
-                "absoluteVolume": "Absolute Volume",
-                "relativeVolume": "Relative Volume",
-                "muted":          "Muted",
-                "soundSetting":   "Sound Setting",
-                "speakerSetting": "Speaker Setting",
-                "playbackMode":   "Playback Setting",
-                "custom":         "Custom"
+                "all":      "all data",
+                "host":     "host",
+                "service":  "service",
+                "method":   "method",
+                "version":  "version",
+                "payload":  "payload"
+            },
+            "filteredData":
+            {
+                "auto":             "auto",
+                "powered":          "powered",
+                "standby":          "standby",
+                "swupdate":         "software update",
+                "source":           "source",
+                "absoluteVolume":   "absolute volume",
+                "relativeVolume":   "relative volume",
+                "muted":            "muted",
+                "soundSetting":     "sound settings",
+                "speakerSetting":   "speaker settings",
+                "playbackSetting":  "playback settings"
             }
         },
-        "status":
+        "error":
         {
-            "unconfigured": "unconfigured"
+            "unconfigured":       "No configuration node assigned",
+            "invalidPropName":    "Invalid property or variable name",
+            "invalidTemplate":    "Invalid template: __error__",
+            "invalidEnvVar":      "Invalid environment variable",
+            "invalidNumber":      "Invalid number output",
+            "invalidJSON":        "Invalid JSON output",
+            "invalidBuffer":      "Invalid binary buffer output",
+            "invalidExpression":  "Invalid JSONata expression: __error__",
+            "emptyOutput":        "No output properties specified"
         }
     },
     "device":
     {
         "label":
         {
-            "host":             "Host",
-            "port":             "Port",
-            "discovery":        "Discovery",
-            "selectDevice":     "[SELECT DEVICE]",
-            "extendedRecovery": "Extended recovery on connection loss",
-            "numRetries":       "Retries",
-            "retryDelay":       "Retry Delay",
-            "seconds":          "seconds"
+            "host":              "Host",
+            "port":              "Port",
+            "discovery":         "Discovery",
+            "selectDevice":      "[SELECT DEVICE]",
+            "extendedRecovery":  "Extended recovery on connection loss",
+            "numRetries":        "Retries",
+            "retryDelay":        "Retry Delay",
+            "seconds":           "seconds"
         },
         "status":
         {
-            "searching":       "Searching for Sony audio devices...",
-            "noDevices":       "No devices found.",
-            "oneDevice":       "Found 1 device.",
-            "multipleDevices": "Found __num__ devices.",
-            "error":           "Error retrieving devices!"
+            "searching":        "Searching for Sony audio devices...",
+            "noDevices":        "No devices found.",
+            "oneDevice":        "Found 1 device.",
+            "multipleDevices":  "Found __num__ devices.",
+            "error":            "Error retrieving devices!"
         }
     }
 }

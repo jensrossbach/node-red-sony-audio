@@ -22,238 +22,233 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 
-<script type="text/x-red" data-help-name="sony-audio-control">
-    <style>
-        .list-reset
-        {
-            border: none !important;
-            border-radius: 0 !important;
-            list-style-position: outside !important;
-            padding: 0 !important;
-            margin-bottom: 0 !important;
-        }
-    </style>
+<script type="text/html" data-help-name="sonyaudio-control">
     <p>
         Knoten zum Steuern eines Sony Audio-Geräts über die Audio Control API.
     </p>
+    <p style="margin-bottom: 15px;"></p>
     <h3>Details</h3>
     <p>
-        Dieser Knoten sendet Anfragen an ein Sony Audio-Gerät und stellt die
-        zurückgeschickte Antwort zur Verfügung. Die Details der Anfrage können
-        über die Konfigurationsseite eingestellt werden. Alle Einstellungen bis
-        auf die Filter können zusätzlich programmatisch überschrieben werden,
-        siehe Beschreibung der Eingaben oben.
+        Sobald eine Nachricht eintrifft, sendet dieser Knoten Anfragen an ein
+        Sony Audio-Gerät und stellt die erhaltenen Antworten in konfigurierbarer
+        Form zur Verfügung. Die Details der Anfrage können über die
+        Konfigurationsseite eingestellt oder aus der Eingabenachricht bzw.
+        Kontextvariablen gelesen werden.
     </p>
     <p>
-        Für weitere Informationen zu den Kommandos und deren Argumenten sowie zu
-        dem Format der gefilterten Ergebnisse, siehe
-        <a href="https://github.com/jensrossbach/node-red-contrib-sony-audio/wiki/Controller-Node">Online-Dokumentation</a>
-        (nur in Englisch).
-    </p>
-    <p>
-        Der Knoten unterstützt auch einen direkten Modus für Anfragen, die nicht über
-        die verfügbaren Kommandos abgedeckt sind. Mithilfe von speziellen Attributen
-        (siehe Eingaben-Beschreibung oben) kann eine beliebige Anfrage, sofern sie
-        von der Sony Audio Control API unterstützt wird, an das Gerät gesendet werden.
+        Eine ausführliche Dokumentation der Konfigurationsmöglichkeiten inklusive
+        Beispielen findet sich im <a href="https://github.com/jensrossbach/node-red-contrib-sony-audio-v2/wiki/Notify-Node">Wiki</a>
+        des Repositories (nur in Englischer Sprache).
     </p>
     <p>
         Siehe Sony <a href="https://developer.sony.com/develop/audio-control-api/api-references/api-overview-2">Audio Control API</a>
         Referenz für weitere Details über die Schnittstelle, deren Dienste, Methoden
-        und Argumente.
+        und Argumente (nur in Englischer Sprache).
     </p>
-    <h3>Konfiguration</h3>
-    <dl>
-        <dt>Name</dt>
-        <dd>Name für den Knoten (optional).</dd>
-        <dt>Gerät</dt>
-        <dd>Auswahl/Konfiguration des Sony Audio-Geräts.</dd>
-        <dt>Topic</dt>
-        <dd>
-            Das Topic, das an die Ausgabenachrichten gehängt werden soll. Falls
-            nichts angegeben wird, wird ein in der Eingangsnachricht vorhandenes
-            Topic an die Ausgabenachrichten durchgereicht. Der Text des Topics
-            kann Platzhalter in der Form <code>{{placeholder}}</code> enthalten,
-            um variable Inhalte einzufügen. Die folgenden Platzhalter werden
-            unterstützt:
-        </dd>
-        <dl class="message-properties">
-            <dt>device<span class="property-type">string</span></dt>
-            <dd>Der Name des Geräteknotens</dd>
-            <dt>control<span class="property-type">string</span></dt>
-            <dd>Der Name dieses Knotens</dd>
-            <dt>host<span class="property-type">string</span></dt>
-            <dd>Der Host-Name / die IP-Adresse des Geräts</dd>
-            <dt>service<span class="property-type">string</span></dt>
-            <dd>Der Name des API-Dienstes</dd>
-            <dt>method<span class="property-type">string</span></dt>
-            <dd>Der Name der API-Methode</dd>
-            <dt>version<span class="property-type">string</span></dt>
-            <dd>Die API-Versionsnummer</dd>
-            <dt>command<span class="property-type">string</span></dt>
-            <dd>Das Kommando der Anfrage</dd>
+    <p style="margin-bottom: 15px;"></p>
+    <h3>Allgemeine Konfiguration</h3>
+    <dt>Name</dt>
+    <dd>Ein Name für den Knoten (optional).</dd>
+    <dt>Gerät</dt>
+    <dd>
+        Auswahl/Konfiguration des Sony Audio-Geräts, mit dem sich
+        der Knoten verbinden soll.
+    </dd>
+    <p style="margin-bottom: 15px;"></p>
+    <h3>Anfragekonfiguration</h3>
+    <dt>Aktion</dt>
+    <dd>
+        Die Aktion, die ausgeführt werden soll, sobald eine Nachricht
+        am Knoten eintrifft. Die folgenden Möglichkeiten gibt es:
+        <dl style="margin-block-start: 0; margin-block-end: 0; margin-bottom: 0 !important;">
+            <dt>Gerät steuern</dt>
+            <dd>
+                Schickt eines der vordefinierten Kontrollkommandos an das
+                Gerät. Einige Kommandos können zusätzlich über Benutzerelemente,
+                die darunter erscheinen, konfiguriert werden.
+            </dd>
+            <dt>Werte abfragen</dt>
+            <dd>
+                Schickt eines der vordefinierten Informationsabfragekommandos
+                an das Gerät. Einige Kommandos können zusätzlich über
+                Benutzerelemente, die darunter erscheinen, konfiguriert werden.
+            </dd>
+            <dt>API aufrufen</dt>
+            <dd>
+                Ruft eine bestimmte API auf dem Gerät auf. Die API und die
+                Aufrufparameter können in den Eingabefeldern darunter angegeben
+                werden.
+            </dd>
         </dl>
-        <dt>Eingabe</dt>
-        <dd>
-            Stellt ein, ob das konfigurierte Kommando über bestimmte Eigenschaften
-            der Nachricht überschrieben werden kann (siehe Abschnitt <i>Eingabe</i>
-            für weitere Informationen).
-        </dd>
-        <dt>Ausgaben</dt>
-        <dd>Ausgabe-Ports, die sichtbar sein sollen.</dd>
-        <dt>Kommando</dt>
-        <dd>
-            Kommando der Anfrage an das Gerät. Das ausgewählte Kommando kann
-            programmatisch über <code>msg.command</code> überschrieben werden.
-        </dd>
-        <dt>Quelle</dt>
-        <dd>
-            Quelle, die auf dem Gerät aktiviert werden soll. Die ausgewählte
-            Quelle kann programmatisch über das <code>source</code>-Attribut
-            in <code>msg.payload</code> überschrieben werden.
-        </dd>
-        <dt>Port</dt>
-        <dd>
-            Port-Nummer von HDMI-Quellen. Der Wert kann programmatisch über
-            das <code>source</code>-Attribut in <code>msg.payload</code>
-            überschrieben werden.
-        </dd>
-        <dt>Lautstärke</dt>
-        <dd>
-            Lautstärke, die eingestellt werden soll. Der Wert kann programmatisch
-            über das <code>volume</code>-Attribut in <code>msg.payload</code>
-            überschrieben werden.
-        </dd>
-        <dt>Relative Lautstärke</dt>
-        <dd>
-            Wenn aktiviert, wird die eingestellte Lautstärke als relativer
-            Lautstärkenschritt interpretiert. Die Eigenschaft kann programmatisch
-            über das <code>volume</code>-Attribut in <code>msg.payload</code>
-            überschrieben werden.
-        </dd>
-        <dt>Einstellungen</dt>
-        <dd>
-            Liste der Klang-, Lautsprecher- oder Abspieleinstellungen (je nach
-            gewähltem Kommando), die aktiviert werden sollen. Mehrere Einstellungen
-            können durch hinzufügen weiterer Zeilen ausgewählt werden. Die Auswahl
-            kann programmatisch über das <code>settings</code>-Attribut in
-            <code>msg.payload</code> überschrieben werden.
-        </dd>
-        <dt>Einstellung</dt>
-        <dd>
-            Klang-, Lautsprecher- oder Abspieleinstellung (je nach gewähltem Kommando),
-            die angefragt werden soll, oder <i>Alle</i>, um alle Einstellungen abzufragen.
-            Die ausgewählte Einstellung kann programmatisch über das
-            <code>target</code>-Attribut in <code>msg.payload</code> überschrieben werden.
-        </dd>
-        <dt>Zone</dt>
-        <dd>
-            Zone, auf der Audio ausgegeben wird. Der Wert kann programmatisch
-            über das <code>zone</code>-Attribut in <code>msg.payload</code>
-            überschrieben werden.
-        </dd>
-        <dt>Alle Zonen</dt>
-        <dd>
-            Wenn aktiviert, bezieht sich das Kommando auf alle Ausgabezonen anstatt
-            eine speziellen. Das gleiche kann programmatisch erreicht werden, indem
-            das Attribut <code>zone</code> auf 0 gesetzt wird.
-        </dd>
-        <dt>Filter</dt>
-        <dd>
-            Filter können benutzt werden, um die Antworten vom Gerät nach bestimmten
-            Kriterien zu filtern. Es können beliebig viele Filter hinzugefügt,
-            bearbeitet oder gelöscht werden. Die Zahl an der rechten Seite gibt
-            den Ausgabeport an, zu dem die gefilterte Antwort geschickt wird.
-            Der Auto-Filter wählt automatisch einen zum Typ der Anfrage passenden
-            Filter aus. Der benutzerdefinierte Filter erlaubt es, den Filter
-            basierend auf einem JSONata-Ausdruck selbst zu definieren. Der
-            Ausdruck kann direkt eingegeben, von einer Eigenschaft der Eingangsnachricht
-            gelesen oder von einer globalen oder Flow-Kontextvariablen geladen werden.
-        </dd>
-    </dl>
-    <h3>Eingabe</h3>
+    </dd>
+    <dt>Online nach Software-Aktualisierung suchen</dt>
+    <dd>
+        Wenn aktiviert, sucht das Kommando über das Internet nach den neuesten
+        Software-Aktualisierungen.
+    </dd>
+    <dt>Quelle</dt>
+    <dd>Quelle, die auf dem Gerät aktiviert werden soll.</dd>
+    <dt>Port</dt>
+    <dd>Port-Nummer von HDMI, Video-In und Line-In Quellen.</dd>
+    <dt>Lautstärke</dt>
+    <dd>Absolute oder relative Lautstärke, die auf dem Gerät eingestellt werden soll.</dd>
+    <dt>Relative Lautstärke</dt>
+    <dd>
+        Wenn aktiviert, wird die eingestellte Lautstärke als relativer
+        Lautstärkenschritt interpretiert. Anderfalls handelt es sich um
+        einen absoluten Lautstärkepegel.
+    </dd>
+    <dt>Einstellungen</dt>
+    <dd>
+        Liste der Klang-, Lautsprecher- oder Abspieleinstellungen (je nach
+        gewähltem Kommando), die auf dem Gerät aktiviert werden sollen.
+    </dd>
+    <dt>Einstellung</dt>
+    <dd>
+        Klang-, Lautsprecher- oder Abspieleinstellung (je nach gewähltem Kommando),
+        die vom Gerät abgefragt werden soll, oder <i>Alle</i>, um alle Einstellungen
+        abzufragen.
+    </dd>
+    <dt>Zone</dt>
+    <dd>Zone, auf der Audio ausgegeben wird.</dd>
+    <dt>Alle Zonen</dt>
+    <dd>
+        Wenn aktiviert, bezieht sich das Kommando auf alle Ausgabezonen anstatt
+        einer speziellen.
+    </dd>
+    <dt>API</dt>
+    <dd>
+        Die aufzurufende API in der Form <code>Dienst</code><b>.</b><code>Methode</code><b>@</b><code>Version</code>.
+        Die API kann wie folgt angegeben werden:
+        <dl style="margin-block-start: 0; margin-block-end: 0; margin-bottom: 0 !important;">
+            <dt>String</dt>
+            <dd>
+                API spezifiziert als Zeichenkette, optional mit Platzhaltern in
+                der Form <code>{{placeholder}}</code>, wobei <i>placeholder</i>
+                für den Namen einer beliebigen Nachrichteneigenschaft steht,
+                deren Inhalt eingefügt werden soll.
+            </dd>
+            <dt>Umgebungsvariable</dt>
+            <dd>Eine Umgebungsvariable oder eine Zeichenkette, die Umgebungsvariablen enthält.</dd>
+            <dt>Global</dt>
+            <dd>Eine globale Kontextvariable, aus der die API gelesen wird.</dd>
+            <dt>Flow</dt>
+            <dd>Eine Flow-Kontextvariable, aus der die API gelesen wird.</dd>
+            <dt>Msg</dt>
+            <dd>Eine Nachrichteneigenschaft, aus der die API gelesen wird.</dd>
+        </dl>
+    </dd>
+    <dt>Parameter</dt>
+    <dd>
+        Die Parameter, die bei einem API-Aufruf gesendet werden. Parameter müssen
+        als Objekt oder als String mit als Objekt parsebarem JSON angegeben werden.
+        <b>Hinweis:</b> Die Parameter müssen nicht in ein zusätzliches Array wie
+        in der Sony Audio Control API Referenz beschrieben eingebettet werden.
+        Parameter können auf verschiedene Weise angegeben werden:
+        <dl style="margin-block-start: 0; margin-block-end: 0; margin-bottom: 0 !important;">
+            <dt>JSON</dt>
+            <dd>Parameter spezifiziert als statisches JSON-Objekt.</dd>
+            <dt>JSONata</dt>
+            <dd>
+                Ein JSONata-Ausdruck um einen dynamischen Satz an Parametern
+                basierend auf Eigenschaften der Eingabenachricht, Kontextvariablen
+                oder Umgebungsvariablen zu erstellen. Alle Nachrichteneigenschaften
+                sind als Ausdrucksattribute vorhanden.
+            </dd>
+            <dt>Umgebungsvariable</dt>
+            <dd>Eine Umgebungsvariable oder eine Zeichenkette, die Umgebungsvariablen enthält.</dd>
+            <dt>Global</dt>
+            <dd>Eine globale Kontextvariable, aus der die Parameter gelesen werden.</dd>
+            <dt>Flow</dt>
+            <dd>Eine Flow-Kontextvariable, aus der die Parameter gelesen werden.</dd>
+            <dt>Msg</dt>
+            <dd>Eine Nachrichteneigenschaft, aus der die Parameter gelesen werden.</dd>
+        </dl>
+    </dd>
+    <p style="margin-bottom: 15px;"></p>
+    <h3>Ausgabekonfiguration</h3>
     <p>
-        Überschreibt das Kommando und/oder die dazugehörigen Einstellungen
-        der Kommando-Konfiguration des Knotens.
+        Hier können Regeln definiert werden, die beim Empfangen einer
+        Antwort vom Gerät Eigenschaften der Ausgabenachricht oder
+        Kontextvariablen setzen. Jeder Eintrag in der Liste steht für
+        eine Regel zum Setzen einer Nachrichteneigenschaft, einer
+        globalen Variable oder einer Flow-Variable.
     </p>
+    <p>
+        Für jede Regel kann die Art des Inhalts wie folgt festgelegt
+        werden:
+    </p>
+    <dt>Gefilterte Daten</dt>
+    <dd>
+        Filtert die rohen Daten die vom Gerät kommen anhand von
+        verschiedenen Kriterien. Der 'Auto' Filter wählt automatisch
+        einen Filter passend zur Anfragemethode aus. Nicht zutreffende
+        Filter setzen keine Werte in den Eigenschaften/Variablen.
+    </dd>
+    <dt>Ungefilterte Daten</dt>
+    <dd>
+        Entweder der komplette Block unbearbeiteter Daten wie sie vom
+        Gerät gesendet werden oder ein bestimmter Teil davon. Die
+        Nutzlast beinhaltet das erste (und einzige) Element der
+        Ergbnisdaten oder <code>null</code> falls es keine
+        Ergebnisdaten gibt.
+    </dd>
+    <dt>Umgebungsvariable</dt>
+    <dd>
+        Eine Umgebungsvariable oder Text, der Umgebungsvariablen
+        enthält.
+    </dd>
+    <dt>String</dt>
+    <dd>
+        Text, der Platzhalter in der Form <code>{{placeholder}}</code>
+        enthalten kann, um variable Inhalte einzufügen. Die folgenden
+        Platzhalter werden unterstützt.
+    </dd>
     <dl class="message-properties">
-        <dt class="optional">command<span class="property-type">string</span></dt>
-        <dd>Das überschriebene Kommando</dd>
-        <dt class="optional">payload<span class="property-type">object</span></dt>
-        <dd>Die überschriebenen Kommando-Einstellungen</dd>
-    </dl>
-    <p>
-        Wenn <i>Topic als Kommando/Anfragetyp interpretieren</i> ausgewählt ist,
-        kann das Kommando alternativ über <code>msg.topic</code> angegeben
-        werden.
-    </p>
-    <p>
-        Wenn <i>Low-Level-Anfrage aktivieren</i> ausgewählt ist und alle der
-        folgenden Rohdaten-Attribute vorhanden sind, wird eine direkte Anfrage
-        an die Audio Control API geschickt und die Kommando-Konfiguration des
-        Knotens ignoriert.
-    </p>
-    <dl class="message-properties">
-        <dt class="optional">service<span class="property-type">string</span></dt>
+        <dt>host<span class="property-type">string</span></dt>
+        <dd>Die IP-Adresse des Geräts</dd>
+        <dt>service<span class="property-type">string</span></dt>
         <dd>Der Name des API-Dienstes</dd>
-        <dt class="optional">method<span class="property-type">string</span></dt>
+        <dt>method<span class="property-type">string</span></dt>
         <dd>Der Name der API-Methode</dd>
-        <dt class="optional">version<span class="property-type">string</span></dt>
+        <dt>version<span class="property-type">string</span></dt>
         <dd>Die API-Versionsnummer</dd>
-        <dt class="optional">payload<span class="property-type">object</span></dt>
-        <dd>Die Argumente der Anfrage</dd>
+        <dt>payload<span class="property-type">object</span></dt>
+        <dd>Die Nutzlast mit den Daten der Geräteantwort</dd>
     </dl>
+    <dt>Number</dt>
+    <dd>Eine beliebige feste Zahl.</dd>
+    <dt>Boolean</dt>
+    <dd>Ein fester Wahrheitswert (true oder false).</dd>
+    <dt>JSON</dt>
+    <dd>Statischer Inhalt im JSON-Format.</dd>
+    <dt>JSONata</dt>
+    <dd>
+        Ein JSONata-Ausdruck um dynamische Inhalte basierend auf
+        den Originaldaten der Geräteantwort zu erstellen. Die
+        Attribute haben die gleichen Namen wie die String-Platzhalter,
+        siehe oben. Um die Eigenschaft/Variable nicht zu setzen,
+        muss <code>undefined</code> zuückgegeben werden.
+    </dd>
+    <dt>Buffer</dt>
+    <dd>Ein statischer Block Binärdaten.</dd>
+    <dt>Timestamp</dt>
+    <dd>Der Zeitpunkt des Eintreffens der Geräteantwort.</dd>
+    <p></p>
+    <p>Es gibt zwei Checkboxoptionen unterhalb der Ausgabeliste.</p>
     <p>
-        Wenn <i>Topic als Kommando/Anfragetyp interpretieren</i> ausgewählt ist,
-        kann der Typ der Low-Level-Anfrage über <code>msg.topic</code> in der
-        Form "<code>service</code>/<code>method</code>/<code>version</code>"
-        angegeben werden.
+        Die erste Option steuert, ob die Eingabenachricht an die
+        Ausgabe weitergeleitet wird. In diesem Fall enthält die
+        Ausgabenachricht alle Eigenschaften der Eingabenachricht,
+        eventuell jedoch durch Inhalte überschrieben, die von den
+        Ausgaberegeln definiert wurden.
     </p>
-    <h3>Ausgaben</h3>
     <p>
-        Der Knoten stellt eine variable Anzahl Ausgaben zur Verfügung, die über die
-        Konfigurationsseite ausgewählt werden können. Standardmäßig ist nur der
-        <i>Filter</i>-Ausgang aktiviert.
+        Die zweite Option definiert das Verhalten, ob eine Nachricht nur
+        dann gesendet werden soll, wenn <code>msg.payload</code> durch
+        eine der Regeln gesetzt wurde oder immer wenn eine Antwort vom
+        Gerät eintrifft. Die Option sollte beispielsweise aktiviert
+        werden, um zu verhindern, dass eine Ausgabenachricht gesendet
+        wird, falls ein Filter nicht zutrifft.
     </p>
-    <ol class="node-ports">
-        <li>Filter
-            <p>
-                Jeder konfigurierte Filter stellt einen eigenen Ausgabe-Port
-                zur Verfügung, an den dessen gefilterte Daten geschickt werden.
-            </p>
-            <dl class="message-properties">
-                <dt class="optional">topic<span class="property-type">string</span></dt>
-                <dd>
-                    Das Topic aus der Eingangsnachricht oder das konfigurierte Topic
-                    mit den durch dynamische Inhalte ersetzten Platzhaltern.
-                </dd>
-                <dt>payload<span class="property-type">boolean | number | string | object</span></dt>
-                <dd>
-                    Die gefilterten Ergebnisse der Knoten-Aktion. Nachrichten
-                    werden nur dann an diese Ports geschickt, wenn die Filter auf
-                    die Daten angewendet werden können.
-                </dd>
-            </dl>
-        </li>
-        <li>Antwort
-            <p>
-                Enthält die Rohdaten-Antwort so wie sie von der Audio Control
-                API gesendet wurde, sofern die Aktion erfolgreich war.
-            </p>
-            <dl class="message-properties">
-                <dt class="optional">topic<span class="property-type">string</span></dt>
-                <dd>
-                    Das Topic aus der Eingangsnachricht oder das konfigurierte Topic
-                    mit den durch dynamische Inhalte ersetzten Platzhaltern.
-                </dd>
-                <dt>service<span class="property-type">string</span></dt>
-                <dd>Der API-Dienst der Anfrage</dd>
-                <dt>method<span class="property-type">string</span></dt>
-                <dd>Die API-Methode der Anfrage</dd>
-                <dt>version<span class="property-type">string</span></dt>
-                <dd>Die API-Version der Anfrage</dd>
-                <dt>payload<span class="property-type">object</span></dt>
-                <dd>Die Argumente der Anfrage</dd>
-            </dl>
-        </li>
-    </ol>
 </script>

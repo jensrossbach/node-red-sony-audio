@@ -3,63 +3,78 @@
     {
         "label":
         {
-            "filterPort": "Filter",
-            "name":       "Name",
-            "device":     "Gerät",
-            "topic":      "Topic",
-            "outputs":    "Ausgaben",
-            "filters":    "Filter",
-            "explicit":   "Explizit"
+            "name":            "Name",
+            "device":          "Gerät",
+            "output":          "Ausgabe",
+            "unfilteredData":  "Ungefilterte Daten",
+            "filteredData":    "Gefilterte Daten",
+            "sendIfPayload":   "Nachricht nur senden, wenn <code>msg.payload</code> gesetzt wurde"
         },
         "list":
         {
             "service":
             {
-                "system":    "System",
-                "audio":     "Audio",
-                "avContent": "A/V Inhalte"
+                "system":     "System",
+                "audio":      "Audio",
+                "avContent":  "A/V Inhalte"
             },
-            "filter":
+            "unfilteredData":
             {
-                "auto":           "Auto",
-                "powered":        "Eingeschaltet",
-                "standby":        "Bereitschaft",
-                "swupdate":       "Software-Aktualisierung",
-                "source":         "Quelle",
-                "absoluteVolume": "Absolute Lautstärke",
-                "relativeVolume": "Relative Lautstärke",
-                "muted":          "Stumm",
-                "soundSetting":   "Klangeinstellungen",
-                "speakerSetting": "Lautsprechereinstellungen",
-                "playbackMode":   "Abspieleinstellungen",
-                "custom":         "Benutzerdefiniert"
+                "all":      "Alle Daten",
+                "host":     "Host",
+                "service":  "Dienst",
+                "method":   "Methode",
+                "version":  "Version",
+                "payload":  "Nutzlast"
+            },
+            "filteredData":
+            {
+                "auto":             "Auto",
+                "powered":          "Eingeschaltet",
+                "standby":          "Bereitschaft",
+                "swupdate":         "Software-Aktualisierung",
+                "source":           "Quelle",
+                "absoluteVolume":   "Absolute Lautstärke",
+                "relativeVolume":   "Relative Lautstärke",
+                "muted":            "Stumm",
+                "soundSetting":     "Klangeinstellungen",
+                "speakerSetting":   "Lautsprechereinstellungen",
+                "playbackSetting":  "Abspieleinstellungen"
             }
         },
-        "status":
+        "error":
         {
-            "unconfigured": "nicht konfiguriert"
+            "unconfigured":       "Kein Konfigurationsknoten zugewiesen",
+            "invalidPropName":    "Ungpltiger Eigenschafts- oder Variablenname",
+            "invalidTemplate":    "Ungültiges Template: __error__",
+            "invalidEnvVar":      "Ungültige Umgebungsvariable",
+            "invalidNumber":      "Ungültige Zahlen-Ausgabe",
+            "invalidJSONOutput":  "Ungültige JSON-Ausgabe",
+            "invalidBuffer":      "Ungültige Binärpuffer-Ausgabe",
+            "invalidExpression":  "Ungültiger JSONata-Ausdruck: __error__",
+            "emptyOutput":        "Keine Ausgabeeigenschaften angegeben"
         }
     },
     "device":
     {
         "label":
         {
-            "host":             "Host",
-            "port":             "Port",
-            "discovery":        "Suche",
-            "selectDevice":     "[GERÄT WÄHLEN]",
-            "extendedRecovery": "Erweiterte Wiederherstellung nach Verbindungsverlust",
-            "numRetries":       "Versuche",
-            "retryDelay":       "Wartezeit",
-            "seconds":          "Sekunden"
+            "host":              "Host",
+            "port":              "Port",
+            "discovery":         "Suche",
+            "selectDevice":      "[GERÄT WÄHLEN]",
+            "extendedRecovery":  "Erweiterte Wiederherstellung nach Verbindungsverlust",
+            "numRetries":        "Versuche",
+            "retryDelay":        "Wartezeit",
+            "seconds":           "Sekunden"
         },
         "status":
         {
-            "searching":       "Suche nach Sony Audio-Geräten...",
-            "noDevices":       "Es wurden keine Geräte gefunden.",
-            "oneDevice":       "Es wurde 1 Gerät gefunden.",
-            "multipleDevices": "Es wurden __num__ Geräte gefunden.",
-            "error":           "Fehler beim Suchen nach Geräten!"
+            "searching":        "Suche nach Sony Audio-Geräten...",
+            "noDevices":        "Es wurden keine Geräte gefunden.",
+            "oneDevice":        "Es wurde 1 Gerät gefunden.",
+            "multipleDevices":  "Es wurden __num__ Geräte gefunden.",
+            "error":            "Fehler beim Suchen nach Geräten!"
         }
     }
 }

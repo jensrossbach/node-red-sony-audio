@@ -67,7 +67,6 @@ class EventReceiver extends EventEmitter
 
         this.pingTimer = null;
         this.pongTimer = null;
-        this.awaitingPong = false;
 
         this.recoveryTimer = null;
         this.reconnectOnClose = false;
@@ -149,15 +148,15 @@ class EventReceiver extends EventEmitter
                             });
 
                             let subscribeRequest = JSON.stringify(switchNotifications(MSG_SET_NOTIFICATIONS,
-                                                                                    (disable.length == 0) ? null : disable,
-                                                                                    (enable.length == 0) ? null : enable));
+                                                            (disable.length == 0) ? null : disable,
+                                                            (enable.length == 0) ? null : enable));
 
-                            // this.node.debug(subscribeRequest);
+                            this.node.trace(subscribeRequest);
                             connection.sendUTF(subscribeRequest);
                         }
                         else if (msg.id == MSG_SET_NOTIFICATIONS)
                         {
-                            // this.node.debug("Result: " + JSON.stringify(msg.result[0]));
+                            this.node.trace("Result: " + JSON.stringify(msg.result[0]));
                             this.emit("status", STATUS_READY);
                         }
                     }
@@ -167,7 +166,8 @@ class EventReceiver extends EventEmitter
                         {
                             this.node.debug("Event for '" + msg.method + "' received");
 
-                            let eventMsg = {service: this.service,
+                            let eventMsg = {host: this.node.host,
+                                            service: this.service,
                                             method: msg.method,
                                             version: msg.version,
                                             payload: (msg.params.length == 0) ? null : msg.params[0]};
@@ -192,7 +192,11 @@ class EventReceiver extends EventEmitter
 
             connection.on("pong", () =>
             {
-                this.awaitingPong = false;
+                if (this.pongTimer)
+                {
+                    clearTimeout(this.pongTimer);
+                    this.pongTimer = null;
+                }
             });
 
             connection.on("error", error =>
@@ -246,23 +250,23 @@ class EventReceiver extends EventEmitter
             {
                 if (this.connection)
                 {
-                    this.awaitingPong = true;
-
                     this.node.debug("Sending ping to service: " + this.url);
                     this.connection.ping();
+
+                    if (this.pongTimer)
+                    {
+                        clearTimeout(this.pongTimer);
+                    }
 
                     this.pongTimer = setTimeout(() =>
                     {
                         this.pongTimer = null;
 
-                        if (this.awaitingPong)
-                        {
-                            this.node.error("Connection error: No response to ping");
-                            this.emit("status", STATUS_ERROR);
+                        this.node.error("Connection error: No response to ping");
+                        this.emit("status", STATUS_ERROR);
 
-                            this.recoverOnClose = true;
-                            this.connection.drop();
-                        }
+                        this.recoverOnClose = true;
+                        this.connection.drop();
                     }, PONG_DELAY);
                 }
             }, PING_DELAY);
@@ -275,6 +279,7 @@ class EventReceiver extends EventEmitter
             if (!this.extendedRetries)
             {
                 this.node.error("Connection failed: " + error.toString());
+                this.node.debug("URL: " + this.url);
             }
 
             recover();

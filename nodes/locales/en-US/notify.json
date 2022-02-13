@@ -3,26 +3,30 @@
     {
         "label":
         {
-            "eventPort":                       "event",
-            "event":                           "Event",
-            "events":                          "Events",
-            "service":                         "Service",
-            "notifyPowerStatus":               "Power Status",
-            "notifyStorageStatus":             "Storage Status",
-            "notifySettingsUpdate":            "Settings Update",
-            "notifySWUpdateInfo":              "Software Update Information",
-            "notifyVolumeInformation":         "Volume Information",
-            "notifyExternalTerminalStatus":    "External Terminal Status",
-            "notifyAvailablePlaybackFunction": "Available Playback Function",
-            "notifyPlayingContentInfo":        "Playing Content Information"
+            "outputPort":                       "notification",
+            "events":                           "Events",
+            "notifyPowerStatus":                "power status",
+            "notifyStorageStatus":              "storage status",
+            "notifySettingsUpdate":             "settings update",
+            "notifySWUpdateInfo":               "software update information",
+            "notifyVolumeInformation":          "volume information",
+            "notifyExternalTerminalStatus":     "external terminal status",
+            "notifyAvailablePlaybackFunction":  "available playback function",
+            "notifyPlayingContentInfo":         "playing content information"
         },
         "status":
         {
-            "notConnected":    "not connected",
-            "connecting":      "connecting",
-            "connected":       "connected",
-            "ready":           "ready",
-            "connectionError": "connection error"
+            "unconfigured":     "unconfigured",
+            "misconfigured":    "configuration errors",
+            "notConnected":     "not connected",
+            "connecting":       "connecting",
+            "connected":        "connected",
+            "ready":            "ready",
+            "connectionError":  "connection error"
+        },
+        "error":
+        {
+            "noEvents": "No events selected"
         }
     }
 }
