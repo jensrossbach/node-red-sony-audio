@@ -3,164 +3,183 @@
     {
         "label":
         {
-            "inputPort":      "auslösen/überschreiben",
-            "responsePort":   "Antwort",
-            "input":          "Eingabe",
-            "response":       "Antwort",
-            "enableTopic":    "Topic als Kommando/Anfragetyp interpretieren",
-            "enableLowLevel": "Low-Level-Anfrage aktivieren",
-            "command":        "Kommando",
-            "audioSource":    "Quelle",
-            "swSource":       "Source",
-            "networkUpdate":  "Software-Aktualisierung über das Netzwerk",
-            "volume":         "Lautstärke",
-            "relativeVolume": "Relative Lautstärke",
-            "setting":        "Einstellung",
-            "settings":       "Einstellungen",
-            "mode":           "Einstellung",
-            "modes":          "Einstellungen",
-            "port":           "Anschluss",
-            "preset":         "Speicher",
-            "zone":           "Zone",
-            "allZones":       "Alle Zonen",
-            "switchedOn":     "Eingeschaltet"
+            "inputPort":       "Auslöser",
+            "outputPort":      "Antwort",
+            "action":          "Aktion",
+            "control":         "Gerät steuern",
+            "retrieve":        "Werte abfragen",
+            "callAPI":         "API aufrufen",
+            "api":             "API",
+            "params":          "Parameter",
+            "audioSource":     "Quelle",
+            "options":         "Optionen",
+            "networkUpdate":   "Online nach Software-Aktualisierung suchen",
+            "volume":          "Lautstärke",
+            "relativeVolume":  "Relative Lautstärke",
+            "setting":         "Einstellung",
+            "settings":        "Einstellungen",
+            "mode":            "Einstellung",
+            "modes":           "Einstellungen",
+            "port":            "Anschluss",
+            "preset":          "Speicher",
+            "zone":            "Zone",
+            "allZones":        "Alle Zonen",
+            "switchedOn":      "Eingeschaltet",
+            "msgPassThrough":  "Eingehende Nachrichten an Ausgabe weiterleiten"
         },
         "list":
         {
-            "command":
+            "control":
             {
-                "getPowerStatus":      "Power-Status abfragen",
-                "powerOn":             "Einschalten",
-                "powerOff":            "Ausschalten",
-                "standBy":             "Bereitschaft",
-                "getSWUpdateInfo":     "SW-Aktualisierung abfragen",
-                "reconnect":           "Erneut verbinden",
-                "getVolumeInfo":       "Lautstärkeinformationen abfragen",
-                "setVolume":           "Lautstärke setzen",
-                "mute":                "Stumm schalten",
-                "unmute":              "Stumm ausschalten",
-                "toggleMute":          "Stumm umschalten",
-                "getSoundSettings":    "Klangeinstellungen abfragen",
-                "setSoundSettings":    "Klangeinstellungen setzen",
-                "getSpeakerSettings":  "Lautsprechereinstellungen abfragen",
-                "setSpeakerSettings":  "Lautsprechereinstellungen setzen",
-                "getSource":           "Quelle abfragen",
-                "setSource":           "Quelle setzen",
-                "getPlaybackSettings": "Abspieleinstellungen abfragen",
-                "setPlaybackSettings": "Abspieleinstellungen setzen",
-                "stop":                "Stop",
-                "togglePause":         "Pause umschalten",
-                "skipPrev":            "Rückwärts springen",
-                "skipNext":            "Vorwärts springen",
-                "scanBackward":        "Rückwärts scannen",
-                "scanForward":         "Vorwärts scannen"
+                "powerOn":              "Einschalten",
+                "powerOff":             "Ausschalten",
+                "standBy":              "Bereitschaft",
+                "reconnect":            "Erneut verbinden",
+                "setVolume":            "Lautstärke setzen",
+                "mute":                 "Stumm schalten",
+                "unmute":               "Stumm ausschalten",
+                "toggleMute":           "Stumm umschalten",
+                "setSource":            "Quelle setzen",
+                "setSoundSettings":     "Klangeinstellungen setzen",
+                "setSpeakerSettings":   "Lautsprechereinstellungen setzen",
+                "setPlaybackSettings":  "Abspieleinstellungen setzen",
+                "stop":                 "Stop",
+                "togglePause":          "Pause umschalten",
+                "skipPrev":             "Rückwärts springen",
+                "skipNext":             "Vorwärts springen",
+                "scanBackward":         "Rückwärts scannen",
+                "scanForward":          "Vorwärts scannen"
+            },
+            "retrieve":
+            {
+                "getPowerStatus":       "Power-Status abfragen",
+                "getSWUpdateInfo":      "Software-Aktualisierung abfragen",
+                "getVolumeInfo":        "Lautstärkeinformationen abfragen",
+                "getSource":            "Quelle abfragen",
+                "getSoundSettings":     "Klangeinstellungen abfragen",
+                "getSpeakerSettings":   "Lautsprechereinstellungen abfragen",
+                "getPlaybackSettings":  "Abspieleinstellungen abfragen"
             },
             "source":
             {
-                "tv":      "TV",
-                "satcatv": "SAT/Kabel",
-                "hdmi":    "HDMI",
-                "video":   "Video",
-                "sacdcd":  "SACD/CD",
-                "bddvd":   "BD/DVD",
-                "usb":     "USB Speicher",
-                "line":    "Audio-Eingang",
-                "bt":      "Bluetooth Audio",
-                "dlna":    "DLNA",
-                "fm":      "FM-Radio",
-                "game":    "Spiele",
-                "source":  "Quelle"
+                "tv":       "TV",
+                "satcatv":  "SAT/Kabel",
+                "hdmi":     "HDMI",
+                "video":    "Video",
+                "sacdcd":   "SACD/CD",
+                "bddvd":    "BD/DVD",
+                "usb":      "USB Speicher",
+                "line":     "Audio-Eingang",
+                "bt":       "Bluetooth Audio",
+                "dlna":     "DLNA",
+                "fm":       "FM-Radio",
+                "game":     "Spiele",
+                "source":   "Quelle"
             },
             "soundTarget":
             {
-                "all":          "Alle",
-                "soundField":   "Klangfeld",
-                "clearAudio":   "Clear Audio +",
-                "nightMode":    "Nachtmodus",
-                "footballMode": "Fußballmodus",
-                "voice":        "Sprache"
+                "all":           "Alle",
+                "soundField":    "Klangfeld",
+                "clearAudio":    "Clear Audio +",
+                "nightMode":     "Nachtmodus",
+                "footballMode":  "Fußballmodus",
+                "voice":         "Sprache"
             },
             "soundField":
             {
-                "off":        "Aus",
-                "standard":   "Standard",
-                "clearAudio": "Clear Audio +",
-                "music":      "Musik",
-                "movie":      "Film",
-                "sports":     "Sport",
-                "game":       "Spiele"
+                "off":         "Aus",
+                "standard":    "Standard",
+                "clearAudio":  "Clear Audio +",
+                "music":       "Musik",
+                "movie":       "Film",
+                "sports":      "Sport",
+                "game":        "Spiele"
             },
             "voiceType":
             {
-                "type1": "Typ 1",
-                "type2": "Typ 2",
-                "type3": "Typ 3"
+                "type1":  "Typ 1",
+                "type2":  "Typ 2",
+                "type3":  "Typ 3"
             },
             "speakerTarget":
             {
-                "all":                   "Alle",
-                "inCeilingSpeakerMode":  "Deckenlautsprecher",
-                "speakerSelection":      "Lautsprecher",
-                "frontLLevel":           "Vorne Links",
-                "frontRLevel":           "Vorne Rechts",
-                "centerLevel":           "Mitte",
-                "surroundLLevel":        "Surround Links",
-                "surroundRLevel":        "Surround Rechts",
-                "surroundcBackLevel":    "Surround Hinten Mitte",
-                "surroundBackLLevel":    "Surround Hinten Links",
-                "surroundBackRLevel":    "Surround Hinten Rechts",
-                "heightLLevel":          "Höhe Links",
-                "heightRLevel":          "Höhe Rechts",
-                "subwooferLevel":        "Subwoofer"
+                "all":                    "Alle",
+                "inCeilingSpeakerMode":   "Deckenlautsprecher",
+                "speakerSelection":       "Lautsprecher",
+                "frontLLevel":            "Vorne Links",
+                "frontRLevel":            "Vorne Rechts",
+                "centerLevel":            "Mitte",
+                "surroundLLevel":         "Surround Links",
+                "surroundRLevel":         "Surround Rechts",
+                "surroundcBackLevel":     "Surround Hinten Mitte",
+                "surroundBackLLevel":     "Surround Hinten Links",
+                "surroundBackRLevel":     "Surround Hinten Rechts",
+                "heightLLevel":           "Höhe Links",
+                "heightRLevel":           "Höhe Rechts",
+                "subwooferLevel":         "Subwoofer"
             },
             "inCeilingSpeakerMode":
             {
-                "off":           "Aus",
-                "front":         "Vorne",
-                "front_center":  "Vorne und Mitte"
+                "off":            "Aus",
+                "front":          "Vorne",
+                "front_center":   "Vorne und Mitte"
             },
             "speakerSelection":
             {
-                "off":         "Aus",
-                "speakerA":    "Lautsprecher A",
-                "speakerB":    "Lautsprecher B",
-                "speakerA_B":  "Lautsprecher A and B"
+                "off":          "Aus",
+                "speakerA":     "Lautsprecher A",
+                "speakerB":     "Lautsprecher B",
+                "speakerA_B":   "Lautsprecher A and B"
             },
             "modeTarget":
             {
-                "all":         "Alle",
-                "playType":    "Abspielen",
-                "repeatType":  "Wiederholen",
-                "shuffleType": "Zufallswiedergabe"
+                "all":           "Alle",
+                "playType":      "Abspielen",
+                "repeatType":    "Wiederholen",
+                "shuffleType":   "Zufallswiedergabe",
+                "autoPlayback":  "Autom. Wiedergabe"
             },
             "playType":
             {
-                "normal":       "Normal",
-                "repeatAll":    "Ordner",
-                "repeatFolder": "Alle wiederholen",
-                "repeatTrack":  "Titel wiederholen",
-                "shuffleAll":   "Alle zufällig"
+                "normal":        "Normal",
+                "repeatAll":     "Ordner",
+                "repeatFolder":  "Alle wiederholen",
+                "repeatTrack":   "Titel wiederholen",
+                "shuffleAll":    "Alle zufällig"
             },
             "repeatType":
             {
-                "off":     "Aus",
-                "all":     "Alle",
-                "folder":  "Ordner",
-                "track":   "Titel",
-                "chapter": "Kapitel"
+                "off":      "Aus",
+                "all":      "Alle",
+                "folder":   "Ordner",
+                "track":    "Titel",
+                "chapter":  "Kapitel"
             },
             "shuffleType":
             {
-                "off":    "Aus",
-                "folder": "Ordner"
+                "off":     "Aus",
+                "folder":  "Ordner"
+            },
+            "switch":
+            {
+                "off":  "Aus",
+                "on":   "Ein"
             }
         },
         "status":
         {
-            "configurationErrors": "fehlerhafte Konfiguration",
-            "sending":             "sende",
-            "success":             "erfolgreich",
-            "error":               "fehlgeschlagen"
+            "unconfigured":   "nicht konfiguriert",
+            "misconfigured":  "fehlerhafte Konfiguration",
+            "sending":        "sende",
+            "success":        "erfolgreich",
+            "error":          "fehlgeschlagen"
+        },
+        "error":
+        {
+            "invalidSettings":  "Ungültige Klang-/Lautsprecher-/Abspieleinstellungen",
+            "invalidAPI":       "Ungültige API: __api__",
+            "invalidParams":    "Ungültige Parameter für API-Aufruf",
+            "empty":            "(nichts angegeben)"
         }
     }
 }

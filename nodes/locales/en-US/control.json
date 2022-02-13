@@ -3,165 +3,183 @@
     {
         "label":
         {
-            "inputPort":      "trigger/overrides",
-            "responsePort":   "response",
-            "name":           "Name",
-            "input":          "Input",
-            "response":       "Response",
-            "enableTopic":    "Treat topic as command / request type",
-            "enableLowLevel": "Enable low-level override",
-            "command":        "Command",
-            "audioSource":    "Source",
-            "swSource":       "Source",
-            "networkUpdate":  "Software Update from Network",
-            "volume":         "Volume",
-            "relativeVolume": "Relative Volume",
-            "setting":        "Setting",
-            "settings":       "Settings",
-            "mode":           "Setting",
-            "modes":          "Settings",
-            "port":           "Port",
-            "preset":         "Preset",
-            "zone":           "Zone",
-            "allZones":       "All Zones",
-            "switchedOn":     "Switched On"
+            "inputPort":       "trigger",
+            "outputPort":      "response",
+            "action":          "Action",
+            "control":         "control device",
+            "retrieve":        "retrieve data",
+            "callAPI":         "call API",
+            "api":             "API",
+            "params":          "Parameters",
+            "audioSource":     "Source",
+            "options":         "Options",
+            "networkUpdate":   "Check online for software updates",
+            "volume":          "Volume",
+            "relativeVolume":  "Relative volume",
+            "setting":         "Setting",
+            "settings":        "Settings",
+            "mode":            "Setting",
+            "modes":           "Settings",
+            "port":            "Port",
+            "preset":          "Preset",
+            "zone":            "Zone",
+            "allZones":        "All zones",
+            "switchedOn":      "Switched On",
+            "msgPassThrough":  "Pass incoming messages on to the output"
         },
         "list":
         {
-            "command":
+            "control":
             {
-                "getPowerStatus":      "Get Power Status",
-                "powerOn":             "Power ON",
-                "powerOff":            "Power OFF",
-                "standBy":             "Standby",
-                "getSWUpdateInfo":     "Get SW-Update Information",
-                "reconnect":           "Reconnect",
-                "getVolumeInfo":       "Get Volume Information",
-                "setVolume":           "Set Volume",
-                "mute":                "Mute",
-                "unmute":              "Unmute",
-                "toggleMute":          "Toggle Mute",
-                "getSoundSettings":    "Get Sound Settings",
-                "setSoundSettings":    "Set Sound Settings",
-                "getSpeakerSettings":  "Get Speaker Settings",
-                "setSpeakerSettings":  "Set Speaker Settings",
-                "getSource":           "Get Source",
-                "setSource":           "Set Source",
-                "getPlaybackSettings": "Get Playback Settings",
-                "setPlaybackSettings": "Set Playback Settings",
-                "stop":                "Stop",
-                "togglePause":         "Toggle Pause",
-                "skipPrev":            "Skip Previous",
-                "skipNext":            "Skip Next",
-                "scanBackward":        "Scan Backward",
-                "scanForward":         "Scan Forward"
+                "powerOn":              "power on",
+                "powerOff":             "power off",
+                "standBy":              "stand by",
+                "reconnect":            "reconnect",
+                "setVolume":            "set volume",
+                "mute":                 "mute",
+                "unmute":               "unmute",
+                "toggleMute":           "toggle mute",
+                "setSource":            "set source",
+                "setSoundSettings":     "set sound settings",
+                "setSpeakerSettings":   "set speaker settings",
+                "setPlaybackSettings":  "set playback settings",
+                "stop":                 "stop",
+                "togglePause":          "toggle pause",
+                "skipPrev":             "skip previous",
+                "skipNext":             "skip next",
+                "scanBackward":         "scan backward",
+                "scanForward":          "scan forward"
+            },
+            "retrieve":
+            {
+                "getPowerStatus":       "get power status",
+                "getSWUpdateInfo":      "get software update information",
+                "getVolumeInfo":        "get volume information",
+                "getSource":            "get source",
+                "getSoundSettings":     "get sound settings",
+                "getSpeakerSettings":   "get speaker settings",
+                "getPlaybackSettings":  "get playback settings"
             },
             "source":
             {
-                "tv":      "TV",
-                "satcatv": "SAT/CATV",
-                "hdmi":    "HDMI",
-                "video":   "Video",
-                "sacdcd":  "SACD/CD",
-                "bddvd":   "BD/DVD",
-                "usb":     "USB Storage",
-                "line":    "Audio Line In",
-                "bt":      "Bluetooth Audio",
-                "dlna":    "DLNA",
-                "fm":      "FM Radio",
-                "game":    "Game",
-                "source":  "Source"
+                "tv":       "TV",
+                "satcatv":  "SAT/CATV",
+                "hdmi":     "HDMI",
+                "video":    "Video",
+                "sacdcd":   "SACD/CD",
+                "bddvd":    "BD/DVD",
+                "usb":      "USB Storage",
+                "line":     "Audio Line In",
+                "bt":       "Bluetooth Audio",
+                "dlna":     "DLNA",
+                "fm":       "FM Radio",
+                "game":     "Game",
+                "source":   "Source"
             },
             "soundTarget":
             {
-                "all":          "All",
-                "soundField":   "Sound Field",
-                "clearAudio":   "Clear Audio +",
-                "nightMode":    "Night Mode",
-                "footballMode": "Football Mode",
-                "voice":        "Voice"
+                "all":           "All",
+                "soundField":    "Sound Field",
+                "clearAudio":    "Clear Audio +",
+                "nightMode":     "Night Mode",
+                "footballMode":  "Football Mode",
+                "voice":         "Voice"
             },
             "soundField":
             {
-                "off":        "Off",
-                "standard":   "Standard",
-                "clearAudio": "Clear Audio +",
-                "music":      "Music",
-                "movie":      "Movie",
-                "sports":     "Sports",
-                "game":       "Game"
+                "off":         "Off",
+                "standard":    "Standard",
+                "clearAudio":  "Clear Audio +",
+                "music":       "Music",
+                "movie":       "Movie",
+                "sports":      "Sports",
+                "game":        "Game"
             },
             "voiceType":
             {
-                "type1": "Type 1",
-                "type2": "Type 2",
-                "type3": "Type 3"
+                "type1":  "Type 1",
+                "type2":  "Type 2",
+                "type3":  "Type 3"
             },
             "speakerTarget":
             {
-                "all":                   "All",
-                "inCeilingSpeakerMode":  "In-Ceiling Speaker",
-                "speakerSelection":      "Speakers",
-                "frontLLevel":           "Front Left",
-                "frontRLevel":           "Front Right",
-                "centerLevel":           "Center",
-                "surroundLLevel":        "Surround Left",
-                "surroundRLevel":        "Surround Right",
-                "surroundcBackLevel":    "Surround Back Center",
-                "surroundBackLLevel":    "Surround Back Left",
-                "surroundBackRLevel":    "Surround Back Right",
-                "heightLLevel":          "Height Left",
-                "heightRLevel":          "Height Right",
-                "subwooferLevel":        "Subwoofer"
+                "all":                    "All",
+                "inCeilingSpeakerMode":   "In-Ceiling Speaker",
+                "speakerSelection":       "Speakers",
+                "frontLLevel":            "Front Left",
+                "frontRLevel":            "Front Right",
+                "centerLevel":            "Center",
+                "surroundLLevel":         "Surround Left",
+                "surroundRLevel":         "Surround Right",
+                "surroundcBackLevel":     "Surround Back Center",
+                "surroundBackLLevel":     "Surround Back Left",
+                "surroundBackRLevel":     "Surround Back Right",
+                "heightLLevel":           "Height Left",
+                "heightRLevel":           "Height Right",
+                "subwooferLevel":         "Subwoofer"
             },
             "inCeilingSpeakerMode":
             {
-                "off":           "Off",
-                "front":         "Front",
-                "front_center":  "Front and Center"
+                "off":            "Off",
+                "front":          "Front",
+                "front_center":   "Front and Center"
             },
             "speakerSelection":
             {
-                "off":         "Off",
-                "speakerA":    "Speaker A",
-                "speakerB":    "Speaker B",
-                "speakerA_B":  "Speaker A and B"
+                "off":          "Off",
+                "speakerA":     "Speaker A",
+                "speakerB":     "Speaker B",
+                "speakerA_B":   "Speaker A and B"
             },
             "modeTarget":
             {
-                "all":         "All",
-                "playType":    "Playback",
-                "repeatType":  "Repeat",
-                "shuffleType": "Shuffle"
+                "all":           "All",
+                "playType":      "Playback",
+                "repeatType":    "Repeat",
+                "shuffleType":   "Shuffle",
+                "autoPlayback":  "Auto Playback"
             },
             "playType":
             {
-                "normal":       "Normal",
-                "repeatAll":    "Folder",
-                "repeatFolder": "Repeat All",
-                "repeatTrack":  "Repeat Track",
-                "shuffleAll":   "Shuffle All"
+                "normal":        "Normal",
+                "repeatAll":     "Folder",
+                "repeatFolder":  "Repeat All",
+                "repeatTrack":   "Repeat Track",
+                "shuffleAll":    "Shuffle All"
             },
             "repeatType":
             {
-                "off":     "Off",
-                "all":     "All",
-                "folder":  "Folder",
-                "track":   "Track",
-                "chapter": "Chapter"
+                "off":      "Off",
+                "all":      "All",
+                "folder":   "Folder",
+                "track":    "Track",
+                "chapter":  "Chapter"
             },
             "shuffleType":
             {
-                "off":    "Off",
-                "folder": "Folder"
+                "off":     "Off",
+                "folder":  "Folder"
+            },
+            "switch":
+            {
+                "off":  "Off",
+                "on":   "On"
             }
         },
         "status":
         {
-            "configurationErrors": "configuration errors",
-            "sending":             "sending",
-            "success":             "success",
-            "error":               "error"
+            "unconfigured":   "unconfigured",
+            "misconfigured":  "configuration errors",
+            "sending":        "sending",
+            "success":        "success",
+            "error":          "error"
+        },
+        "error":
+        {
+            "invalidSettings":  "Invalid sound/speaker/playback settings",
+            "invalidAPI":       "Invalid API: __api__",
+            "invalidParams":    "Invalid parameters for API call",
+            "empty":            "(nothing specified)"
         }
     }
 }

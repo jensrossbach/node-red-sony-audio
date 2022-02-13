@@ -37,7 +37,7 @@ module.exports = function(RED)
     let deviceList = [];
 
 
-    RED.httpAdmin.get("/sony_audio_devices", RED.auth.needsPermission("sony-audio.read"), function(req, res)
+    RED.httpAdmin.get("/sonyaudio_devices", RED.auth.needsPermission("sonyaudio.read"), function(req, res)
     {
         if (req.query.type === "cached")
         {
@@ -137,7 +137,7 @@ module.exports = function(RED)
             });
         }
 
-        sendRequest(service, method, version, args)
+        sendRequest(service, method, version, params)
         {
             return new Promise((resolve, reject) =>
             {
@@ -145,7 +145,7 @@ module.exports = function(RED)
                 const body = {id: 1,
                               method: method,
                               version: version,
-                              params: (args == null) ? [] : [args]};
+                              params: (params == null) ? [] : [params]};
 
                 this.trace(JSON.stringify(body));
                 httpRequest(uri, {method: "post", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)})
@@ -164,12 +164,13 @@ module.exports = function(RED)
                 {
                     if ("result" in data)
                     {
-                        let respMsg = {service: service,
+                        let respMsg = {host: this.host,
+                                       service: service,
                                        method: method,
                                        version: version,
-                                       payload: (data.result.length == 1) ? data.result[0] : null};
+                                       payload: (data.result.length == 0) ? null : data.result[0]};
 
-                        // this.debug(JSON.stringify(respMsg));
+                        this.trace(JSON.stringify(respMsg));
                         resolve(respMsg);
                     }
                     else if ("error" in data)
@@ -287,5 +288,5 @@ module.exports = function(RED)
         return ret;
     }
 
-    RED.nodes.registerType("sony-audio-device", SonyAudioDeviceNode);
+    RED.nodes.registerType("sonyaudio-device", SonyAudioDeviceNode);
 };

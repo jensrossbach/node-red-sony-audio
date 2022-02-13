@@ -22,10 +22,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 
-<script type="text/x-red" data-help-name="sony-audio-device">
+<script type="text/html" data-help-name="sonyaudio-device">
     <p>
         Node to configure a Sony audio device supporting the Sony Audio Control API.
     </p>
+    <p style="margin-bottom: 15px;"></p>
     <h3>Details</h3>
     <p>
         Please configure the networt parameters of your Sony audio device so
@@ -33,23 +34,22 @@ SOFTWARE.
         You can create multiple configuration nodes if you have more than one
         Sony audio device.
     </p>
+    <p style="margin-bottom: 15px;"></p>
     <h3>Configuration</h3>
     <dt>Name</dt>
-    <dd>
-        Optionally specify a name for the configuration.
-    </dd>
+    <dd>A name for the node (optional).</dd>
     <dt>Host</dt>
-    <dd>
-        Specify the host (IP address or host name) of the device.
-    </dd>
+    <dd>The IP address of the device.</dd>
     <dt>Port</dt>
     <dd>
-        Specify the port for the API service.
+        The IP port for the API service. Usually this is 10000 for soundbars and
+        receivers as well as 54480 for wireless speakers.
     </dd>
     <dt>Discovery</dt>
     <dd>
         Press the refresh button to search for available Sony audio devices in the
-        network. Then select an appropriate device from the list.
+        network. Then select an appropriate device from the list which will fill
+        out the fields for name, host and port.
     </dd>
     <dt>Extended recovery on connection loss</dt>
     <dd>
@@ -58,11 +58,9 @@ SOFTWARE.
     </dd>
     <dt>Retries</dt>
     <dd>
-        Specify the maximum number of retries to attempt a reconnection. A value
-        of 0 means infinite retries.
+        The maximum number of retries to attempt a reconnection. A value of 0
+        means infinite retries.
     </dd>
     <dt>Retry Delay</dt>
-    <dd>
-        Specify the delay in seconds between failed reconnection and next retry.
-    </dd>
+    <dd>The delay in seconds between failed reconnection and next retry.</dd>
 </script>

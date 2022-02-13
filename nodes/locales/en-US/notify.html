@@ -22,109 +22,103 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 
-<script type="text/x-red" data-help-name="sony-audio-notify">
+<script type="text/html" data-help-name="sonyaudio-notify">
     <p>
         Notifies an event from a Sony audio device via the Sony Audio Control API.
     </p>
+    <p style="margin-bottom: 15px;"></p>
     <h3>Details</h3>
     <p>
-        This node listens for notifications and provides the event data.
+        This node listens for notifications and emits the event data in
+        configurable form once arriving.
+    </p>
+    <p>
+        A comprehensive documentation of the configuration possibilies including
+        examples can be found in the <a href="https://github.com/jensrossbach/node-red-contrib-sony-audio-v2/wiki/Notify-Node">wiki</a>
+        of the repository.
     </p>
     <p>
         See Sony <a href="https://developer.sony.com/develop/audio-control-api/api-references/api-overview-2">Audio Control API</a>
         reference for more details about the notification methods and their parameters.
     </p>
-    <h3>Configuration</h3>
+    <p style="margin-bottom: 15px;"></p>
+    <h3>General configuration</h3>
     <dt>Name</dt>
-    <dd>Optionally specify a name for the node.</dd>
+    <dd>A name for the node (optional).</dd>
     <dt>Device</dt>
-    <dd>Select / configure the Sony audio device.</dd>
-    <dt>Topic</dt>
+    <dd>The Sony audio device to connect to.</dd>
+    <p style="margin-bottom: 15px;"></p>
+    <h3>Notification configuration</h3>
+    <dt>Events</dt>
+    <dd>The service and the notifications to subscribe to.</dd>
+    <p style="margin-bottom: 15px;"></p>
+    <h3>Output configuration</h3>
+    <p>
+        Here you can define rules that form the output message or set
+        context variables in the event of an incoming notification. Each
+        entry in the list stands for a rule setting either a message
+        property, a global or a flow variable.
+    </p>
+    <p>
+        For each rule, you can select the type of content to be applied:
+    </p>
+    <dt>Filtered data</dt>
     <dd>
-        Specify the topic which should be included in the output messages. If
-        left blank, no topic is added to the messages. You can use placeholders
-        in the form <code>{{placeholder}}</code> to insert variable content.
-        The following placeholders are supported:
+        Filters the raw data coming from the device using different
+        criteria. The 'auto' filter selects a filter automatically
+        matching the notification method. Non-matching filters will
+        not set the property/variable.
+    </dd>
+    <dt>Unfiltered data</dt>
+    <dd>
+        Either the complete block of unprocessed data as it comes from
+        the device or a specific part from it. The payload contains the
+        first (and only) element of the parameters data.
+    </dd>
+    <dt>Env variable</dt>
+    <dd>An environment variable or a text including environment variables.</dd>
+    <dt>String</dt>
+    <dd>
+        Text which can contain placeholders in the form <code>{{placeholder}}</code>
+        to insert variable content. The following placeholders are supported:
     </dd>
     <dl class="message-properties">
-        <dt>device<span class="property-type">string</span></dt>
-        <dd>the name of the device node</dd>
-        <dt>notify<span class="property-type">string</span></dt>
-        <dd>the name of this node</dd>
         <dt>host<span class="property-type">string</span></dt>
-        <dd>the host name / IP address of the device</dd>
+        <dd>the IP address of the device</dd>
         <dt>service<span class="property-type">string</span></dt>
         <dd>the API service name</dd>
         <dt>method<span class="property-type">string</span></dt>
         <dd>the API method name</dd>
         <dt>version<span class="property-type">string</span></dt>
         <dd>the API version number</dd>
+        <dt>payload<span class="property-type">object</span></dt>
+        <dd>the payload containing the parameters of the notification</dd>
     </dl>
-    <dt>Outputs</dt>
-    <dd>Select the outputs to be provided by the node.</dd>
-    <dt>Service</dt>
-    <dd>Select the service for the events you want to get notified for.</dd>
-    <dt>Events</dt>
+    <dt>Number</dt>
+    <dd>An arbitrary fixed number.</dd>
+    <dt>Boolean</dt>
+    <dd>A fixed boolean value (true or false).</dd>
+    <dt>JSON</dt>
+    <dd>Fixed content specified in JSON format.</dd>
+    <dt>Expression</dt>
     <dd>
-        Select one or more notifications to subscribe for corresponding to the
-        selected service.
+        A JSONata expression to create dynamic content depending
+        on the original data coming from the device. The attributes
+        have the same names as the string placeholders, see above.
+        Return <code>undefined</code> in order to not set the
+        property/variable.
     </dd>
-    <dt>Filters</dt>
-    <dd>
-        You can use filters to filter the event data by certain criteria. Add,
-        remove or reorder filters and select the type of filter. The number on
-        the right side shows the number of the output to which the result of
-        the filter will be sent. The auto filter automatically selects a filter
-        matching the type of the notification. The custom filter lets you define
-        the filter yourself based on a JSONata expression. The expression can
-        be directly entered or loaded from a global or flow context variable.
-    </dd>
-    <h3>Outputs</h3>
+    <dt>Buffer</dt>
+    <dd>A fixed binary buffer.</dd>
+    <dt>Timestamp</dt>
+    <dd>The time when the notification arrives.</dd>
+    <p></p>
     <p>
-        The node provides a variable number of outputs which can be selected via
-        the configuration page. By default, only the <i>Filter</i> outputs are
-        active.
+        The checkbox option below the output list defines the behavior if
+        a message shall be sent only if <code>msg.payload</code> has been
+        set by one of the property rules or always when a notification comes
+        from the device. Activate the checkbox if you for instance want to
+        prevent a message from being sent in case a filter rule did not match
+        the notification method.
     </p>
-    <ol class="node-ports">
-        <li>Filters
-            <p>
-                Each configured filter provides a dedicated output port to
-                which its filtered data is sent.
-            </p>
-            <dl class="message-properties">
-                <dt class="optional">topic<span class="property-type">string</span></dt>
-                <dd>
-                    the configured topic with placeholders being substituted
-                    by dynamic content.
-                </dd>
-                <dt>payload<span class="property-type">boolean | number | string | object</span></dt>
-                <dd>
-                    the filtered data of the received notification; messages
-                    are only sent on these ports if the event data is
-                    applicable to any of the filters.
-                </dd>
-            </dl>
-        </li>
-        <li>Event
-            <p>
-                Contains the raw / low-level event data as sent by the Audio
-                Control API.
-            </p>
-            <dl class="message-properties">
-                <dt class="optional">topic<span class="property-type">string</span></dt>
-                <dd>
-                    the configured topic with placeholders being substituted
-                    by dynamic content.
-                </dd>
-                <dt>service<span class="property-type">string</span></dt>
-                <dd>the API service name</dd>
-                <dt>method<span class="property-type">string</span></dt>
-                <dd>the API method name</dd>
-                <dt>version<span class="property-type">string</span></dt>
-                <dd>the API version number</dd>
-                <dt>payload<span class="property-type">object</span></dt>
-                <dd>the event data</dd>
-            </dl>
-        </li>
-    </ol>
 </script>

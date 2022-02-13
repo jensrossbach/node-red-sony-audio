@@ -24,504 +24,201 @@
 
 module.exports = function(RED)
 {
-    const STATUS_TEMP_DURATION = 5000;
-
-    const STATUS_UNCONFIGURED  = {fill: "yellow", shape: "dot", text: "node-red-contrib-sony-audio/sony-audio-device:common.status.unconfigured"};
-    const STATUS_MISCONFIGURED = {fill: "yellow", shape: "dot", text: "control.status.configurationErrors"                                   };
-    const STATUS_SENDING       = {fill: "grey",   shape: "dot", text: "control.status.sending"                                               };
-    const STATUS_SUCCESS       = {fill: "green",  shape: "dot", text: "control.status.success"                                               };
-    const STATUS_ERROR         = {fill: "red",    shape: "dot", text: "control.status.error"                                                 };
-
-    const Handlebars = require("handlebars");
-    const APIFilter = require("./common/output.js");
-
-
     function SonyAudioControlNode(config)
     {
-        let node = this;
+        const STATUS_TEMP_DURATION = 5000;
 
+        const STATUS_UNCONFIGURED  = {fill: "yellow", shape: "dot", text: "control.status.unconfigured" };
+        const STATUS_MISCONFIGURED = {fill: "yellow", shape: "dot", text: "control.status.misconfigured"};
+        const STATUS_SENDING       = {fill: "grey",   shape: "dot", text: "control.status.sending"      };
+        const STATUS_SUCCESS       = {fill: "green",  shape: "dot", text: "control.status.success"      };
+        const STATUS_ERROR         = {fill: "red",    shape: "dot", text: "control.status.error"        };
+
+        const Utils = require("./common/utils.js");
+        const Nunjucks = require("nunjucks");
+
+        const node = this;
         RED.nodes.createNode(node, config);
 
-        node.config = config;
-        node.name = config.name;
-        node.device = RED.nodes.getNode(config.device);
-
-        node.applyTemplate = node.config.topic ? Handlebars.compile(node.config.topic) : null;
         node.timeout = null;
+        node.output = [];
 
-        // backward compatibility
-        if (typeof node.config.enableLowLevel == "undefined") { node.config.enableLowLevel = true; }
-        if (typeof node.config.preset == "undefined") { node.config.preset = 0; }
-
-        if (node.device)
+        node.device = RED.nodes.getNode(config.device);
+        if (!node.device)
         {
-            if (((node.config.command == "setSoundSettings") &&
-                 (node.config.soundSettings.length == 0)) ||
-                ((node.config.command == "setSpeakerSettings") &&
-                 (node.config.speakerSettings.length == 0)) ||
-                (((node.config.command == "setPlaybackSettings") ||
-                  (node.config.command == "setPlaybackModes")) &&  // backward compatibility
-                 (node.config.modeSettings.length == 0)))
-            {
-                setStatus(STATUS_MISCONFIGURED);
-            }
-            else
-            {
-                setStatus();
-            }
+            node.error(RED._("control.error.unconfigured"));
+            setStatus(STATUS_UNCONFIGURED);
+        }
+        else if (!validateConfiguration() ||
+                 !Utils.validateOutputProperties(RED, node, config.outputProperties, node.output, true))
+        {
+            setStatus(STATUS_MISCONFIGURED);
+        }
+        else
+        {
+            setStatus();
 
             node.on("input", function(msg, send, done)
             {
-                let context = {msg: msg};
+                const context = {msg: msg};
 
-                if (send)
+                if (!send || !done)
                 {
-                    context.send = send;
-                }
-                else
-                {
-                    // Node-RED 0.x backward compatibility
-                    context.send = function() { node.send.apply(node, arguments); };
+                    // no support for Node-RED prior to version 1.0 anymore
+                    return;
                 }
 
-                if (done)
+                context.send = send;
+                context.done = done;
+
+                try
                 {
-                    context.done = done;
-                    context.error = done;
-                }
-                else
-                {
-                    // Node-RED 0.x backward compatibility
-                    context.done = function() {};
-                    context.error = function()
+                    const request = createAPICall(context);
+                    if (request)
                     {
-                        let args = [...arguments];
-                        args.push(msg);
-                        node.error.apply(node, args);
-                    };
-                }
-
-                let api = null;
-                let cmd = null;
-                if (node.config.enableTopic && msg.topic && (typeof msg.topic == "string"))
-                {
-                    api = getAPIFromTopic(msg.topic);
-
-                    if (!api)
-                    {
-                        cmd = msg.topic;
+                        sendRequest(context,
+                                    request.service,
+                                    request.method,
+                                    request.version,
+                                    request.params);
                     }
-                }
-
-                if (!api && node.config.enableLowLevel)
-                {
-                    api = getAPIFromMessage(msg);
-                }
-
-                if (api)
-                {
-                    sendRequest(context,
-                                api.service,
-                                api.method,
-                                api.version,
-                                msg.payload);
-                }
-                else
-                {
-                    if (!cmd)
+                    else
                     {
-                        cmd = (typeof msg.command == "string") ? msg.command : node.config.command;
-                    }
-
-                    let parts = cmd.split(":");
-                    context.command = parts[0];
-                    if (parts.length > 1)
-                    {
-                        context.suffix = parts[1];
-                    }
-
-                    switch (context.command)
-                    {
-                        case "powerOn":
+                        switch (config.action)
                         {
-                            setPowerStatus(context, "active");
-                            break;
-                        }
-                        case "powerOff":
-                        {
-                            setPowerStatus(context, "off");
-                            break;
-                        }
-                        case "standBy":
-                        {
-                            setPowerStatus(context, "standby");
-                            break;
-                        }
-                        case "reconnect":
-                        {
-                            node.device.reconnect();
-                            setStatus(STATUS_SUCCESS, STATUS_TEMP_DURATION);
-
-                            break;
-                        }
-                        case "setVolume":
-                        {
-                            let args = {volume: parseInt(node.config.volume),
-                                        relativeVolume: node.config.relativeVolume,
-                                        zone: parseInt(node.config.zone)};
-
-                            if (msg.payload && (typeof msg.payload == "object"))
+                            case "powerOn":
                             {
-                                if (typeof msg.payload.volume == "object")
-                                {
-                                    if (typeof msg.payload.volume.absolute == "number")
-                                    {
-                                        args.volume = msg.payload.volume.absolute;
-                                        args.relativeVolume = false;
-                                    }
-
-                                    if (typeof msg.payload.volume.relative == "number")
-                                    {
-                                        args.volume = msg.payload.volume.relative;
-                                        args.relativeVolume = true;
-                                    }
-                                }
-
-                                if (typeof msg.payload.zone == "number")
-                                {
-                                    args.zone = msg.payload.zone;
-                                }
+                                setPowerStatus(context, "active");
+                                break;
                             }
-                            else if (typeof msg.payload == "number")
+                            case "powerOff":
                             {
-                                args.volume = msg.payload;
-
-                                if (context.suffix === "absolute")
-                                {
-                                    args.relativeVolume = false;
-                                }
-                                else if (context.suffix === "relative")
-                                {
-                                    args.relativeVolume = true;
-                                }
+                                setPowerStatus(context, "off");
+                                break;
                             }
-
-                            if ((args.relativeVolume && (args.volume == 0)) ||
-                                (!args.relativeVolume && (args.volume < 0)))
+                            case "standBy":
                             {
-                                setStatus(STATUS_ERROR, STATUS_TEMP_DURATION);
-                                context.error("Invalid " + (args.relativeVolume ? "relative" : "absolute") + " volume: " + args.volume);
+                                setPowerStatus(context, "standby");
+                                break;
+                            }
+                            case "reconnect":
+                            {
+                                node.device.reconnect();
+                                setStatus(STATUS_SUCCESS, STATUS_TEMP_DURATION);
 
                                 break;
                             }
-
-                            setAudioVolume(context, args.volume, args.relativeVolume, args.zone);
-                            break;
-                        }
-                        case "mute":
-                        {
-                            let args = {zone: parseInt(node.config.zone)};
-
-                            if (msg.payload &&
-                                (typeof msg.payload == "object") &&
-                                (typeof msg.payload.zone == "number"))
+                            case "setVolume":
                             {
-                                args.zone = msg.payload.zone;
+                                setAudioVolume(context, parseInt(config.volume), config.relativeVolume, parseInt(config.zone));
+                                break;
                             }
-
-                            setAudioMute(context, "on", args.zone);
-                            break;
-                        }
-                        case "unmute":
-                        {
-                            let args = {zone: parseInt(node.config.zone)};
-
-                            if (msg.payload &&
-                                (typeof msg.payload == "object") &&
-                                (typeof msg.payload.zone == "number"))
+                            case "mute":
                             {
-                                args.zone = msg.payload.zone;
+                                setAudioMute(context, "on", parseInt(config.zone));
+                                break;
                             }
-
-                            setAudioMute(context, "off", args.zone);
-                            break;
-                        }
-                        case "toggleMute":
-                        {
-                            let args = {zone: parseInt(node.config.zone)};
-
-                            if (msg.payload &&
-                                (typeof msg.payload == "object") &&
-                                (typeof msg.payload.zone == "number"))
+                            case "unmute":
                             {
-                                args.zone = msg.payload.zone;
+                                setAudioMute(context, "off", parseInt(config.zone));
+                                break;
                             }
-
-                            setAudioMute(context, "toggle", args.zone);
-                            break;
-                        }
-                        case "setSoundSettings":
-                        {
-                            let args = {soundSettings: node.config.soundSettings};
-
-                            if (msg.payload &&
-                                (typeof msg.payload == "object") &&
-                                Array.isArray(msg.payload.settings))
+                            case "toggleMute":
                             {
-                                args.soundSettings = msg.payload.settings;
+                                setAudioMute(context, "toggle", parseInt(config.zone));
+                                break;
                             }
-
-                            setSoundSettings(context, args.soundSettings);
-                            break;
-                        }
-                        case "setSpeakerSettings":
-                        {
-                            let args = {speakerSettings: node.config.speakerSettings};
-
-                            if (msg.payload &&
-                                (typeof msg.payload == "object") &&
-                                Array.isArray(msg.payload.settings))
+                            case "setSoundSettings":
                             {
-                                args.speakerSettings = msg.payload.settings;
+                                setSoundSettings(context, config.soundSettings);
+                                break;
                             }
-
-                            setSpeakerSettings(context, args.speakerSettings);
-                            break;
-                        }
-                        case "setSource":
-                        {
-                            let args = {source: node.config.source,
-                                        port: parseInt(node.config.port),
-                                        preset: parseInt(node.config.preset),
-                                        zone: parseInt(node.config.zone)};
-
-                            if (msg.payload && (typeof msg.payload == "object"))
+                            case "setSpeakerSettings":
                             {
-                                if (msg.payload.source && (typeof msg.payload.source == "object"))
-                                {
-                                    if ((typeof msg.payload.source.scheme == "string") &&
-                                        (typeof msg.payload.source.resource == "string"))
-                                    {
-                                        args.source = msg.payload.source.scheme + ":" + msg.payload.source.resource;
-                                    }
-
-                                    if (typeof msg.payload.source.port == "number")
-                                    {
-                                        args.port = msg.payload.source.port;
-                                    }
-
-                                    if (typeof msg.payload.source.preset == "number")
-                                    {
-                                        args.preset = msg.payload.source.preset;
-                                    }
-                                }
-
-                                if (typeof msg.payload.zone == "number")
-                                {
-                                    args.zone = msg.payload.zone;
-                                }
+                                setSpeakerSettings(context, config.speakerSettings);
+                                break;
                             }
-
-                            setPlayContent(context, args.source, args.port, args.preset, args.zone);
-                            break;
-                        }
-                        case "setPlaybackModes":  // backward compatibility
-                        case "setPlaybackSettings":
-                        {
-                            let args = {modeSettings: node.config.modeSettings};
-
-                            if (msg.payload &&
-                                (typeof msg.payload == "object") &&
-                                Array.isArray(msg.payload.settings))
+                            case "setSource":
                             {
-                                args.modeSettings = msg.payload.settings;
+                                setPlayContent(context, config.source, parseInt(config.port), parseInt(config.preset), parseInt(config.zone));
+                                break;
                             }
-
-                            setPlaybackModeSettings(context, args.modeSettings);
-                            break;
-                        }
-                        case "stop":
-                        {
-                            let args = {zone: parseInt(node.config.zone)};
-
-                            if (msg.payload &&
-                                (typeof msg.payload == "object") &&
-                                (typeof msg.payload.zone == "number"))
+                            case "setPlaybackSettings":
                             {
-                                args.zone = msg.payload.zone;
+                                setPlaybackModeSettings(context, config.modeSettings);
+                                break;
                             }
-
-                            stopPlayingContent(context, args.zone);
-                            break;
-                        }
-                        case "togglePause":
-                        {
-                            let args = {zone: parseInt(node.config.zone)};
-
-                            if (msg.payload &&
-                                (typeof msg.payload == "object") &&
-                                (typeof msg.payload.zone == "number"))
+                            case "stop":
                             {
-                                args.zone = msg.payload.zone;
+                                stopPlayingContent(context, parseInt(config.zone));
+                                break;
                             }
-
-                            pausePlayingContent(context, args.zone);
-                            break;
-                        }
-                        case "skipPrev":
-                        {
-                            let args = {zone: parseInt(node.config.zone)};
-
-                            if (msg.payload &&
-                                (typeof msg.payload == "object") &&
-                                (typeof msg.payload.zone == "number"))
+                            case "togglePause":
                             {
-                                args.zone = msg.payload.zone;
+                                pausePlayingContent(context, parseInt(config.zone));
+                                break;
                             }
-
-                            setPlayPreviousContent(context, args.zone);
-                            break;
-                        }
-                        case "skipNext":
-                        {
-                            let args = {zone: parseInt(node.config.zone)};
-
-                            if (msg.payload &&
-                                (typeof msg.payload == "object") &&
-                                (typeof msg.payload.zone == "number"))
+                            case "skipPrev":
                             {
-                                args.zone = msg.payload.zone;
+                                setPlayPreviousContent(context, parseInt(config.zone));
+                                break;
                             }
-
-                            setPlayNextContent(context, args.zone);
-                            break;
-                        }
-                        case "scanBackward":
-                        {
-                            let args = {zone: parseInt(node.config.zone)};
-
-                            if (msg.payload &&
-                                (typeof msg.payload == "object") &&
-                                (typeof msg.payload.zone == "number"))
+                            case "skipNext":
                             {
-                                args.zone = msg.payload.zone;
+                                setPlayNextContent(context, parseInt(config.zone));
+                                break;
                             }
-
-                            scanPlayingContent(context, false, args.zone);
-                            break;
-                        }
-                        case "scanForward":
-                        {
-                            let args = {zone: parseInt(node.config.zone)};
-
-                            if (msg.payload &&
-                                (typeof msg.payload == "object") &&
-                                (typeof msg.payload.zone == "number"))
+                            case "scanBackward":
                             {
-                                args.zone = msg.payload.zone;
+                                scanPlayingContent(context, false, parseInt(config.zone));
+                                break;
                             }
-
-                            scanPlayingContent(context, true, args.zone);
-                            break;
-                        }
-                        case "getPowerStatus":
-                        {
-                            getPowerStatus(context);
-                            break;
-                        }
-                        case "getSWUpdateInfo":
-                        {
-                            let args = {network: node.config.networkUpdate};
-
-                            if (msg.payload &&
-                                (typeof msg.payload == "object") &&
-                                (typeof msg.payload.network == "boolean"))
+                            case "scanForward":
                             {
-                                args.network = msg.payload.network;
+                                scanPlayingContent(context, true, parseInt(config.zone));
+                                break;
                             }
-
-                            getSWUpdateInfo(context, args.network);
-                            break;
-                        }
-                        case "getSource":
-                        {
-                            let args = {zone: parseInt(node.config.zone)};
-
-                            if (msg.payload &&
-                                (typeof msg.payload == "object") &&
-                                (typeof msg.payload.zone == "number"))
+                            case "getPowerStatus":
                             {
-                                args.zone = msg.payload.zone;
+                                getPowerStatus(context);
+                                break;
                             }
-
-                            getPlayingContentInfo(context, args.zone);
-                            break;
-                        }
-                        case "getVolumeInfo":
-                        {
-                            let args = {zone: parseInt(node.config.zone)};
-
-                            if (msg.payload &&
-                                (typeof msg.payload == "object") &&
-                                (typeof msg.payload.zone == "number"))
+                            case "getSWUpdateInfo":
                             {
-                                args.zone = msg.payload.zone;
+                                getSWUpdateInfo(context, config.networkUpdate);
+                                break;
                             }
-
-                            getVolumeInfo(context, args.zone);
-                            break;
-                        }
-                        case "getSoundSettings":
-                        {
-                            let args = {target: (node.config.soundTarget == "all") ? "" : node.config.soundTarget};
-
-                            if (msg.payload &&
-                                (typeof msg.payload == "object") &&
-                                (typeof msg.payload.target == "string"))
+                            case "getSource":
                             {
-                                args.target = (msg.payload.target == "all") ? "" : msg.payload.target;
+                                getPlayingContentInfo(context, parseInt(config.zone));
+                                break;
                             }
-
-                            getSoundSettings(context, args.target);
-                            break;
-                        }
-                        case "getSpeakerSettings":
-                        {
-                            let args = {target: (node.config.speakerTarget == "all") ? "" : node.config.speakerTarget};
-
-                            if (msg.payload &&
-                                (typeof msg.payload == "object") &&
-                                (typeof msg.payload.target == "string"))
+                            case "getVolumeInfo":
                             {
-                                args.target = (msg.payload.target == "all") ? "" : msg.payload.target;
+                                getVolumeInfo(context, parseInt(config.zone));
+                                break;
                             }
-
-                            getSpeakerSettings(context, args.target);
-                            break;
-                        }
-                        case "getPlaybackModes":  // backward compatibility
-                        case "getPlaybackSettings":
-                        {
-                            let args = {target: (node.config.modeTarget == "all") ? "" : node.config.modeTarget};
-
-                            if (msg.payload &&
-                                (typeof msg.payload == "object") &&
-                                (typeof msg.payload.target == "string"))
+                            case "getSoundSettings":
                             {
-                                args.target = (msg.payload.target == "all") ? "" : msg.payload.target;
+                                getSoundSettings(context, (config.soundTarget == "all") ? "" : config.soundTarget);
+                                break;
                             }
-
-                            getPlaybackModeSettings(context, args.target);
-                            break;
-                        }
-                        default:
-                        {
-                            setStatus(STATUS_ERROR, STATUS_TEMP_DURATION);
-                            context.error("Invalid command: " + context.command);
-
-                            break;
+                            case "getSpeakerSettings":
+                            {
+                                getSpeakerSettings(context, (config.speakerTarget == "all") ? "" : config.speakerTarget);
+                                break;
+                            }
+                            case "getPlaybackSettings":
+                            {
+                                getPlaybackModeSettings(context, (config.modeTarget == "all") ? "" : config.modeTarget);
+                                break;
+                            }
                         }
                     }
+                }
+                catch (e)
+                {
+                    done(e.message);
                 }
             });
 
@@ -534,36 +231,220 @@ module.exports = function(RED)
                 }
             });
         }
-        else
-        {
-            setStatus(STATUS_UNCONFIGURED);
-        }
 
-        function getAPIFromTopic(topic)
+        function validateConfiguration()
         {
-            let matches = topic.match(/^([a-zA-Z]+)\/([a-zA-Z]+)\/([0-9]+\.[0-9]+)$/);
-            let api = null;
-
-            if (matches)
+            if ((config.actionType == "control") &&
+                (((config.action == "setSoundSettings") && (config.soundSettings.length == 0)) ||
+                 ((config.action == "setSpeakerSettings") && (config.speakerSettings.length == 0)) ||
+                 ((config.action == "setPlaybackSettings") && (config.modeSettings.length == 0))))
             {
-                api = {service: matches[1], method: matches[2], version: matches[3]};
+                node.error(RED._("control.error.invalidSettings"));
+                return false;
             }
 
-            return api;
-        }
-
-        function getAPIFromMessage(msg)
-        {
-            let api = null;
-
-            if ((typeof msg.service == "string") &&
-                (typeof msg.method == "string") &&
-                (typeof msg.version == "string"))
+            if (config.actionType == "api")
             {
-                api = {service: msg.service, method: msg.method, version: msg.version};
+                if (!config.api)
+                {
+                    node.error(RED._("control.error.invalidAPI", {api: RED._("control.error.empty")}));
+                    return false;
+                }
+
+                if (config.apiType == "str")
+                {
+                    node.callAPI = Nunjucks.compile(config.api);
+                }
+                else
+                {
+                    node.callAPI = config.api;
+                }
+
+                if (config.paramsType == "json")
+                {
+                    try
+                    {
+                        node.callParams = JSON.parse(config.params);
+                    }
+                    catch (e)
+                    {
+                        node.error(RED._("control.error.invalidParams"));
+                        return false;
+                    }
+
+                    if (typeof node.callParams != "object")
+                    {
+                        node.error(RED._("control.error.invalidParams"));
+                        return false;
+                    }
+                }
+                else if (config.paramsType == "jsonata")
+                {
+                    try
+                    {
+                        node.callParams = RED.util.prepareJSONataExpression(config.params, node);
+                    }
+                    catch (e)
+                    {
+                        node.error(RED._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.error.invalidExpression",
+                                         {error: e.code + ": " + e.message + "  [POS: " + e.position + ", TOK: '" + e.token + ", VAL: '" + e.value + "']"}));
+                        return false;
+                    }
+                }
+                else if ((config.paramsType == "env") || (config.paramsType == "msg") || (config.paramsType == "global") || (config.paramsType == "flow"))
+                {
+                    if (!config.params)
+                    {
+                        node.error(RED._("control.error.invalidParams"));
+                        return false;
+                    }
+
+                    node.callParams = config.params;
+                }
             }
 
-            return api;
+            return true;
+        }
+
+        function createAPICall(context)
+        {
+            let apiCall = null;
+
+            if (config.actionType == "api")
+            {
+                let api = null;
+
+                if (config.apiType == "str")
+                {
+                    try
+                    {
+                        api = node.callAPI.render(context.msg);
+                    }
+                    catch (e)
+                    {
+                        throw new Error(RED._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.error.invalidTemplate", {error: e.message}));
+                    }
+                }
+                else if (config.apiType == "env")
+                {
+                    api = RED.util.evaluateNodeProperty(node.callAPI, "env", node, context.msg);
+                }
+                else if (config.apiType == "msg")
+                {
+                    try
+                    {
+                        api = RED.util.getMessageProperty(context.msg, node.callAPI);
+                    }
+                    catch (e)
+                    {
+                        throw new Error(RED._("control.error.invalidAPI", {api: "msg." + node.callAPI}));
+                    }
+
+                    if (!api)
+                    {
+                        throw new Error(RED._("control.error.invalidAPI", {api: "msg." + node.callAPI}));
+                    }
+                }
+                else if ((config.apiType == "global") || (config.apiType == "flow"))
+                {
+                    let ctx = RED.util.parseContextStore(node.callAPI);
+                    api = node.context()[config.apiType].get(ctx.key, ctx.store);
+
+                    if (!api)
+                    {
+                        throw new Error(RED._("control.error.invalidAPI", {api: config.apiType + "." + node.callAPI}));
+                    }
+                }
+
+                const matches = api.match(/^([a-zA-Z]+)\.([a-zA-Z]+)@(\d+\.\d+)$/);
+                if (!matches)
+                {
+                    throw new Error(RED._("control.error.invalidAPI", {api: api}));
+                }
+                else
+                {
+                    apiCall = {service: matches[1], method: matches[2], version: matches[3]};
+
+                    if (config.paramsType == "json")
+                    {
+                        apiCall.params = node.callParams;
+                    }
+                    else if (config.paramsType == "jsonata")
+                    {
+                        let value = null;
+
+                        try
+                        {
+                            value = RED.util.evaluateJSONataExpression(node.callParams, context.msg);
+                        }
+                        catch (e)
+                        {
+                            throw new Error(RED._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.error.invalidExpression",
+                                                  {error: e.code + ": " + e.message + "  [POS: " + e.position + ", TOK: '" + e.token + "']"}));
+                        }
+
+                        apiCall.params = getParameters(value);
+                    }
+                    else if (config.paramsType == "env")
+                    {
+                        apiCall.params = getParameters(RED.util.evaluateNodeProperty(node.callParams, "env", node, context.msg));
+                    }
+                    else if (config.paramsType == "msg")
+                    {
+                        let value = null;
+
+                        try
+                        {
+                            value = RED.util.getMessageProperty(context.msg, node.callParams);
+                        }
+                        catch (e)
+                        {
+                            throw new Error(RED._("control.error.invalidParams"));
+                        }
+
+                        apiCall.params = getParameters(value);
+                    }
+                    else if ((config.paramsType == "global") || (config.paramsType == "flow"))
+                    {
+                        let ctx = RED.util.parseContextStore(node.callParams);
+                        apiCall.params = getParameters(node.context()[config.paramsType].get(ctx.key, ctx.store));
+                    }
+                }
+            }
+
+            return apiCall;
+        }
+
+        function getParameters(input)
+        {
+            let value = null;
+
+            if (typeof input == "object")
+            {
+                value = input;
+            }
+            else if (typeof input == "string")
+            {
+                try
+                {
+                    value = JSON.parse(input);
+                }
+                catch (e)
+                {
+                    throw new Error(RED._("control.error.invalidParams"));
+                }
+
+                if (typeof value != "object")
+                {
+                    throw new Error(RED._("control.error.invalidParams"));
+                }
+            }
+            else
+            {
+                throw new Error(RED._("control.error.invalidParams"));
+            }
+
+            return value;
         }
 
         function setPowerStatus(context, status)
@@ -601,7 +482,7 @@ module.exports = function(RED)
                         "audio",
                         "setSoundSettings",
                         "1.1",
-                        {settings: convertSoundSettings(params)});
+                        {settings: params});
         }
 
         function setSpeakerSettings(context, params)
@@ -610,7 +491,7 @@ module.exports = function(RED)
                         "audio",
                         "setSpeakerSettings",
                         "1.0",
-                        {settings: convertSpeakerSettings(params)});
+                        {settings: params});
         }
 
         function setPlaybackModeSettings(context, params)
@@ -755,84 +636,6 @@ module.exports = function(RED)
                         {target: target});
         }
 
-        function convertSoundSettings(settings)
-        {
-            const ret = [];
-
-            for (let from of settings)
-            {
-                const to = {};
-                to.target = from.target;
-                switch (from.target)
-                {
-                    case "soundField":
-                    case "voice":
-                    {
-                        to.value = from.value;
-                        break;
-                    }
-                    case "clearAudio":
-                    case "nightMode":
-                    case "footballMode":
-                    {
-                        if (typeof from.value == "string")
-                        {
-                            to.value = from.value;
-                        }
-                        else if (typeof from.value == "boolean")
-                        {
-                            to.value = from.value ? "on" : "off";
-                        }
-
-                        break;
-                    }
-                }
-
-                ret.push(to);
-            }
-
-            return ret;
-        }
-
-        function convertSpeakerSettings(settings)
-        {
-            const ret = [];
-
-            for (let from of settings)
-            {
-                const to = {};
-                to.target = from.target;
-                switch (from.target)
-                {
-                    case "inCeilingSpeakerMode":
-                    case "speakerSelection":
-                    {
-                        to.value = from.value;
-                        break;
-                    }
-                    case "frontLLevel":
-                    case "frontRLevel":
-                    case "centerLevel":
-                    case "surroundLLevel":
-                    case "surroundRLevel":
-                    case "surroundcBackLevel":
-                    case "surroundBackLLevel":
-                    case "surroundBackRLevel":
-                    case "heightLLevel":
-                    case "heightRLevel":
-                    case "subwooferLevel":
-                    {
-                        to.value = from.value.toString();
-                        break;
-                    }
-                }
-
-                ret.push(to);
-            }
-
-            return ret;
-        }
-
         function setStatus(stat = {}, duration = 0)
         {
             if (node.timeout != null)
@@ -853,206 +656,29 @@ module.exports = function(RED)
             }
         }
 
-        function createOuputArray(context, filterMsgs, respMsg)
-        {
-            let arr = [];
-
-            const topicContext =
-            {
-                device: node.device.name || "",
-                controller: node.name || "",
-                host: node.device.host,
-                service: respMsg.service,
-                method: respMsg.method,
-                version: respMsg.version,
-                command: context.command || ""
-            };
-
-            if (node.config.outFilters)
-            {
-                for (let i=0; i<filterMsgs.length; ++i)
-                {
-                    addTopic(filterMsgs[i], context.msg.topic, topicContext);
-                    arr.push(filterMsgs[i]);
-                }
-            }
-
-            if (node.config.outResponse)
-            {
-                addTopic(respMsg, context.msg.topic, topicContext);
-                arr.push(respMsg);
-            }
-
-            return arr;
-        }
-
-        function addTopic(msg, origTopic, ctx)
-        {
-            if (msg)
-            {
-                if (node.applyTemplate)
-                {
-                    msg.topic = node.applyTemplate(ctx);
-                }
-                else if (origTopic)
-                {
-                    msg.topic = origTopic;
-                }
-            }
-        }
-
-        function sendRequest(context, service, method, version, args)
+        function sendRequest(context, service, method, version, params)
         {
             setStatus(STATUS_SENDING);
 
-            node.device.sendRequest(service, method, version, args)
-            .then(respMsg =>
+            node.device.sendRequest(service, method, version, params)
+            .then(data =>
             {
-                sendResponse(context, respMsg);
-                setStatus(STATUS_SUCCESS, STATUS_TEMP_DURATION);
+                const out = Utils.prepareOutput(RED, node, node.output, config.msgPassThrough ? context.msg : null, data, config.sendIfPayload);
+                if (out)
+                {
+                    context.send(out);
+                }
 
+                setStatus(STATUS_SUCCESS, STATUS_TEMP_DURATION);
                 context.done();
             })
             .catch(error =>
             {
                 setStatus(STATUS_ERROR, STATUS_TEMP_DURATION);
-                context.error(error);
+                context.done(error);
             });
-        }
-
-        function sendResponse(context, respMsg)
-        {
-            let filteredMsgs = [];
-
-            if (node.config.outFilters && (respMsg.payload != null))
-            {
-                for (let i=0; i<node.config.outputPorts.length; ++i)
-                {
-                    if ("filter" in node.config.outputPorts[i])
-                    {
-                        let filter = {name: ""};
-
-                        if ((node.config.outputPorts[i].filter.name == "auto") &&
-                            (typeof context.command == "string"))
-                        {
-                            switch (context.command)
-                            {
-                                case "getPowerStatus":
-                                {
-                                    if (typeof context.suffix == "string")
-                                    {
-                                        switch (context.suffix)
-                                        {
-                                            case "powered":
-                                            {
-                                                filter = {name: "powered", explicit: false};
-                                                break;
-                                            }
-                                            case "poweredExplicit":
-                                            {
-                                                filter = {name: "powered", explicit: true};
-                                                break;
-                                            }
-                                            case "standby":
-                                            {
-                                                filter = {name: "standby", explicit: false};
-                                                break;
-                                            }
-                                            case "standbyExplicit":
-                                            {
-                                                filter = {name: "standby", explicit: true};
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        filter = {name: "powered", explicit: false};
-                                    }
-
-                                    break;
-                                }
-                                case "getSWUpdateInfo":
-                                {
-                                    if (context.suffix === "explicit")
-                                    {
-                                        filter = {name: "swupdate", explicit: true};
-                                    }
-                                    else
-                                    {
-                                        filter = {name: "swupdate", explicit: false};
-                                    }
-
-                                    break;
-                                }
-                                case "getSource":
-                                {
-                                    filter = {name: "source"};
-                                    break;
-                                }
-                                case "getVolumeInfo":
-                                {
-                                    if (typeof context.suffix == "string")
-                                    {
-                                        switch (context.suffix)
-                                        {
-                                            case "absolute":
-                                            {
-                                                filter = {name: "absoluteVolume"};
-                                                break;
-                                            }
-                                            case "relative":
-                                            {
-                                                filter = {name: "relativeVolume"};
-                                                break;
-                                            }
-                                            case "muted":
-                                            {
-                                                filter = {name: "muted"};
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        filter = {name: "absoluteVolume"};
-                                    }
-
-                                    break;
-                                }
-                                case "getSoundSettings":
-                                {
-                                    filter = {name: "soundSetting"};
-                                    break;
-                                }
-                                case "getSpeakerSettings":
-                                {
-                                    filter = {name: "speakerSetting"};
-                                    break;
-                                }
-                                case "getPlaybackModes":
-                                {
-                                    filter = {name: "playbackMode"};
-                                    break;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            filter = node.config.outputPorts[i].filter;
-                        }
-
-                        filteredMsgs.push(APIFilter.filterData(RED, node, respMsg, filter, context.msg));
-                    }
-                }
-            }
-
-            if (node.config.outFilters || node.config.outResponse)
-            {
-                context.send(createOuputArray(context, filteredMsgs, respMsg));
-            }
         }
     }
 
-    RED.nodes.registerType("sony-audio-control", SonyAudioControlNode);
+    RED.nodes.registerType("sonyaudio-control", SonyAudioControlNode);
 };

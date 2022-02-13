@@ -22,28 +22,34 @@
  * SOFTWARE.
  */
 
+
 module.exports = function(RED)
 {
-    const STATUS_UNCONFIGURED = {fill: "yellow", shape: "dot", text: "node-red-contrib-sony-audio/sony-audio-device:common.status.unconfigured"};
-    const STATUS_CONNECTING   = {fill: "grey",   shape: "dot", text: "notify.status.connecting"                                              };
-
-    const Handlebars = require("handlebars");
-    const APIFilter = require("./common/output.js");
-    const Events = require("./common/event_constants.js");
-
-
     function SonyAudioNotifyNode(config)
     {
-        let node = this;
+        const STATUS_UNCONFIGURED  = {fill: "yellow", shape: "dot", text: "notify.status.unconfigured" };
+        const STATUS_MISCONFIGURED = {fill: "yellow", shape: "dot", text: "notify.status.misconfigured"};
+        const STATUS_CONNECTING    = {fill: "grey",   shape: "dot", text: "notify.status.connecting"   };
+
+        const Utils = require("./common/utils.js");
+        const Events = require("./common/event_constants.js");
+
+        const node = this;
         RED.nodes.createNode(node, config);
 
-        node.config = config;
-        node.name = config.name;
-
-        node.applyTemplate = node.config.topic ? Handlebars.compile(node.config.topic) : null;
+        node.output = [];
 
         node.device = RED.nodes.getNode(config.device);
-        if (node.device && (node.config.outputs > 0))
+        if (!node.device)
+        {
+            node.error(RED._("notify.error.unconfigured"));
+            node.status(STATUS_UNCONFIGURED);
+        }
+        else if (!Utils.validateOutputProperties(RED, node, config.outputProperties, node.output, false))
+        {
+            node.status(STATUS_MISCONFIGURED);
+        }
+        else
         {
             let filter = 0;
 
@@ -51,19 +57,19 @@ module.exports = function(RED)
             {
                 case "system":
                 {
-                    if (config.notifyPowerStatus)
+                    if (config.events.includes("notifyPowerStatus"))
                     {
                         filter = filter | Events.EVENT_SYSTEM_NOTIFY_POWER_STATUS;
                     }
-                    if (config.notifyStorageStatus)
+                    if (config.events.includes("notifyStorageStatus"))
                     {
                         filter = filter | Events.EVENT_SYSTEM_NOTIFY_STORAGE_STATUS;
                     }
-                    if (config.notifySettingsUpdate)
+                    if (config.events.includes("notifySettingsUpdate"))
                     {
                         filter = filter | Events.EVENT_SYSTEM_NOTIFY_SETTINGS_UPDATE;
                     }
-                    if (config.notifySWUpdateInfo)
+                    if (config.events.includes("notifySWUpdateInfo"))
                     {
                         filter = filter | Events.EVENT_SYSTEM_NOTIFY_SWUPDATE_INFO;
                     }
@@ -72,7 +78,7 @@ module.exports = function(RED)
                 }
                 case "audio":
                 {
-                    if (config.notifyVolumeInformation)
+                    if (config.events.includes("notifyVolumeInformation"))
                     {
                         filter = filter | Events.EVENT_AUDIO_NOTIFY_VOLUME_INFO;
                     }
@@ -81,15 +87,15 @@ module.exports = function(RED)
                 }
                 case "avContent":
                 {
-                    if (config.notifyExternalTerminalStatus)
+                    if (config.events.includes("notifyExternalTerminalStatus"))
                     {
                         filter = filter | Events.EVENT_AVCONTENT_NOTIFY_EXT_TERM_STATUS;
                     }
-                    if (config.notifyAvailablePlaybackFunction)
+                    if (config.events.includes("notifyAvailablePlaybackFunction"))
                     {
                         filter = filter | Events.EVENT_AVCONTENT_NOTIFY_AVAIL_PB_FUNCTION;
                     }
-                    if (config.notifyPlayingContentInfo)
+                    if (config.events.includes("notifyPlayingContentInfo"))
                     {
                         filter = filter | Events.EVENT_AVCONTENT_NOTIFY_PLAYING_CONTENT_INFO;
                     }
@@ -98,121 +104,35 @@ module.exports = function(RED)
                 }
             }
 
-            node.device.on("sony.status", status =>
+            if (filter == 0)
             {
-                node.status(status);
-            });
-
-            node.status(STATUS_CONNECTING);
-            node.subscribeId = node.device.subscribeEvents(config.service, filter, msg =>
+                node.error(RED._("notify.error.noEvents"));
+                node.status(STATUS_MISCONFIGURED);
+            }
+            else
             {
-                sendEvent(msg);
-            });
-
-            node.on("close", () =>
-            {
-                node.device.unsubscribeEvents(node.subscribeId);
-            });
-        }
-        else
-        {
-            node.status(STATUS_UNCONFIGURED);
-        }
-
-        function sendEvent(eventMsg)
-        {
-            let filteredMsgs = [];
-
-            if (node.config.outFilters && (eventMsg.payload != null))
-            {
-                for (let i=0; i<node.config.outputPorts.length; ++i)
+                node.device.on("sony.status", status =>
                 {
-                    if ("filter" in node.config.outputPorts[i])
+                    node.status(status);
+                });
+
+                node.status(STATUS_CONNECTING);
+                node.subscribeId = node.device.subscribeEvents(config.service, filter, data =>
+                {
+                    let out = Utils.prepareOutput(RED, node, node.output, null, data, config.sendIfPayload);
+                    if (out)
                     {
-                        let filter = {name: ""};
-
-                        if (node.config.outputPorts[i].filter.name == "auto")
-                        {
-                            switch (eventMsg.method)
-                            {
-                                case "notifyPowerStatus":
-                                {
-                                    filter = {name: "powered", explicit: false};
-                                    break;
-                                }
-                                case "notifySWUpdateInfo":
-                                {
-                                    filter = {name: "swupdate", explicit: false};
-                                    break;
-                                }
-                                case "notifyPlayingContentInfo":
-                                {
-                                    filter = {name: "source"};
-                                    break;
-                                }
-                                case "notifyVolumeInformation":
-                                {
-                                    filter = {name: "absoluteVolume"};
-                                    break;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            filter = node.config.outputPorts[i].filter;
-                        }
-
-                        filteredMsgs.push(APIFilter.filterData(RED, node, eventMsg, filter, null));
+                        node.send(out);
                     }
-                }
-            }
+                });
 
-            if (node.config.outFilters || node.config.outEvent)
-            {
-                node.send(createOuputArray(filteredMsgs, eventMsg));
-            }
-        }
-
-        function createOuputArray(filterMsgs, eventMsg)
-        {
-            let arr = [];
-
-            const context =
-            {
-                device: node.device.name || "",
-                notify: node.name || "",
-                host: node.device.host,
-                service: eventMsg.service,
-                method: eventMsg.method,
-                version: eventMsg.version
-            };
-
-            if (node.config.outFilters)
-            {
-                for (let i=0; i<filterMsgs.length; ++i)
+                node.on("close", () =>
                 {
-                    addTopic(filterMsgs[i], context);
-                    arr.push(filterMsgs[i]);
-                }
-            }
-
-            if (node.config.outEvent)
-            {
-                addTopic(eventMsg, context);
-                arr.push(eventMsg);
-            }
-
-            return arr;
-        }
-
-        function addTopic(msg, ctx)
-        {
-            if (msg && node.applyTemplate)
-            {
-                msg.topic = node.applyTemplate(ctx);
+                    node.device.unsubscribeEvents(node.subscribeId);
+                });
             }
         }
     }
 
-    RED.nodes.registerType("sony-audio-notify", SonyAudioNotifyNode);
+    RED.nodes.registerType("sonyaudio-notify", SonyAudioNotifyNode);
 };

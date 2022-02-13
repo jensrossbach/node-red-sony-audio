@@ -22,111 +22,117 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 
-<script type="text/x-red" data-help-name="sony-audio-notify">
+<script type="text/html" data-help-name="sonyaudio-notify">
     <p>
         Informiert über Benachrichtigungen von einem Sony Audio-Gerät mittels
         der Sony Audio Control API.
     </p>
+    <p style="margin-bottom: 15px;"></p>
     <h3>Details</h3>
     <p>
-        Dieser Knoten wartet auf Benachrichtigungen und gibt diese bei Eintreffen aus.
+        Dieser Knoten wartet auf Benachrichtigungen und gibt diese bei
+        Eintreffen in konfigurierbarer Form aus.
+    </p>
+    <p>
+        Eine ausführliche Dokumentation der Konfigurationsmöglichkeiten inklusive
+        Beispielen findet sich im <a href="https://github.com/jensrossbach/node-red-contrib-sony-audio-v2/wiki/Notify-Node">Wiki</a>
+        des Repositories (nur in Englischer Sprache).
     </p>
     <p>
         Siehe Sony <a href="https://developer.sony.com/develop/audio-control-api/api-references/api-overview-2">Audio Control API</a>
         Referenz für weitere Details über die Schnittstelle, deren Dienste, Methoden
-        und Argumente.
+        und Argumente (nur in Englischer Sprache).
     </p>
-    <h3>Konfiguration</h3>
+    <p style="margin-bottom: 15px;"></p>
+    <h3>Allgemeine Konfiguration</h3>
     <dt>Name</dt>
-    <dd>Name für den Knoten (optional).</dd>
+    <dd>Ein Name für den Knoten (optional).</dd>
     <dt>Gerät</dt>
-    <dd>Auswahl/Konfiguration des Sony Audio-Geräts.</dd>
-    <dt>Topic</dt>
     <dd>
-        Das Topic, das an die Ausgabenachrichten gehängt werden soll. Falls
-        nichts angegeben wird, wird kein Topic an die Nachrichten gehängt. Der
-        Text des Topics kann Platzhalter in der Form <code>{{placeholder}}</code>
-        enthalten, um variable Inhalte einzufügen. Die folgenden Platzhalter
-        werden unterstützt:
+        Auswahl/Konfiguration des Sony Audio-Geräts, mit dem sich
+        der Knoten verbinden soll.
+    </dd>
+    <p style="margin-bottom: 15px;"></p>
+    <h3>Benachrichtigungskonfiguration</h3>
+    <dt>Benachr.</dt>
+    <dd>Der Dienst und die Benachrichtigungen, die abonniert werden sollen.</dd>
+    <p style="margin-bottom: 15px;"></p>
+    <h3>Ausgabekonfiguration</h3>
+    <p>
+        Hier können Regeln definiert werden, die im Fall des Eintreffens
+        von Benachrichtigungen die Ausgabenachricht beschreiben oder
+        Kontextvariablen setzen. Jeder Eintrag in der Liste steht für
+        eine Regel zum Setzen einer Nachrichteneigenschaft oder einer
+        globalen oder Flow-Variable.
+    </p>
+    <p>
+        Für jede Regel kann die Art des Inhalts wie folgt festgelegt
+        werden:
+    </p>
+    <dt>Gefilterte Daten</dt>
+    <dd>
+        Filtert die rohen Daten die vom Gerät kommen anhand von
+        verschiedenen Kriterien. Der 'Auto' Filter wählt automatisch
+        einen Filter passend zur Benachrichtigung aus. Nicht zutreffende
+        Filter setzen keine Werte in den Eigenschaften/Variablen.
+    </dd>
+    <dt>Ungefilterte Daten</dt>
+    <dd>
+        Entweder der komplette Block unbearbeiteter Daten wie sie vom
+        Gerät gesendet werden oder ein bestimmter Teil davon. Die
+        Nutzlast beinhaltet das erste (und einzige) Element der
+        Parameter.
+    </dd>
+    <dt>Umgebungsvariable</dt>
+    <dd>
+        Eine Umgebungsvariable oder Text, der Umgebungsvariablen
+        enthält.
+    </dd>
+    <dt>String</dt>
+    <dd>
+        Text, der Platzhalter in der Form <code>{{placeholder}}</code>
+        enthalten kann, um variable Inhalte einzufügen. Die folgenden
+        Platzhalter werden unterstützt.
     </dd>
     <dl class="message-properties">
-        <dt>device<span class="property-type">string</span></dt>
-        <dd>Der Name des Geräteknotens</dd>
-        <dt>notify<span class="property-type">string</span></dt>
-        <dd>Der Name dieses Knotens</dd>
         <dt>host<span class="property-type">string</span></dt>
-        <dd>Der Host-Name / die IP-Adresse des Geräts</dd>
+        <dd>Die IP-Adresse des Geräts</dd>
         <dt>service<span class="property-type">string</span></dt>
         <dd>Der Name des API-Dienstes</dd>
         <dt>method<span class="property-type">string</span></dt>
         <dd>Der Name der API-Methode</dd>
         <dt>version<span class="property-type">string</span></dt>
         <dd>Die API-Versionsnummer</dd>
+        <dt>payload<span class="property-type">object</span></dt>
+        <dd>Die Nutzlast mit den Parametern der Benachrichtigung</dd>
     </dl>
-    <dt>Ausgaben</dt>
-    <dd>Die Ausgabe-Ports, die aktiviert werden sollen.</dd>
-    <dt>Dienst</dt>
-    <dd>Der Dienst, von dem Benachrichtigungen erhalten werden sollen.</dd>
-    <dt>Benachr.</dt>
-    <dd>Die Benachrichtigungen, die abonniert werden sollen.</dd>
-    <dt>Filter</dt>
+    <dt>Number</dt>
+    <dd>Eine beliebige feste Zahl.</dd>
+    <dt>Boolean</dt>
+    <dd>Ein fester Wahrheitswert (true oder false).</dd>
+    <dt>JSON</dt>
+    <dd>Statischer Inhalt im JSON-Format.</dd>
+    <dt>JSONata</dt>
     <dd>
-        Filter können benutzt werden, um die Benachrichtigungen vom Gerät nach
-        bestimmten Kriterien zu filtern. Es können beliebig viele Filter hinzugefügt,
-        bearbeitet oder gelöscht werden. Die Zahl an der rechten Seite gibt den
-        Ausgabeport an, zu dem die gefilterte Benachrichtigung geschickt wird.
-        Der Auto-Filter wählt automatisch einen zum Typ der Benachrichtigung
-        passenden Filter aus. Der benutzerdefinierte Filter erlaubt es, den Filter
-        basierend auf einem JSONata-Ausdruck selbst zu definieren. Der Ausdruck
-        kann direkt eingegeben oder von einer globalen oder Flow-Kontextvariablen
-        geladen werden.
+        Ein JSONata-Ausdruck um dynamische Inhalte basierend auf
+        den Originaldaten der Benachrichtigung zu erstellen.
+        Die Attribute haben die gleichen Namen wie die
+        String-Platzhalter, siehe oben. Um die Eigenschaft/Variable
+        nicht zu setzen, muss <code>undefined</code> zuückgegeben
+        werden.
     </dd>
-    <h3>Ausgaben</h3>
+    <dt>Buffer</dt>
+    <dd>Ein statischer Block Binärdaten.</dd>
+    <dt>Timestamp</dt>
+    <dd>Der Zeitpunkt des Eintreffens der Benachrichtigung.</dd>
+    <p></p>
     <p>
-        Der Knoten stellt eine variable Anzahl Ausgaben zur Verfügung, die über die
-        Konfigurationsseite ausgewählt werden können. Standardmäßig ist nur der
-        <i>Filter</i>-Ausgang aktiviert.
+        Die Checkbox-Option unterhalb der Ausgabeliste definiert das
+        Verhalten, ob eine Nachricht nur dann gesendet werden soll,
+        wenn <code>msg.payload</code> durch eine der Regeln gesetzt
+        wurde oder immer wenn eine Benachrichtigung vom Gerät eintrifft.
+        Die Option sollte beispielsweise aktiviert werden, um zu
+        verhindern, dass eine Ausgabenachricht gesendet wird, falls
+        ein Filter nicht zutrifft.
     </p>
-    <ol class="node-ports">
-        <li>Filter
-            <p>
-                Jeder konfigurierte Filter stellt einen eigenen Ausgabe-Port
-                zur Verfügung, an den dessen gefilterte Daten geschickt werden.
-            </p>
-            <dl class="message-properties">
-                <dt class="optional">topic<span class="property-type">string</span></dt>
-                <dd>
-                    Das konfigurierte Topic mit den durch dynamische Inhalte
-                    ersetzten Platzhaltern.
-                </dd>
-                <dt>payload<span class="property-type">boolean | number | string | object</span></dt>
-                <dd>
-                    Die gefilterten Daten der erhaltenen Benachrichtigung.
-                    Nachrichten werden nur dann an diese Ports geschickt, wenn die
-                    Filter auf die Daten angewendet werden können.
-                </dd>
-            </dl>
-        </li>
-        <li>Benachrichtigung
-            <p>
-                Enthält die Rohdaten-Benachrichtigung so wie sie von der Audio
-                Control API gesendet wurde.
-            </p>
-            <dl class="message-properties">
-                <dt class="optional">topic<span class="property-type">string</span></dt>
-                <dd>
-                    Das konfigurierte Topic mit den durch dynamische Inhalte
-                    ersetzten Platzhaltern.
-                </dd>
-                <dt>service<span class="property-type">string</span></dt>
-                <dd>Der Name des API-Dienstes</dd>
-                <dt>method<span class="property-type">string</span></dt>
-                <dd>Die Name der API-Methode</dd>
-                <dt>version<span class="property-type">string</span></dt>
-                <dd>Die API-Versionsnummer</dd>
-                <dt>payload<span class="property-type">object</span></dt>
-                <dd>Die Argumente der Benachrichtigung</dd>
-            </dl>
-        </li>
-    </ol>
 </script>

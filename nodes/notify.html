@@ -22,111 +22,34 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 
-<script type="text/x-red" data-template-name="sony-audio-notify">
-    <style>
-        .form-checkbox-row
-        {
-            float:        left;
-            padding-left: 4px;
-        }
-
-        .form-checkbox-label
-        {
-            padding-left: 10px;
-        }
-
-        input[type=checkbox].form-checkbox
-        {
-            vertical-align: text-bottom;
-            float:          left;
-            width:          auto;
-        }
-    </style>
+<script type="text/html" data-template-name="sonyaudio-notify">
     <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red-contrib-sony-audio/sony-audio-device:common.label.name"></span></label>
-        <input type="text" id="node-input-name" data-i18n="[placeholder]node-red-contrib-sony-audio/sony-audio-device:common.label.name">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.label.name">
     </div>
     <div class="form-row">
-        <label for="node-input-device"><i class="fa fa-cog"></i> <span data-i18n="node-red-contrib-sony-audio/sony-audio-device:common.label.device"></span></label>
-        <input type="text" id="node-input-device" data-i18n="[placeholder]node-red-contrib-sony-audio/sony-audio-device:common.label.device">
+        <label for="node-input-device"><i class="fa fa-cog"></i> <span data-i18n="@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.label.device"></span></label>
+        <input type="text" id="node-input-device" data-i18n="[placeholder]@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.label.device">
     </div>
     <div class="form-row">
-        <label for="node-input-topic"><i class="fa fa-tasks"></i> <span data-i18n="node-red-contrib-sony-audio/sony-audio-device:common.label.topic"></span></label>
-        <input type="text" id="node-input-topic" data-i18n="[placeholder]node-red-contrib-sony-audio/sony-audio-device:common.label.topic">
+        <label for="node-input-systemEvents"><i class="fa fa-bolt"></i> <span data-i18n="notify.label.events"></span></label>
+        <input id="node-input-events" type="text" style="width: 70%;">
+        <input id="node-input-service" type="hidden">
     </div>
-    <div class="form-row">
-        <label style="float: left;"><i class="fa fa-link"></i> <span data-i18n="node-red-contrib-sony-audio/sony-audio-device:common.label.outputs"></span></label>
-        <div class="form-checkbox-row">
-            <div>
-                <input type="checkbox" class="form-checkbox" id="node-input-outFilters">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-outFilters" data-i18n="node-red-contrib-sony-audio/sony-audio-device:common.label.filters"></label>
-            </div>
-            <div>
-                <input type="checkbox" class="form-checkbox" id="node-input-outEvent">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-outEvent" data-i18n="notify.label.event"></label>
-            </div>
-        </div>
-    </div>
-    <div class="form-row"></div>
-    <div class="form-row">
-        <label for="node-input-service"><i class="fa fa-wrench"></i> <span data-i18n="notify.label.service"></span></label>
-        <select id="node-input-service" style="width: auto;">
-            <option value="system" data-i18n="node-red-contrib-sony-audio/sony-audio-device:common.list.service.system"></option>
-            <option value="audio" data-i18n="node-red-contrib-sony-audio/sony-audio-device:common.list.service.audio"></option>
-            <option value="avContent" data-i18n="node-red-contrib-sony-audio/sony-audio-device:common.list.service.avContent"></option>
-        </select>
-    </div>
-    <div class="form-row">
-        <label style="float: left;"><i class="fa fa-calendar-o"></i> <span data-i18n="notify.label.events"></span></label>
-        <div id="form-row-system" class="form-checkbox-row">
-            <div>
-                <input type="checkbox" class="form-checkbox" id="node-input-notifyPowerStatus">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyPowerStatus" data-i18n="notify.label.notifyPowerStatus"></label>
-            </div>
-            <div>
-                <input type="checkbox" class="form-checkbox" id="node-input-notifyStorageStatus">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyStorageStatus" data-i18n="notify.label.notifyStorageStatus"></label>
-            </div>
-            <div>
-                <input type="checkbox" class="form-checkbox" id="node-input-notifySettingsUpdate">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifySettingsUpdate" data-i18n="notify.label.notifySettingsUpdate"></label>
-            </div>
-            <div>
-                <input type="checkbox" class="form-checkbox" id="node-input-notifySWUpdateInfo">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifySWUpdateInfo" data-i18n="notify.label.notifySWUpdateInfo"></label>
-            </div>
-        </div>
-        <div id="form-row-audio" class="form-checkbox-row">
-            <div>
-                <input type="checkbox" class="form-checkbox" id="node-input-notifyVolumeInformation">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyVolumeInformation" data-i18n="notify.label.notifyVolumeInformation"></label>
-            </div>
-        </div>
-        <div id="form-row-avcontent" class="form-checkbox-row">
-            <div>
-                <input type="checkbox" class="form-checkbox" id="node-input-notifyExternalTerminalStatus">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyExternalTerminalStatus" data-i18n="notify.label.notifyExternalTerminalStatus"></label>
-            </div>
-            <div>
-                <input type="checkbox" class="form-checkbox" id="node-input-notifyAvailablePlaybackFunction">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyAvailablePlaybackFunction" data-i18n="notify.label.notifyAvailablePlaybackFunction"></label>
-            </div>
-            <div>
-                <input type="checkbox" class="form-checkbox" id="node-input-notifyPlayingContentInfo">
-                <label class="form-checkbox-label" style="width: auto;" for="node-input-notifyPlayingContentInfo" data-i18n="notify.label.notifyPlayingContentInfo"></label>
-            </div>
-        </div>
-    </div>
-    <div id="form-row-filterList" class="form-row" style="padding-top: 10px">
-        <label for="node-input-filterList"><i class="fa fa-filter"></i> <span data-i18n="node-red-contrib-sony-audio/sony-audio-device:common.label.filters"></span></label>
+    <div class="form-row form-row-output" style="padding-top: 10px">
+        <label><i class="fa fa-sign-out"></i> <span data-i18n="@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.label.output"></span></label>
         <div class="form-row">
-            <ol id="node-input-filterList"></ol>
+            <ol id="node-input-propertyList"></ol>
         </div>
+    </div>
+    <div class="form-row">
+        <input id="node-input-sendIfPayload" type="checkbox" style="margin-top: 0px; margin-bottom: 1px; width: auto;">
+        <label for="node-input-sendIfPayload" style="margin-bottom: 0px; width: auto;" data-i18n="[html]@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.label.sendIfPayload"></label>
     </div>
 </script>
 
 <script type="text/javascript">
-    RED.nodes.registerType("sony-audio-notify",
+    RED.nodes.registerType("sonyaudio-notify",
     {
         category:     "sony audio",
         color:        "#2DABCE",
@@ -135,7 +58,7 @@ SOFTWARE.
         paletteLabel: "notify",
         label: function()
         {
-            return (this.name || "notify: " + this.service);
+            return (this.name || this._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.list.service." + this.service));
         },
         labelStyle: function()
         {
@@ -143,10 +66,14 @@ SOFTWARE.
         },
         outputLabels: function(index)
         {
-            return this.outputPorts[index].label;
+            return this._("notify.label.outputPort");
         },
         defaults:
         {
+            outputs:
+            {
+                value: 1
+            },
             name:
             {
                 value: ""
@@ -154,267 +81,225 @@ SOFTWARE.
             device:
             {
                 value: "",
-                type:  "sony-audio-device"
-            },
-            topic:
-            {
-                value: ""
-            },
-            outputs:
-            {
-                value: 1
-            },
-            outputPorts:
-            {
-                value: [{label: "", filter: {name: "auto"}}]
-            },
-            outFilters:
-            {
-                value: true
-            },
-            outEvent:
-            {
-                value: false
+                type:  "sonyaudio-device"
             },
             service:
             {
                 value: "system"
             },
-            notifyPowerStatus:
+            events:
             {
-                value: true
+                value: ""
             },
-            notifyStorageStatus:
+            outputProperties:
             {
-                value: true
+                value: [{type: "msg", name: "topic", value: {type: "str", content: "{{host}}/{{service}}.{{method}}@{{version}}"}},
+                        {type: "msg", name: "payload", value: {type: "filtered", content: "auto"}}]
             },
-            notifySettingsUpdate:
-            {
-                value: true
-            },
-            notifySWUpdateInfo:
-            {
-                value: true
-            },
-            notifyVolumeInformation:
-            {
-                value: true
-            },
-            notifyExternalTerminalStatus:
-            {
-                value: true
-            },
-            notifyAvailablePlaybackFunction:
-            {
-                value: true
-            },
-            notifyPlayingContentInfo:
+            sendIfPayload:
             {
                 value: true
             }
         },
         oneditprepare: function()
         {
-            let node = this;
-            let serviceSelect = $("#node-input-service");
-            let outFiltersSelect = $("#node-input-outFilters");
+            const node = this;
 
-            serviceSelect.change(function()
+            const systemEventsType =
             {
-                $("#form-row-system").hide();
-                $("#form-row-audio").hide();
-                $("#form-row-avcontent").hide();
+                value: "system",
+                label: node._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.list.service.system"),
+                icon: "fa fa-cogs",
+                multiple: true,
+                options:
+                [
+                    { value: "notifyPowerStatus", label: node._("notify.label.notifyPowerStatus")},
+                    { value: "notifyStorageStatus", label: node._("notify.label.notifyStorageStatus")},
+                    { value: "notifySettingsUpdate", label: node._("notify.label.notifySettingsUpdate")},
+                    { value: "notifySWUpdateInfo", label: node._("notify.label.notifySWUpdateInfo")}
+                ]
+            };
 
-                switch ($(this).val())
-                {
-                    case "system":
-                    {
-                        $("#form-row-system").show();
-                        break;
-                    }
-                    case "audio":
-                    {
-                        $("#form-row-audio").show();
-                        break;
-                    }
-                    case "avContent":
-                    {
-                        $("#form-row-avcontent").show();
-                        break;
-                    }
-                }
-            });
+            const audioEventsType =
+            {
+                value: "audio",
+                label: node._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.list.service.audio"),
+                icon: "fa fa-music",
+                multiple: true,
+                options:
+                [
+                    { value: "notifyVolumeInformation", label: node._("notify.label.notifyVolumeInformation")}
+                ]
+            };
 
-            serviceSelect.change();
+            const avcontentEventsType =
+            {
+                value: "avContent",
+                label: node._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.list.service.avContent"),
+                icon: "fa fa-play",
+                multiple: true,
+                options:
+                [
+                    { value: "notifyExternalTerminalStatus", label: node._("notify.label.notifyExternalTerminalStatus")},
+                    { value: "notifyAvailablePlaybackFunction", label: node._("notify.label.notifyAvailablePlaybackFunction")},
+                    { value: "notifyPlayingContentInfo", label: node._("notify.label.notifyPlayingContentInfo")}
+                ]
+            };
 
-            let filterList = $("#node-input-filterList").css("min-height", "200px").editableList(
+            const filteredDataType =
+            {
+                value: "filtered",
+                label: node._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.label.filteredData"),
+                icon: "fa fa-filter",
+                options:
+                [
+                    {
+                        value: "auto",
+                        label: node._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.list.filteredData.auto")
+                    },
+                    {
+                        value: "powered",
+                        label: node._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.list.filteredData.powered")
+                    },
+                    {
+                        value: "standby",
+                        label: node._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.list.filteredData.standby")
+                    },
+                    {
+                        value: "swupdate",
+                        label: node._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.list.filteredData.swupdate")
+                    },
+                    {
+                        value: "absoluteVolume",
+                        label: node._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.list.filteredData.absoluteVolume")
+                    },
+                    {
+                        value: "muted",
+                        label: node._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.list.filteredData.muted")
+                    },
+                    {
+                        value: "source",
+                        label: node._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.list.filteredData.source")
+                    }
+                ]
+            };
+
+            const unfilteredDataType =
+            {
+                value: "unfiltered",
+                label: node._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.label.unfilteredData"),
+                icon: "fa fa-file-text-o",
+                options:
+                [
+                    {
+                        value: "all",
+                        label: node._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.list.unfilteredData.all")
+                    },
+                    {
+                        value: "host",
+                        label: node._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.list.unfilteredData.host")
+                    },
+                    {
+                        value: "service",
+                        label: node._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.list.unfilteredData.service")
+                    },
+                    {
+                        value: "method",
+                        label: node._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.list.unfilteredData.method")
+                    },
+                    {
+                        value: "version",
+                        label: node._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.list.unfilteredData.version")
+                    },
+                    {
+                        value: "payload",
+                        label: node._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.list.unfilteredData.payload")
+                    }
+                ]
+            };
+
+            $("#node-input-events").typedInput({types: [systemEventsType, audioEventsType, avcontentEventsType], typeField: "#node-input-service"});
+
+            const propertyList = $("#node-input-propertyList").css("min-height", "120px").css("min-width", "550px").editableList(
             {
                 removable: true,
                 sortable: true,
-                addItem: function(item, index, filter)
+                addItem: function(item, index, prop)
                 {
-                    if (!("name" in filter))
+                    if (!("type" in prop))
                     {
-                        filter.name = "auto";
+                        prop = {type: "msg", name: "", value: {type: "str", content: ""}};
                     }
 
-                    let fragment = document.createDocumentFragment();
-                    let container = $("<div/>", {style: "display: inline-block; vertical-align: middle; width: auto;"}).appendTo(fragment);
-                    let row1 = $("<div/>").appendTo(container);
-                    let row2 = $("<div/>", {style: "margin-top: 5px; "}).appendTo(container);
+                    item.css({overflow: "hidden", whiteSpace: "nowrap"});
 
-                    $("<div/>", {class: "node-input-filterIndex", style: "position: absolute; width: auto; top: 50%; right: 26px; margin-top: -9px;"})
-                            .html("&#8594; " + (index + 1))
-                            .appendTo(fragment);
+                    const row = $("<div/>").appendTo(item);
 
-                    let filterName = $("<select/>", {class: "node-input-filterName", style: "width: auto;"})
-                            .append($("<option></option>").val("auto").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.auto")))
-                            .append($("<option></option>").val("powered").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.powered")))
-                            .append($("<option></option>").val("standby").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.standby")))
-                            .append($("<option></option>").val("swupdate").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.swupdate")))
-                            .append($("<option></option>").val("source").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.source")))
-                            .append($("<option></option>").val("absoluteVolume").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.absoluteVolume")))
-                            .append($("<option></option>").val("muted").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.muted")))
-                            .append($("<option></option>").val("custom").text(node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter.custom")))
-                            .appendTo(row1);
+                    const propertyName = $("<input/>", {class: "node-input-propertName", type: "text"})
+                                            .css("width", "40%")
+                                            .appendTo(row)
+                                            .typedInput({default: prop.type || "msg", types: ["global", "flow", "msg"]});
 
-                    let explicitContainer = $("<span/>", {id: "item-elem-explicit-" + index, style: "padding-left: 10px;"})
-                            .appendTo(row1);
-                    let explicit = $("<input/>", {id: "node-input-filterExplicit-" + index,
-                                                  class: "node-input-filterExplicit",
-                                                  type: "checkbox",
-                                                  style: "vertical-align: text-bottom; width: auto;"})
-                            .appendTo(explicitContainer);
-                    $("<label/>", {for: "node-input-filterExplicit-" + index, style: "padding-left: 4px;"})
-                            .text(node._("node-red-contrib-sony-audio/sony-audio-device:common.label.explicit"))
-                            .appendTo(explicitContainer);
+                    $("<div/>", {style: "display:inline-block; padding: 0px 6px;"})
+                        .text('=')
+                        .appendTo(row);
 
-                    let customFilter = $("<input/>", {type: "text", class: "node-input-customFilter"})
-                            .appendTo(row2)
-                            .typedInput({types: ["global", "flow", "jsonata"]});
-                    customFilter.typedInput("width", "280px");
+                    const propertyValue = $("<input/>", {class: "node-input-propertyValue", type: "text"})
+                                            .css("width", "calc(60% - 30px)")
+                                            .appendTo(row)
+                                            .typedInput({default: prop.value.type || "str", types:[filteredDataType, unfilteredDataType, "env", "str", "num", "bool", "json", "jsonata", "bin", "date"]});
 
-                    filterName.change(function()
-                    {
-                        row2.hide();
-                        explicitContainer.hide();
-
-                        switch (filterName.val())
-                        {
-                            case "powered":
-                            case "standby":
-                            case "swupdate":
-                            {
-                                explicitContainer.show();
-                                break;
-                            }
-                            case "custom":
-                            {
-                                if (!("custom" in filter))
-                                {
-                                    filter.custom = {type: "jsonata", value: "null"};
-                                    customFilter.typedInput("value", filter.custom.value);
-                                    customFilter.typedInput("type", filter.custom.type);
-                                }
-
-                                row2.show();
-                                break;
-                            }
-                        }
-                    });
-
-                    if ("explicit" in filter)
-                    {
-                        explicit.prop("checked", filter.explicit);
-                    }
-
-                    if (filter.name == "custom")
-                    {
-                        customFilter.typedInput("value", filter.custom.value);
-                        customFilter.typedInput("type", filter.custom.type);
-                    }
-
-                    filterName.val(filter.name);
-                    filterName.change();
-
-                    item[0].appendChild(fragment);
-                },
-                removeItem: function(filter)
-                {
-                    let filterList = $("#node-input-filterList").editableList("items");
-                    filterList.each(function(index)
-                    {
-                        $(this).find(".node-input-filterIndex").html("&#8594; " + (index + 1));
-                    });
-                },
-                sortItems: function(items)
-                {
-                    items.each(function(index)
-                    {
-                        $(this).find(".node-input-filterIndex").html("&#8594; " + (index + 1));
-                    });
+                    propertyName.typedInput("value", prop.name);
+                    propertyValue.typedInput("value", prop.value.content);
                 }
             });
 
-            node.outputPorts.forEach(port =>
+            node.outputProperties.forEach(prop =>
             {
-                if ("filter" in port)
-                {
-                    filterList.editableList("addItem", port.filter);
-                }
+                propertyList.editableList("addItem", prop);
             });
-
-            outFiltersSelect.change(function()
-            {
-                if ($(this).prop("checked"))
-                {
-                    $("#form-row-filterList").show();
-                }
-                else
-                {
-                    $("#form-row-filterList").hide();
-                }
-            });
-
-            outFiltersSelect.change();
         },
         oneditsave: function()
         {
-            let node = this;
+            const node = this;
 
-            node.outputPorts = [];
+            node.outputProperties = [];
             node.outputs = 0;
 
-            if ($("#node-input-outFilters").prop("checked"))
+            $("#node-input-propertyList").editableList("items").each(function(index)
             {
-                let filterList = $("#node-input-filterList").editableList("items");
+                const propertyName = $(this).find(".node-input-propertName");
+                const propertyValue = $(this).find(".node-input-propertyValue");
 
-                filterList.each(function(index)
+                node.outputProperties.push({type: propertyName.typedInput("type"),
+                                            name: propertyName.typedInput("value"),
+                                            value: {type: propertyValue.typedInput("type"),
+                                                    content: propertyValue.typedInput("value")}});
+
+                if (propertyName.typedInput("type") == "msg")
                 {
-                    let filter = {name: $(this).find(".node-input-filterName").val()};
+                    node.outputs = 1;
+                }
+            });
+        },
+        oneditresize: function(size)
+        {
+            let height = size.height;
+            let propertyListRow = $("#dialog-form>div.form-row-output");
+            let otherRows = $("#dialog-form>div:not(.form-row-output)");
 
-                    if ((filter.name == "powered") || (filter.name == "standby") || (filter.name == "swupdate"))
-                    {
-                        filter.explicit = $(this).find(".node-input-filterExplicit").prop("checked");
-                    }
-                    else if (filter.name == "custom")
-                    {
-                        let customFilter = $(this).find(".node-input-customFilter");
-
-                        filter.custom = {type: customFilter.typedInput("type"),
-                                         value: customFilter.typedInput("value")};
-                    }
-
-                    node.outputPorts.push({label: node._("node-red-contrib-sony-audio/sony-audio-device:common.label.filterPort") + ": " + node._("node-red-contrib-sony-audio/sony-audio-device:common.list.filter." + filter.name), filter: filter});
-                    node.outputs++;
-                });
-            }
-
-            if ($("#node-input-outEvent").prop("checked"))
+            for (let i=0; i<otherRows.length; ++i)
             {
-                node.outputPorts.push({label: node._("notify.label.eventPort")});
-                node.outputs++;
+                if ($(otherRows[i]).is(":visible"))
+                {
+                    height -= $(otherRows[i]).outerHeight(true);
+                }
             }
+
+            height -= (parseInt(propertyListRow.css("marginTop")) + parseInt(propertyListRow.css("marginBottom")));
+            height -= $("#dialog-form>div.form-row-output>label").outerHeight(true);
+
+            $("#node-input-propertyList").editableList("height", height);
         }
     });
 </script>

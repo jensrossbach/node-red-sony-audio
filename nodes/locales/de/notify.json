@@ -3,26 +3,30 @@
     {
         "label":
         {
-            "eventPort":                       "Benachrichtigung",
-            "event":                           "Benachrichtigung",
-            "events":                          "Benachr.",
-            "service":                         "Dienst",
-            "notifyPowerStatus":               "Power-Status",
-            "notifyStorageStatus":             "Speicher-Status",
-            "notifySettingsUpdate":            "Einstellungsaktualisierung",
-            "notifySWUpdateInfo":              "Software-Aktualisierungsinformationen",
-            "notifyVolumeInformation":         "Lautstärkeinformationen",
-            "notifyExternalTerminalStatus":    "Externer Terminal-Status",
-            "notifyAvailablePlaybackFunction": "Verfügbare Abspielfunktionen",
-            "notifyPlayingContentInfo":        "Abspielinformationen"
+            "outputPort":                       "Benachrichtigung",
+            "events":                           "Benachr.",
+            "notifyPowerStatus":                "Power-Status",
+            "notifyStorageStatus":              "Speicher-Status",
+            "notifySettingsUpdate":             "Einstellungsaktualisierung",
+            "notifySWUpdateInfo":               "Software-Aktualisierungsinformationen",
+            "notifyVolumeInformation":          "Lautstärkeinformationen",
+            "notifyExternalTerminalStatus":     "Externer Terminal-Status",
+            "notifyAvailablePlaybackFunction":  "Verfügbare Abspielfunktionen",
+            "notifyPlayingContentInfo":         "Abspielinformationen"
         },
         "status":
         {
-            "notConnected":    "nicht verbunden",
-            "connecting":      "verbinde",
-            "connected":       "verbunden",
-            "ready":           "bereit",
-            "connectionError": "fehlgeschlagen"
+            "unconfigured":     "nicht konfiguriert",
+            "misconfigured":    "fehlerhafte Konfiguration",
+            "notConnected":     "nicht verbunden",
+            "connecting":       "verbinde",
+            "connected":        "verbunden",
+            "ready":            "bereit",
+            "connectionError":  "fehlgeschlagen"
+        },
+        "error":
+        {
+            "noEvents": "Keine Benachrichtigungen ausgewählt"
         }
     }
 }
