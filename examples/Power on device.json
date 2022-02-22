@@ -1,0 +1,121 @@
+[
+    {
+        "id": "4d39bd7ab87afe9a",
+        "type": "tab",
+        "label": "Power ON",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "3407bac2b472b961",
+        "type": "comment",
+        "z": "4d39bd7ab87afe9a",
+        "name": "",
+        "info": "# Power ON\n- turn the device on",
+        "x": 120,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "fa614a983e07f7bd",
+        "type": "inject",
+        "z": "4d39bd7ab87afe9a",
+        "name": "trigger",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 140,
+        "wires": [
+            [
+                "df4eb5e43d172073"
+            ]
+        ]
+    },
+    {
+        "id": "df4eb5e43d172073",
+        "type": "sonyaudio-control",
+        "z": "4d39bd7ab87afe9a",
+        "outputs": 1,
+        "name": "",
+        "device": "0e75f019819cb4e7",
+        "action": "powerOn",
+        "actionType": "control",
+        "api": "system.setPowerStatus@1.1",
+        "apiType": "str",
+        "params": "{\"status\": \"active\"}",
+        "paramsType": "json",
+        "networkUpdate": true,
+        "volume": "1",
+        "relativeVolume": false,
+        "source": "extInput:tv",
+        "port": "1",
+        "preset": "0",
+        "zone": "0",
+        "soundSettings": [
+            {
+                "target": "soundField",
+                "value": "clearAudio"
+            }
+        ],
+        "soundTarget": "soundField",
+        "speakerSettings": [
+            {
+                "target": "inCeilingSpeakerMode",
+                "value": "off"
+            }
+        ],
+        "speakerTarget": "inCeilingSpeakerMode",
+        "modeSettings": [
+            {
+                "target": "playType",
+                "value": "normal"
+            }
+        ],
+        "modeTarget": "playType",
+        "outputProperties": [
+            {
+                "type": "msg",
+                "name": "topic",
+                "value": {
+                    "type": "str",
+                    "content": "{{host}}/{{service}}.{{method}}@{{version}}"
+                }
+            },
+            {
+                "type": "msg",
+                "name": "payload",
+                "value": {
+                    "type": "filtered",
+                    "content": "auto"
+                }
+            }
+        ],
+        "msgPassThrough": true,
+        "sendIfPayload": true,
+        "x": 320,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0e75f019819cb4e7",
+        "type": "sonyaudio-device",
+        "name": "my device",
+        "host": "192.168.1.42",
+        "port": "10000",
+        "extendedRecovery": false,
+        "numRetries": "0",
+        "retryDelay": "60"
+    }
+]

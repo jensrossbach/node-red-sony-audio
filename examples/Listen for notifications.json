@@ -1,0 +1,155 @@
+[
+    {
+        "id": "4d39bd7ab87afe9a",
+        "type": "tab",
+        "label": "Listen for Notifications",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "3407bac2b472b961",
+        "type": "comment",
+        "z": "4d39bd7ab87afe9a",
+        "name": "",
+        "info": "# Listen for Notifications\n- listen for system events\n- listen for audio events\n- listen for A/V content events",
+        "x": 120,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "93aa51a4cb69c3af",
+        "type": "sonyaudio-notify",
+        "z": "4d39bd7ab87afe9a",
+        "outputs": 1,
+        "name": "",
+        "device": "0e75f019819cb4e7",
+        "service": "system",
+        "events": "notifyPowerStatus,notifyStorageStatus,notifySettingsUpdate,notifySWUpdateInfo",
+        "outputProperties": [
+            {
+                "type": "msg",
+                "name": "topic",
+                "value": {
+                    "type": "str",
+                    "content": "{{host}}/{{service}}.{{method}}@{{version}}"
+                }
+            },
+            {
+                "type": "msg",
+                "name": "payload",
+                "value": {
+                    "type": "filtered",
+                    "content": "auto"
+                }
+            }
+        ],
+        "sendIfPayload": true,
+        "x": 110,
+        "y": 140,
+        "wires": [
+            [
+                "b5e76ec406bd7cc7"
+            ]
+        ]
+    },
+    {
+        "id": "41bc97bb7ccc283b",
+        "type": "sonyaudio-notify",
+        "z": "4d39bd7ab87afe9a",
+        "outputs": 1,
+        "name": "",
+        "device": "0e75f019819cb4e7",
+        "service": "audio",
+        "events": "notifyVolumeInformation",
+        "outputProperties": [
+            {
+                "type": "msg",
+                "name": "topic",
+                "value": {
+                    "type": "str",
+                    "content": "{{host}}/{{service}}.{{method}}@{{version}}"
+                }
+            },
+            {
+                "type": "msg",
+                "name": "payload",
+                "value": {
+                    "type": "filtered",
+                    "content": "auto"
+                }
+            }
+        ],
+        "sendIfPayload": true,
+        "x": 110,
+        "y": 220,
+        "wires": [
+            [
+                "b5e76ec406bd7cc7"
+            ]
+        ]
+    },
+    {
+        "id": "71cad35eb2a99b03",
+        "type": "sonyaudio-notify",
+        "z": "4d39bd7ab87afe9a",
+        "outputs": 1,
+        "name": "",
+        "device": "0e75f019819cb4e7",
+        "service": "avContent",
+        "events": "notifyExternalTerminalStatus,notifyAvailablePlaybackFunction,notifyPlayingContentInfo",
+        "outputProperties": [
+            {
+                "type": "msg",
+                "name": "topic",
+                "value": {
+                    "type": "str",
+                    "content": "{{host}}/{{service}}.{{method}}@{{version}}"
+                }
+            },
+            {
+                "type": "msg",
+                "name": "payload",
+                "value": {
+                    "type": "filtered",
+                    "content": "auto"
+                }
+            }
+        ],
+        "sendIfPayload": true,
+        "x": 120,
+        "y": 300,
+        "wires": [
+            [
+                "b5e76ec406bd7cc7"
+            ]
+        ]
+    },
+    {
+        "id": "b5e76ec406bd7cc7",
+        "type": "debug",
+        "z": "4d39bd7ab87afe9a",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 330,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "0e75f019819cb4e7",
+        "type": "sonyaudio-device",
+        "name": "my device",
+        "host": "192.168.1.42",
+        "port": "10000",
+        "extendedRecovery": false,
+        "numRetries": "0",
+        "retryDelay": "60"
+    }
+]
