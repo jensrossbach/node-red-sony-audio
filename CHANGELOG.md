@@ -3,6 +3,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2022-02-22
+---
+
+### NOTE
+**This is a complete rework of the Node-RED Sony Audio package with breaking changes. Therefore the project has also been renamed and published as a new [NPM package](https://www.npmjs.com/package/@jens_rossbach/node-red-sony-audio). The [old package](https://www.npmjs.com/package/node-red-contrib-sony-audio) is still available and you can decide on your own if you want to continue using the old package or if you want to migrate to the new one. Due to the new names of the package and the nodes, it is possible to install both versions in parallel.**
+
+---
+
+### Changed
+- New package name following the new naming conventions for Node-RED contributions.
+- New, more intuitive node names:
+  - controller node &rarr; control node
+  - receiver node &rarr; notify node
+- Completely revised the flow nodes, making them more modern, more flexible and leaner.
+- Completely redesigned the configuration UI of the flow nodes.
+- Optimized the output of some predefined filters.
+- Removed the possibility to override commands and command settings from the configuration UI via input message.
+- Removed the support for multiple outputs.
+- Upgraded dependencies to newest versions (except node-fetch as version 3.x does not support the `require` syntax anymore)
+
+### Added
+- Added the possibility to make direct API calls from the configuration UI of the control node.
+- Added the possibility to fetch the API including parameters from input messages, environment variables and context variables.
+- Added the support for processing input data with templates and JSONata expressions.
+- Added the possibility to precisely configure output messages and set context variables upon receiving data from the device.
+- Added example flows to the package (however, I strongly recommend to also have a look into the [wiki](https://github.com/jensrossbach/node-red-sony-audio/wiki)).
+- And many more small things...
+
+### Fixed
+- Fixed saving of sound, speaker and playback settings in case of multiple entries.
+
 ## [1.9.2] - 2021-10-09
 ### Added
 - Added topic placeholders for device and controller/receiver node names.
