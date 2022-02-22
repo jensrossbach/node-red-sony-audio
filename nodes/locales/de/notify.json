@@ -16,8 +16,6 @@
         },
         "status":
         {
-            "unconfigured":     "nicht konfiguriert",
-            "misconfigured":    "fehlerhafte Konfiguration",
             "notConnected":     "nicht verbunden",
             "connecting":       "verbinde",
             "connected":        "verbunden",

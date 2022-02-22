@@ -42,6 +42,11 @@
                 "playbackSetting":  "Abspieleinstellungen"
             }
         },
+        "status":
+        {
+            "unconfigured":   "nicht konfiguriert",
+            "misconfigured":  "fehlerhafte Konfiguration"
+        },
         "error":
         {
             "unconfigured":       "Kein Konfigurationsknoten zugewiesen",

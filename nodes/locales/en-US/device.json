@@ -42,6 +42,11 @@
                 "playbackSetting":  "playback settings"
             }
         },
+        "status":
+        {
+            "unconfigured":   "unconfigured",
+            "misconfigured":  "configuration errors"
+        },
         "error":
         {
             "unconfigured":       "No configuration node assigned",

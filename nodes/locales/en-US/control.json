@@ -168,11 +168,9 @@
         },
         "status":
         {
-            "unconfigured":   "unconfigured",
-            "misconfigured":  "configuration errors",
-            "sending":        "sending",
-            "success":        "success",
-            "error":          "error"
+            "sending":  "sending",
+            "success":  "success",
+            "error":    "error"
         },
         "error":
         {

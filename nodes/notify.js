@@ -27,9 +27,9 @@ module.exports = function(RED)
 {
     function SonyAudioNotifyNode(config)
     {
-        const STATUS_UNCONFIGURED  = {fill: "yellow", shape: "dot", text: "notify.status.unconfigured" };
-        const STATUS_MISCONFIGURED = {fill: "yellow", shape: "dot", text: "notify.status.misconfigured"};
-        const STATUS_CONNECTING    = {fill: "grey",   shape: "dot", text: "notify.status.connecting"   };
+        const STATUS_UNCONFIGURED  = {fill: "yellow", shape: "dot", text: "@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.status.unconfigured" };
+        const STATUS_MISCONFIGURED = {fill: "yellow", shape: "dot", text: "@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.status.misconfigured"};
+        const STATUS_CONNECTING    = {fill: "grey",   shape: "dot", text: "notify.status.connecting"                                                       };
 
         const Utils = require("./common/utils.js");
         const Events = require("./common/event_constants.js");
@@ -42,7 +42,7 @@ module.exports = function(RED)
         node.device = RED.nodes.getNode(config.device);
         if (!node.device)
         {
-            node.error(RED._("notify.error.unconfigured"));
+            node.error(RED._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.error.unconfigured"));
             node.status(STATUS_UNCONFIGURED);
         }
         else if (!Utils.validateOutputProperties(RED, node, config.outputProperties, node.output, false))
