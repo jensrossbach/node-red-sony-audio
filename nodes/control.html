@@ -669,11 +669,25 @@ SOFTWARE.
                     const soundField = $("<select/>", {class: "node-input-soundField", style: "width: auto;"})
                             .append($("<option></option>").val("off").text(node._("control.list.soundField.off")))
                             .append($("<option></option>").val("standard").text(node._("control.list.soundField.standard")))
-                            .append($("<option></option>").val("clearAudio").text(node._("control.list.soundField.clearAudio")))
+                            .append($("<option></option>").val("direct").text(node._("control.list.soundField.direct")))
                             .append($("<option></option>").val("music").text(node._("control.list.soundField.music")))
                             .append($("<option></option>").val("movie").text(node._("control.list.soundField.movie")))
                             .append($("<option></option>").val("sports").text(node._("control.list.soundField.sports")))
                             .append($("<option></option>").val("game").text(node._("control.list.soundField.game")))
+                            .append($("<option></option>").val("clearAudio").text(node._("control.list.soundField.clearAudio")))
+                            .append($("<option></option>").val("audioEnhancer").text(node._("control.list.soundField.audioEnhancer")))
+                            .append($("<option></option>").val("neuralX").text(node._("control.list.soundField.neuralX")))
+                            .append($("<option></option>").val("2chStereo").text(node._("control.list.soundField.2chStereo")))
+                            .append($("<option></option>").val("multiChStereo").text(node._("control.list.soundField.multiChStereo")))
+                            .append($("<option></option>").val("audioFormatDecoding").text(node._("control.list.soundField.audioFormatDecoding")))
+                            .append($("<option></option>").val("dolbySurround").text(node._("control.list.soundField.dolbySurround")))
+                            .append($("<option></option>").val("frontSurround").text(node._("control.list.soundField.frontSurround")))
+                            .appendTo(row);
+
+                    const footballMode = $("<select/>", {class: "node-input-footballMode", style: "width: auto;"})
+                            .append($("<option></option>").val("off").text(node._("control.list.footballMode.off")))
+                            .append($("<option></option>").val("on").text(node._("control.list.footballMode.on")))
+                            .append($("<option></option>").val("on_narration_off").text(node._("control.list.footballMode.onNarrationOff")))
                             .appendTo(row);
 
                     const voiceType = $("<select/>", {class: "node-input-voiceType", style: "width: auto;"})
@@ -692,12 +706,17 @@ SOFTWARE.
                         value = soundTarget.val();
 
                         soundField.hide();
+                        footballMode.hide();
                         voiceType.hide();
                         switchedOn.hide();
 
                         if (value == "soundField")
                         {
                             soundField.show();
+                        }
+                        else if (value == "footballMode")
+                        {
+                            footballMode.show();
                         }
                         else if (value == "voice")
                         {
@@ -712,6 +731,10 @@ SOFTWARE.
                     if (soundSetting.target == "soundField")
                     {
                         soundField.val(soundSetting.value);
+                    }
+                    else if (soundSetting.target == "footballMode")
+                    {
+                        footballMode.val(soundSetting.value);
                     }
                     else if (soundSetting.target == "voice")
                     {
@@ -1199,6 +1222,10 @@ SOFTWARE.
                 if (setting.target == "soundField")
                 {
                     setting.value = $(this).find(".node-input-soundField").val();
+                }
+                else if (setting.target == "footballMode")
+                {
+                    setting.value = $(this).find(".node-input-footballMode").val();
                 }
                 else if (setting.target == "voice")
                 {
