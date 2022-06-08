@@ -87,13 +87,27 @@
             },
             "soundField":
             {
-                "off":         "Off",
-                "standard":    "Standard",
-                "clearAudio":  "Clear Audio +",
-                "music":       "Music",
-                "movie":       "Movie",
-                "sports":      "Sports",
-                "game":        "Game"
+                "off":                  "Off",
+                "standard":             "Standard",
+                "direct":               "Direct",
+                "music":                "Music",
+                "movie":                "Movie",
+                "sports":               "Sports",
+                "game":                 "Game",
+                "clearAudio":           "Clear Audio +",
+                "audioEnhancer":        "Audio Enhancer",
+                "neuralX":              "Neural:X",
+                "2chStereo":            "2-Channel Stereo",
+                "multiChStereo":        "Multi-Channel Stereo",
+                "audioFormatDecoding":  "A.F.D.",
+                "dolbySurround":        "Dolby Surround",
+                "frontSurround":        "Front Surround"
+            },
+            "footballMode":
+            {
+                "off":             "Off",
+                "on":              "On",
+                "onNarrationOff":  "On (w/o Narration)"
             },
             "voiceType":
             {
