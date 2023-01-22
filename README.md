@@ -29,7 +29,7 @@ If you encountered a bug, would like to propose a new feature or simply want to 
 To see what has changed in recent versions of the software, please have a look at the project's [change log](https://github.com/jensrossbach/node-red-sony-audio/blob/master/CHANGELOG.md).
 
 ## License
-Copyright (c) 2022 Jens-Uwe Rossbach
+Copyright (c) 2023 Jens-Uwe Rossbach
 
 This code is licensed under the MIT License.
 
@@ -56,7 +56,7 @@ SOFTWARE.
 The trademark "SONY" and any other product names, service names or logos of SONY used, quoted and/or referenced in this Web Site are trademarks or registered trademarks of Sony Corporation or any of its affiliates.
 
 ### License Audio Control API
-Copyright (c) 2022 Sony Corporation. All rights reserved.
+Copyright (c) 2023 Sony Corporation. All rights reserved.
 
 The 'Audio Control API' is licensed to the user by Sony Video & Sound products Inc. under the license terms of the [Creative Commons Attribution-NoDerivatives 4.0 International Public License](https://creativecommons.org/licenses/by-nd/4.0/legalcode).
 
