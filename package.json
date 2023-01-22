@@ -1,6 +1,6 @@
 {
     "name": "@jens_rossbach/node-red-sony-audio",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "description": "Node-RED nodes for querying and controlling Sony audio devices",
     "author": {
         "name": "Jens-Uwe Rossbach",
