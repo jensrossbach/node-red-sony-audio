@@ -114,10 +114,9 @@ SOFTWARE.
         <dl style="margin-block-start: 0; margin-block-end: 0; margin-bottom: 0 !important;">
             <dt>String</dt>
             <dd>
-                API specified as string, optionally containing placeholders in
-                the form <code>{{placeholder}}</code> where <i>placeholder</i>
-                refers to the name of an arbitrary message property to insert the
-                content from.
+                API specified as string, optionally containing templates in
+                the form <code>{{template}}</code>. All properties from the
+                input message are available as template variables.
             </dd>
             <dt>Env variable</dt>
             <dd>An environment variable or a string including environment variables.</dd>
@@ -185,8 +184,8 @@ SOFTWARE.
     <dd>An environment variable or a text including environment variables.</dd>
     <dt>String</dt>
     <dd>
-        Text which can contain placeholders in the form <code>{{placeholder}}</code>
-        to insert variable content. The following placeholders are supported:
+        Text which can contain templates in the form <code>{{template}}</code>
+        to insert variable content. The following template variables are supported:
     </dd>
     <dl class="message-properties">
         <dt>host<span class="property-type">string</span></dt>
@@ -201,21 +200,21 @@ SOFTWARE.
         <dd>the payload containing the result data of the response</dd>
     </dl>
     <dt>Number</dt>
-    <dd>An arbitrary fixed number.</dd>
+    <dd>An arbitrary static number.</dd>
     <dt>Boolean</dt>
-    <dd>A fixed boolean value (true or false).</dd>
+    <dd>A static boolean value (true or false).</dd>
     <dt>JSON</dt>
-    <dd>Fixed content specified in JSON format.</dd>
+    <dd>Static content specified in JSON format.</dd>
     <dt>Expression</dt>
     <dd>
         A JSONata expression to create dynamic content depending
         on the original data coming from the device. The attributes
-        have the same names as the string placeholders, see above.
-        Return <code>undefined</code> in order to not set the
+        have the same names as the string template variables, see
+        above. Return <code>undefined</code> in order to not set the
         property/variable.
     </dd>
     <dt>Buffer</dt>
-    <dd>A fixed binary buffer.</dd>
+    <dd>A static binary buffer.</dd>
     <dt>Timestamp</dt>
     <dd>The time when the response arrives.</dd>
     <p></p>
