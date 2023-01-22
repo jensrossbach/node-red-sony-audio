@@ -22,14 +22,14 @@
     "homepage": "https://jensrossbach.github.io/node-red-sony-audio",
     "bugs": "https://github.com/jensrossbach/node-red-sony-audio/issues",
     "dependencies": {
-        "nunjucks": "^3.2.3",
-        "node-fetch": "^2.6.7",
+        "node-fetch": "^2.6.8",
         "node-ssdp": "^4.0.1",
+        "nunjucks": "^3.2.3",
         "websocket": "^1.0.34",
         "xml-js": "^1.6.11"
     },
     "devDependencies": {
-        "eslint": "^8.8.0"
+        "eslint": "^8.32.0"
     },
     "main": "none",
     "scripts": {
