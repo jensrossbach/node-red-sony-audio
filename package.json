@@ -1,6 +1,6 @@
 {
     "name": "@jens_rossbach/node-red-sony-audio",
-    "version": "2.0.2",
+    "version": "2.0.3",
     "description": "Node-RED nodes for querying and controlling Sony audio devices",
     "author": {
         "name": "Jens-Uwe Rossbach",
@@ -22,14 +22,14 @@
     "homepage": "https://jensrossbach.github.io/node-red-sony-audio",
     "bugs": "https://github.com/jensrossbach/node-red-sony-audio/issues",
     "dependencies": {
-        "node-fetch": "^2.6.8",
+        "node-fetch": "^2.6.11",
         "node-ssdp": "^4.0.1",
-        "nunjucks": "^3.2.3",
+        "nunjucks": "^3.2.4",
         "websocket": "^1.0.34",
         "xml-js": "^1.6.11"
     },
     "devDependencies": {
-        "eslint": "^8.32.0"
+        "eslint": "^8.42.0"
     },
     "main": "none",
     "scripts": {
