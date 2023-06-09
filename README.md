@@ -52,6 +52,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ## Sony Legal Information
+### Disclaimer
+THIS SOFTWARE AND ITS AUTHOR ARE NOT AFFILIATED WITH SONY CORPORATION.
+
 ### Trademark
 The trademark "SONY" and any other product names, service names or logos of SONY used, quoted and/or referenced in this Web Site are trademarks or registered trademarks of Sony Corporation or any of its affiliates.
 
