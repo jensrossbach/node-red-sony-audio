@@ -142,12 +142,17 @@ module.exports = function(RED)
             return new Promise((resolve, reject) =>
             {
                 const uri = "http://" + this.host + ":" + this.port + "/sony/" + service;
-                const body = {id: 1,
-                              method: method,
-                              version: version,
-                              params: (params == null) ? [] : [params]};
+                const body =
+                {
+                    id: 1,
+                    method: method,
+                    version: version,
+                    params: (params == null)
+                        ? []
+                        : [params]
+                };
 
-                this.trace(JSON.stringify(body));
+                this.trace(uri + " -> " + JSON.stringify(body));
                 httpRequest(uri, {method: "post", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)})
                 .then(response =>
                 {
@@ -164,11 +169,16 @@ module.exports = function(RED)
                 {
                     if ("result" in data)
                     {
-                        let respMsg = {host: this.host,
-                                       service: service,
-                                       method: method,
-                                       version: version,
-                                       payload: (data.result.length == 0) ? null : data.result[0]};
+                        const respMsg =
+                        {
+                            host: this.host,
+                            service: service,
+                            method: method,
+                            version: version,
+                            payload: (data.result.length == 0)
+                                ? null
+                                : data.result[0]
+                        };
 
                         this.trace(JSON.stringify(respMsg));
                         resolve(respMsg);
@@ -192,9 +202,12 @@ module.exports = function(RED)
             const id = this.nextSubscrId;
             this.nextSubscrId++;
 
-            this.subscribers[id] = {service: service,
-                                    filter: filter,
-                                    callback: callback};
+            this.subscribers[id] =
+            {
+                service: service,
+                filter: filter,
+                callback: callback
+            };
 
             if (service in this.receivers)
             {
