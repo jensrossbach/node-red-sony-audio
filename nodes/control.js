@@ -49,8 +49,13 @@ module.exports = function(RED)
             node.error(RED._("control.error.unconfigured"));
             setStatus(STATUS_UNCONFIGURED);
         }
-        else if (!validateConfiguration() ||
-                 !Utils.validateOutputProperties(RED, node, config.outputProperties, node.output, true))
+        else if (!validateConfiguration()
+                    || !Utils.validateOutputProperties(
+                                RED,
+                                node,
+                                config.outputProperties,
+                                node.output,
+                                true))
         {
             setStatus(STATUS_MISCONFIGURED);
         }
@@ -58,7 +63,7 @@ module.exports = function(RED)
         {
             setStatus();
 
-            node.on("input", function(msg, send, done)
+            node.on("input", async function(msg, send, done)
             {
                 const context = {msg: msg};
 
@@ -73,7 +78,7 @@ module.exports = function(RED)
 
                 try
                 {
-                    const request = createAPICall(context);
+                    const request = await createAPICall(context);
                     if (request)
                     {
                         sendRequest(context,
@@ -234,10 +239,10 @@ module.exports = function(RED)
 
         function validateConfiguration()
         {
-            if ((config.actionType == "control") &&
-                (((config.action == "setSoundSettings") && (config.soundSettings.length == 0)) ||
-                 ((config.action == "setSpeakerSettings") && (config.speakerSettings.length == 0)) ||
-                 ((config.action == "setPlaybackSettings") && (config.modeSettings.length == 0))))
+            if ((config.actionType == "control")
+                && (((config.action == "setSoundSettings") && (config.soundSettings.length == 0))
+                    || ((config.action == "setSpeakerSettings") && (config.speakerSettings.length == 0))
+                    || ((config.action == "setPlaybackSettings") && (config.modeSettings.length == 0))))
             {
                 node.error(RED._("control.error.invalidSettings"));
                 return false;
@@ -286,8 +291,9 @@ module.exports = function(RED)
                     }
                     catch (e)
                     {
-                        node.error(RED._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.error.invalidExpression",
-                                         {error: e.code + ": " + e.message + "  [POS: " + e.position + ", TOK: '" + e.token + ", VAL: '" + e.value + "']"}));
+                        node.error(
+                                RED._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.error.invalidExpression",
+                                {error: e.code + ": " + e.message + "  [POS: " + e.position + ", TOK: '" + e.token + ", VAL: '" + e.value + "']"}));
                         return false;
                     }
                 }
@@ -306,7 +312,7 @@ module.exports = function(RED)
             return true;
         }
 
-        function createAPICall(context)
+        async function createAPICall(context)
         {
             let apiCall = null;
 
@@ -375,12 +381,13 @@ module.exports = function(RED)
 
                         try
                         {
-                            value = RED.util.evaluateJSONataExpression(node.callParams, context.msg);
+                            value = await Utils.evaluateJSONataExpression(RED, node.callParams, context.msg);
                         }
                         catch (e)
                         {
-                            throw new Error(RED._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.error.invalidExpression",
-                                                  {error: e.code + ": " + e.message + "  [POS: " + e.position + ", TOK: '" + e.token + "']"}));
+                            throw new Error(
+                                        RED._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.error.invalidExpression",
+                                        {error: e.code + ": " + e.message + "  [POS: " + e.position + ", TOK: '" + e.token + "']"}));
                         }
 
                         apiCall.params = getParameters(value);
@@ -449,190 +456,235 @@ module.exports = function(RED)
 
         function setPowerStatus(context, status)
         {
-            sendRequest(context,
-                        "system",
-                        "setPowerStatus",
-                        "1.1",
-                        {status: status});
+            sendRequest(
+                context,
+                "system",
+                "setPowerStatus",
+                "1.1",
+                {status: status});
         }
 
         function setAudioVolume(context, volume, relative = false, zone = 0)
         {
-            sendRequest(context,
-                        "audio",
-                        "setAudioVolume",
-                        "1.1",
-                        {output: (zone > 0) ? "extOutput:zone?zone=" + zone : "",
-                         volume: (relative && (volume > 0)) ? "+" + volume : volume.toString()});
+            sendRequest(
+                context,
+                "audio",
+                "setAudioVolume",
+                "1.1", {
+                    output: (zone > 0)
+                        ? "extOutput:zone?zone=" + zone
+                        : "",
+                    volume: (relative && (volume > 0))
+                        ? "+" + volume
+                        : volume.toString()});
         }
 
         function setAudioMute(context, mute, zone = 0)
         {
-            sendRequest(context,
-                        "audio",
-                        "setAudioMute",
-                        "1.1",
-                        {output: (zone > 0) ? "extOutput:zone?zone=" + zone : "",
-                         mute: mute});
+            sendRequest(
+                context,
+                "audio",
+                "setAudioMute",
+                "1.1", {
+                    output: (zone > 0)
+                        ? "extOutput:zone?zone=" + zone
+                        : "",
+                    mute: mute});
         }
 
         function setSoundSettings(context, params)
         {
-            sendRequest(context,
-                        "audio",
-                        "setSoundSettings",
-                        "1.1",
-                        {settings: params});
+            sendRequest(
+                context,
+                "audio",
+                "setSoundSettings",
+                "1.1",
+                {settings: params});
         }
 
         function setSpeakerSettings(context, params)
         {
-            sendRequest(context,
-                        "audio",
-                        "setSpeakerSettings",
-                        "1.0",
-                        {settings: params});
+            sendRequest(
+                context,
+                "audio",
+                "setSpeakerSettings",
+                "1.0",
+                {settings: params});
         }
 
         function setPlaybackModeSettings(context, params)
         {
-            sendRequest(context,
-                        "avContent",
-                        "setPlaybackModeSettings",
-                        "1.0",
-                        {settings: params});
+            sendRequest(
+                context,
+                "avContent",
+                "setPlaybackModeSettings",
+                "1.0",
+                {settings: params});
         }
 
         function setPlayContent(context, source, port = 0, preset = -1, zone = 0)
         {
             let uri = source;
-            if (((source == "extInput:hdmi") ||
-                 (source == "extInput:line")) &&
-                (port > 0))
+            if (((source == "extInput:hdmi")
+                || (source == "extInput:line"))
+                && (port > 0))
             {
                 uri += "?port=" + port;
             }
-            else if ((source == "radio:fm") &&
-                     (preset >= 0))
+            else if ((source == "radio:fm")
+                        && (preset >= 0))
             {
                 uri += "?contentId=" + preset;
             }
 
-            sendRequest(context,
-                        "avContent",
-                        "setPlayContent",
-                        "1.2",
-                        {output: (zone > 0) ? "extOutput:zone?zone=" + zone : "",
-                         uri: uri});
+            sendRequest(
+                context,
+                "avContent",
+                "setPlayContent",
+                "1.2", {
+                    output: (zone > 0)
+                        ? "extOutput:zone?zone=" + zone
+                        : "",
+                    uri: uri});
         }
 
         function stopPlayingContent(context, zone = 0)
         {
-            sendRequest(context,
-                        "avContent",
-                        "stopPlayingContent",
-                        "1.1",
-                        {output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
+            sendRequest(
+                context,
+                "avContent",
+                "stopPlayingContent",
+                "1.1", {
+                    output: (zone > 0)
+                        ? "extOutput:zone?zone=" + zone
+                        : ""});
         }
 
         function pausePlayingContent(context, zone = 0)
         {
-            sendRequest(context,
-                        "avContent",
-                        "pausePlayingContent",
-                        "1.1",
-                        {output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
+            sendRequest(
+                context,
+                "avContent",
+                "pausePlayingContent",
+                "1.1", {
+                    output: (zone > 0)
+                        ? "extOutput:zone?zone=" + zone
+                        : ""});
         }
 
         function setPlayPreviousContent(context, zone = 0)
         {
-            sendRequest(context,
-                        "avContent",
-                        "setPlayPreviousContent",
-                        "1.0",
-                        {output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
+            sendRequest(
+                context,
+                "avContent",
+                "setPlayPreviousContent",
+                "1.0", {
+                    output: (zone > 0)
+                        ? "extOutput:zone?zone=" + zone
+                        : ""});
         }
 
         function setPlayNextContent(context, zone = 0)
         {
-            sendRequest(context,
-                        "avContent",
-                        "setPlayNextContent",
-                        "1.0",
-                        {output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
+            sendRequest(
+                context,
+                "avContent",
+                "setPlayNextContent",
+                "1.0", {
+                    output: (zone > 0)
+                        ? "extOutput:zone?zone=" + zone
+                        : ""});
         }
 
         function scanPlayingContent(context, fwd, zone = 0)
         {
-            sendRequest(context,
-                        "avContent",
-                        "scanPlayingContent",
-                        "1.0",
-                        {direction: fwd ? "fwd" : "bwd",
-                         output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
+            sendRequest(
+                context,
+                "avContent",
+                "scanPlayingContent",
+                "1.0", {
+                    direction: fwd
+                        ? "fwd"
+                        : "bwd",
+                    output: (zone > 0)
+                        ? "extOutput:zone?zone=" + zone
+                        : ""});
         }
 
         function getPowerStatus(context)
         {
-            sendRequest(context,
-                        "system",
-                        "getPowerStatus",
-                        "1.1",
-                        null);
+            sendRequest(
+                context,
+                "system",
+                "getPowerStatus",
+                "1.1",
+                null);
         }
 
         function getSWUpdateInfo(context, network)
         {
-            sendRequest(context,
-                        "system",
-                        "getSWUpdateInfo",
-                        "1.0",
-                        {network: network ? "true" : "false"});
+            sendRequest(
+                context,
+                "system",
+                "getSWUpdateInfo",
+                "1.0", {
+                    network: network
+                        ? "true"
+                        : "false"});
         }
 
         function getPlayingContentInfo(context, zone = 0)
         {
-            sendRequest(context,
-                        "avContent",
-                        "getPlayingContentInfo",
-                        "1.2",
-                        {output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
+            sendRequest(
+                context,
+                "avContent",
+                "getPlayingContentInfo",
+                "1.2", {
+                    output: (zone > 0)
+                        ? "extOutput:zone?zone=" + zone
+                        : ""});
         }
 
         function getVolumeInfo(context, zone = 0)
         {
-            sendRequest(context,
-                        "audio",
-                        "getVolumeInformation",
-                        "1.1",
-                        {output: (zone > 0) ? "extOutput:zone?zone=" + zone : ""});
+            sendRequest(
+                context,
+                "audio",
+                "getVolumeInformation",
+                "1.1", {
+                    output: (zone > 0)
+                        ? "extOutput:zone?zone=" + zone
+                        : ""});
         }
 
         function getSoundSettings(context, target)
         {
-            sendRequest(context,
-                        "audio",
-                        "getSoundSettings",
-                        "1.1",
-                        {target: target});
+            sendRequest(
+                context,
+                "audio",
+                "getSoundSettings",
+                "1.1",
+                {target: target});
         }
 
         function getSpeakerSettings(context, target)
         {
-            sendRequest(context,
-                        "audio",
-                        "getSpeakerSettings",
-                        "1.0",
-                        {target: target});
+            sendRequest(
+                context,
+                "audio",
+                "getSpeakerSettings",
+                "1.0",
+                {target: target});
         }
 
         function getPlaybackModeSettings(context, target)
         {
-            sendRequest(context,
-                        "avContent",
-                        "getPlaybackModeSettings",
-                        "1.0",
-                        {target: target});
+            sendRequest(
+                context,
+                "avContent",
+                "getPlaybackModeSettings",
+                "1.0",
+                {target: target});
         }
 
         function setStatus(stat = {}, duration = 0)
@@ -662,14 +714,17 @@ module.exports = function(RED)
             node.device.sendRequest(service, method, version, params)
             .then(data =>
             {
-                const out = Utils.prepareOutput(RED, node, node.output, config.msgPassThrough ? context.msg : null, data, config.sendIfPayload);
-                if (out)
+                Utils.prepareOutput(RED, node, node.output, config.msgPassThrough ? context.msg : null, data, config.sendIfPayload)
+                .then(out =>
                 {
-                    context.send(out);
-                }
+                    if (out)
+                    {
+                        context.send(out);
+                    }
 
-                setStatus(STATUS_SUCCESS, STATUS_TEMP_DURATION);
-                context.done();
+                    setStatus(STATUS_SUCCESS, STATUS_TEMP_DURATION);
+                    context.done();
+                });
             })
             .catch(error =>
             {

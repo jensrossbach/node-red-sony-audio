@@ -119,11 +119,14 @@ module.exports = function(RED)
                 node.status(STATUS_CONNECTING);
                 node.subscribeId = node.device.subscribeEvents(config.service, filter, data =>
                 {
-                    let out = Utils.prepareOutput(RED, node, node.output, null, data, config.sendIfPayload);
-                    if (out)
+                    Utils.prepareOutput(RED, node, node.output, null, data, config.sendIfPayload)
+                    .then(out =>
                     {
-                        node.send(out);
-                    }
+                        if (out)
+                        {
+                            node.send(out);
+                        }
+                    });
                 });
 
                 node.on("close", () =>

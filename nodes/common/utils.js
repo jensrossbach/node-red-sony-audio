@@ -27,6 +27,8 @@ const Nunjucks = require("nunjucks");
 
 module.exports =
 {
+    evaluateJSONataExpression: evaluateJSONataExpression,
+
     validateOutputProperties: function(RED, node, source, target, allowEmpty)
     {
         for (let prop of source)
@@ -112,8 +114,9 @@ module.exports =
                 }
                 catch (e)
                 {
-                    node.error(RED._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.error.invalidExpression",
-                                     {error: e.code + ": " + e.message + "  [POS: " + e.position + ", TOK: '" + e.token + ", VAL: '" + e.value + "']"}));
+                    node.error(
+                            RED._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.error.invalidExpression",
+                            {error: e.code + ": " + e.message + "  [POS: " + e.position + ", TOK: '" + e.token + ", VAL: '" + e.value + "']"}));
                     return false;
                 }
             }
@@ -142,7 +145,7 @@ module.exports =
         return true;
     },
 
-    prepareOutput: function(RED, node, properties, msg, data, sendIfPayload)
+    prepareOutput: async function(RED, node, properties, msg, data, sendIfPayload)
     {
         let out = msg ? msg : {};
         let numMsgProps = 0;
@@ -154,7 +157,7 @@ module.exports =
             {
                 if (prop.type == "msg")
                 {
-                    RED.util.setMessageProperty(out, prop.name, getProperty(prop), true);
+                    RED.util.setMessageProperty(out, prop.name, await getProperty(prop), true);
                     ++numMsgProps;
 
                     if (prop.name == "payload")
@@ -165,7 +168,7 @@ module.exports =
                 else
                 {
                     let ctx = RED.util.parseContextStore(prop.name);
-                    node.context()[prop.type].set(ctx.key, getProperty(prop), ctx.store);
+                    node.context()[prop.type].set(ctx.key, await getProperty(prop), ctx.store);
                 }
             }
             catch (e)
@@ -192,7 +195,7 @@ module.exports =
 
         return out;
 
-        function getProperty(prop)
+        async function getProperty(prop)
         {
             let value = null;
 
@@ -226,7 +229,9 @@ module.exports =
                         }
                         catch (e)
                         {
-                            throw new Error(RED._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.error.invalidTemplate", {error: e.message}));
+                            throw new Error(
+                                        RED._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.error.invalidTemplate",
+                                        {error: e.message}));
                         }
                     }
                     else
@@ -240,12 +245,13 @@ module.exports =
                 {
                     try
                     {
-                        value = RED.util.evaluateJSONataExpression(prop.value.expression, data);
+                        value = await evaluateJSONataExpression(RED, prop.value.expression, data);
                     }
                     catch (e)
                     {
-                        throw new Error(RED._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.error.invalidExpression",
-                                              {error: e.code + ": " + e.message + "  [POS: " + e.position + ", TOK: '" + e.token + "']"}));
+                        throw new Error(
+                                    RED._("@jens_rossbach/node-red-sony-audio/sonyaudio-device:common.error.invalidExpression",
+                                    {error: e.code + ": " + e.message + "  [POS: " + e.position + ", TOK: '" + e.token + "']"}));
                     }
 
                     if (typeof value == "undefined")
@@ -662,3 +668,21 @@ module.exports =
         }
     }
 };
+
+function evaluateJSONataExpression(RED, expr, msg)
+{
+    return new Promise((resolve, reject) =>
+    {
+        RED.util.evaluateJSONataExpression(expr, msg, (error, result) =>
+        {
+            if (error)
+            {
+                reject(error);
+            }
+            else
+            {
+                resolve(result);
+            }
+        });
+    });
+}
